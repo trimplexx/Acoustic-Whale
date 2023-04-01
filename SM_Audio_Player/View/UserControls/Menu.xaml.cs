@@ -24,5 +24,30 @@ namespace SM_Audio_Player.View.UserControls
         {
             InitializeComponent();
         }
+
+        private void Exit_Btn_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void opt1_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void opt2_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void opt3_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void opt4_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }
