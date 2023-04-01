@@ -1,5 +1,4 @@
-﻿using NAudio.Wave;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,14 +13,16 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace SM_Audio_Player
+namespace SM_Audio_Player.View.UserControls
 {
-    public partial class MainWindow : Window
+    /// <summary>
+    /// Interaction logic for Player.xaml
+    /// </summary>
+    public partial class Player : UserControl
     {
-        public MainWindow()
+        public Player()
         {
             InitializeComponent();
         }
     }
 }
-
