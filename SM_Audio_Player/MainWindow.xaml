@@ -17,6 +17,6 @@
                 </TransformGroup>
             </Button.RenderTransform> Przycisk
         </Button>
-        <TextBox Text="Hey" RenderTransformOrigin="0.5,0.5" FontFamily="Comic Sans MS" FontSize="18" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+        <TextBox Text="Hello world" RenderTransformOrigin="0.5,0.5" FontFamily="Comic Sans MS" FontSize="18" VerticalAlignment="Center" HorizontalAlignment="Center"/>
     </Grid>
 </Window>
