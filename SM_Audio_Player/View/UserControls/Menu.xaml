@@ -5,8 +5,23 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:SM_Audio_Player.View.UserControls"
              mc:Ignorable="d" 
-             d:DesignHeight="30" d:DesignWidth="1000">
+             d:DesignHeight="40" d:DesignWidth="1000">
     <Grid>
-            
+        <Menu VerticalAlignment="Center" Background="#333333" Foreground="#45a7bc">
+            <Menu.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <DockPanel HorizontalAlignment="Stretch"/>
+                </ItemsPanelTemplate>
+            </Menu.ItemsPanel>
+            <MenuItem Header="Options" FontSize="16" Padding="20,5,20,5" HorizontalContentAlignment="Right">
+                <MenuItem x:Name="opt1" Click="opt1_Click" Header="Library" FontSize="16"/>
+                <MenuItem x:Name="opt2" Click="opt2_Click" Header="Equalizer"/>
+                <MenuItem x:Name="opt3" Click="opt3_Click" FontSize="16"/>
+                <MenuItem x:Name="opt4" Click="opt4_Click" FontSize="16"/>
+            </MenuItem>
+            <MenuItem x:Name="Exit_Btn" Click="Exit_Btn_Click" Header="Exit" FontSize="16"  Padding="20,5,20,5" HorizontalAlignment="Right"/>
+        </Menu>
+
+        
     </Grid>
 </UserControl>
