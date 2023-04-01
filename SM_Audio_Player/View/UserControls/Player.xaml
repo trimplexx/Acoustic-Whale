@@ -7,6 +7,45 @@
              mc:Ignorable="d" 
              d:DesignHeight="200" d:DesignWidth="1000">
     <Grid>
-            
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="10*"/>
+                <ColumnDefinition Width="15*"/>
+                <ColumnDefinition Width="50*"/>
+                <ColumnDefinition Width="25*"/>
+            </Grid.ColumnDefinitions>
+            <Border BorderThickness="1" BorderBrush="#45a7bc" Margin="5">
+                <Image Source="/AppImg/TEST.png"/>
+            </Border>
+            <Grid Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="40*"/>
+                    <RowDefinition Height="30*"/>
+                    <RowDefinition Height="30*"/>
+                </Grid.RowDefinitions>
+                <TextBlock Text="Tytuł" VerticalAlignment="Center" Foreground="#45a7bc" Margin="8, 10, 5, 0" FontSize="17"/>
+                <TextBlock Grid.Row="1" Text="Autor" VerticalAlignment="Center" Foreground="#45a7bc" Margin="8, 0, 5, 0"/>
+                <TextBlock Grid.Row="2" Text="Płyta" VerticalAlignment="Center" Foreground="#45a7bc" Margin="8, 0, 5, 0"/>
+            </Grid>
+            <Grid Grid.Column="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="65*"/>
+                    <RowDefinition Height="35*"/>
+                </Grid.RowDefinitions>
+                <Button Width="50" Height="50">
+                    
+                </Button>
+            </Grid>
+            <Grid Grid.Column="3">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="40*"/>
+                    <RowDefinition Height="60*"/>
+                </Grid.RowDefinitions>
+            </Grid>
+        </Grid>
     </Grid>
 </UserControl>

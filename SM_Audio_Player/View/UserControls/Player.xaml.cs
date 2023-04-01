@@ -15,9 +15,6 @@ using System.Windows.Shapes;
 
 namespace SM_Audio_Player.View.UserControls
 {
-    /// <summary>
-    /// Interaction logic for Player.xaml
-    /// </summary>
     public partial class Player : UserControl
     {
         public Player()

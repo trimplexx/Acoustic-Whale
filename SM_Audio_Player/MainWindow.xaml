@@ -7,7 +7,11 @@
         xmlns:UC="clr-namespace:SM_Audio_Player.View.UserControls"
         mc:Ignorable="d" WindowStyle="None"
         Title="Nazwa Projektu" Height="800" Width="1000">
-    
+
+    <WindowChrome.WindowChrome>
+        <WindowChrome GlassFrameThickness="0" CornerRadius="0" CaptionHeight="0"/>
+    </WindowChrome.WindowChrome>
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="30"/>
