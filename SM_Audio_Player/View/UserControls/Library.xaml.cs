@@ -24,5 +24,20 @@ namespace SM_Audio_Player.View.UserControls
         {
             InitializeComponent();
         }
+
+        void GridViewColumnHeaderClickedHandler(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void Add_Btn_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void Delete_Btn_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }

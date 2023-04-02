@@ -7,6 +7,28 @@
              mc:Ignorable="d" 
              d:DesignHeight="570" d:DesignWidth="1000">
     <Grid>
-            
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition Height="60"/>
+        </Grid.RowDefinitions>
+        
+        <!-- Główna biblioteka (List View) -->
+        <ListView x:Name='lv' Background="Transparent" BorderThickness="0" Foreground="#45a7bc" GridViewColumnHeader.Click="GridViewColumnHeaderClickedHandler" FontSize="16"  >
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Id" Width="30"/>
+                    <GridViewColumn Header="Tytuł" Width="300"/>
+                    <GridViewColumn Header="Autor" Width="100"/>
+                    <GridViewColumn Header="Płyta" Width="100"/>
+                </GridView>
+            </ListView.View>
+        </ListView>
+
+        <!-- Menu na dole układu -->
+        <Menu VerticalAlignment="Center" Background="#333333" Foreground="#45a7bc" Grid.Row="1">
+            <MenuItem Name="Add_Btn" Click="Add_Btn_Click" Header="Add" FontSize="16" Padding="20,5,20,5"/>
+            <MenuItem Name="Delete_Btn" Click="Delete_Btn_Click" Header="Delete" FontSize="16" Padding="20,5,20,5"/>
+        </Menu>
+
     </Grid>
 </UserControl>
