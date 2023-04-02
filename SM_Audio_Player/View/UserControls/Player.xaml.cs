@@ -21,5 +21,41 @@ namespace SM_Audio_Player.View.UserControls
         {
             InitializeComponent();
         }
+
+        /*Włącz pooprzedni utwór*/
+        private void btnPrevious_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        /*Graj/Zatrzymaj muzykę*/
+        private void btnPlay_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        /*Włącz następny utwór*/
+        private void btnNext_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        /*Włącz losowe odtwarzanie utworów*/
+        private void btnShuffle_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        /*Powtarzaj aktualnie włączony utwór*/
+        private void btnLoop_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        /*Wycisz/Przywróć poprzedni poziom głośności*/
+        private void btnVolume_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }

@@ -8,11 +8,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="NAudio" Version="2.1.0" />
+    <None Remove="assets\play.svg" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="AppImg\" />
+    <PackageReference Include="NAudio" Version="2.1.0" />
   </ItemGroup>
 
 </Project>

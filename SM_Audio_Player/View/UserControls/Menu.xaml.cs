@@ -27,7 +27,7 @@ namespace SM_Audio_Player.View.UserControls
 
         private void Exit_Btn_Click(object sender, RoutedEventArgs e)
         {
-
+            Application.Current.Shutdown();
         }
 
         private void opt1_Click(object sender, RoutedEventArgs e)
