@@ -20,6 +20,30 @@
                     <Trigger Property="IsMouseOver" Value="True">
                         <Setter TargetName="effect" Property="Fill" Value="#2FC7E9" />
                     </Trigger>
+                    <EventTrigger RoutedEvent="Button.Click">
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(Button.Width)">
+                                    <EasingDoubleKeyFrame KeyTime="0:0:0" Value="40" />
+                                    <EasingDoubleKeyFrame KeyTime="0:0:0.1" Value="35" />
+                                    <EasingDoubleKeyFrame KeyTime="0:0:0.3" Value="40" />
+                                </DoubleAnimationUsingKeyFrames>
+                                <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(Button.Height)">
+                                    <EasingDoubleKeyFrame KeyTime="0:0:0" Value="40" />
+                                    <EasingDoubleKeyFrame KeyTime="0:0:0.1" Value="35" />
+                                    <EasingDoubleKeyFrame KeyTime="0:0:0.3" Value="40" />
+                                </DoubleAnimationUsingKeyFrames>
+                                <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(Canvas.RenderTransform).(TranslateTransform.X)">
+                                    <EasingDoubleKeyFrame KeyTime="0:0:0.1" Value="-2.5" />
+                                    <EasingDoubleKeyFrame KeyTime="0:0:0.3" Value="0" />
+                                </DoubleAnimationUsingKeyFrames>
+                                <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(Canvas.RenderTransform).(TranslateTransform.Y)">
+                                    <EasingDoubleKeyFrame KeyTime="0:0:0.1" Value="-2.5" />
+                                    <EasingDoubleKeyFrame KeyTime="0:0:0.3" Value="0" />
+                                </DoubleAnimationUsingKeyFrames>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger>
                 </ControlTemplate.Triggers>
             </ControlTemplate>
         </Button.Template>
