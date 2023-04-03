@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Metrics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,13 +14,19 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace SM_Audio_Player.View.UserControls
+namespace SM_Audio_Player.View.UserControls.buttons
 {
-    public partial class Player : UserControl
+    public partial class buttonPlay : UserControl
     {
-        public Player()
+        public buttonPlay()
         {
             InitializeComponent();
+        }
+
+        /*Graj/Zatrzymaj muzykę*/
+        private void btnPlay_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

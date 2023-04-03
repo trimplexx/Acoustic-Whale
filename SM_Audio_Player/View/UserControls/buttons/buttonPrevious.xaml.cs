@@ -13,13 +13,19 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace SM_Audio_Player.View.UserControls
+namespace SM_Audio_Player.View.UserControls.buttons
 {
-    public partial class Player : UserControl
+    public partial class buttonPrevious : UserControl
     {
-        public Player()
+        public buttonPrevious()
         {
             InitializeComponent();
+        }
+
+        /*Włącz pooprzedni utwór*/
+        private void btnPrevious_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

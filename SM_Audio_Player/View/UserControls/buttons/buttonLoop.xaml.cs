@@ -13,13 +13,19 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace SM_Audio_Player.View.UserControls
+namespace SM_Audio_Player.View.UserControls.buttons
 {
-    public partial class Player : UserControl
+    public partial class buttonLoop : UserControl
     {
-        public Player()
+        public buttonLoop()
         {
             InitializeComponent();
+        }
+
+        /*Powtarzaj aktualnie włączony utwór*/
+        private void btnLoop_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

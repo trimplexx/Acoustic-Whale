@@ -13,13 +13,19 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace SM_Audio_Player.View.UserControls
+namespace SM_Audio_Player.View.UserControls.buttons
 {
-    public partial class Player : UserControl
+    public partial class buttonShuffle : UserControl
     {
-        public Player()
+        public buttonShuffle()
         {
             InitializeComponent();
+        }
+
+        /*Włącz losowe odtwarzanie utworów*/
+        private void btnShuffle_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }
