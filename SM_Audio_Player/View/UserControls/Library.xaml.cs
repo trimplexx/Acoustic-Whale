@@ -41,7 +41,8 @@ namespace SM_Audio_Player.View.UserControls
         private void Add_Btn_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "Music files (*.mp3)|*.mp3|All files (*.*)|*.*";
+            openFileDialog.Filter = "Music files (*.mp3)|*.mp3|Waveform Audio File Format (.wav)|.wav|Windows Media Audio Professional (.wma)|.wma|MPEG-4 Audio (.mp4)|.mp4|" +
+                "Free Lossless Audio Codec (.flac)|.flac|All files (*.*)|*.*";
 
             if (openFileDialog.ShowDialog() == true)
             {
@@ -116,12 +117,18 @@ namespace SM_Audio_Player.View.UserControls
                 // Get the selected track
                 Tracks selectedTrack = lv.SelectedItem as Tracks;
 
-                // Remove the selected track from the tracksList
-                tracksList.Remove(selectedTrack);
+                // Ask the user for confirmation
+                MessageBoxResult result = MessageBox.Show($"Are you sure you want to delete {selectedTrack.Title}?", "Confirm Delete", MessageBoxButton.YesNo, MessageBoxImage.Question);
 
-                // Refresh the ListView to update the list of tracks
-                lv.ItemsSource = null;
-                lv.ItemsSource = tracksList;
+                if (result == MessageBoxResult.Yes)
+                {
+                    // Remove the selected track from the tracksList
+                    tracksList.Remove(selectedTrack);
+
+                    // Refresh the ListView to update the list of tracks
+                    lv.ItemsSource = null;
+                    lv.ItemsSource = tracksList;
+                }
             }
         }
     }
