@@ -22,8 +22,8 @@
             <RowDefinition Height="70*"/>
         </Grid.RowDefinitions>
 
-        <UC:Menu/>
-        <UC:Player Grid.Row="1"/>
+        <UC:Menu MouseMove="Window_MouseDown"/>
+        <UC:Player Grid.Row="1" />
         <UC:Library Grid.Row="2"/>
 
     </Grid>

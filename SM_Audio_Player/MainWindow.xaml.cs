@@ -13,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Mouse = Microsoft.VisualBasic.Devices.Mouse;
 
 namespace SM_Audio_Player
 {
@@ -21,6 +22,12 @@ namespace SM_Audio_Player
         public MainWindow()
         {
             InitializeComponent();
+        }
+
+        private void Window_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.LeftButton == MouseButtonState.Pressed)
+                this.DragMove();
         }
     }
 }
