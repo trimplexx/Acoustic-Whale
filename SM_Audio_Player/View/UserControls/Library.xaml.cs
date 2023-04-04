@@ -27,6 +27,11 @@ using File = System.IO.File;
 
 namespace SM_Audio_Player.View.UserControls
 {
+    /// <summary>
+    /// Interaction logic for Library.xaml
+    /// </summary>
+    /// 
+
     public partial class Library : UserControl
     {
         public List<Tracks> tracksList = new List<Tracks>();
@@ -92,10 +97,17 @@ namespace SM_Audio_Player.View.UserControls
                             string newTitle = file.Tag.Title ?? title;
                             string newAuthor = file.Tag.FirstPerformer ?? "Unknown";
                             string newAlbum = file.Tag.Album ?? "Unknown";
+                            int duration = (int)file.Properties.Duration.TotalSeconds;
+
+                            int hours = duration / 3600;
+                            int minutes = (duration % 3600) / 60;
+                            int seconds = duration % 60;
+
+                            string formattedTime = string.Format("{0:D2}:{1:D2}:{2:D2}", hours, minutes, seconds);
 
                             int newId = tracksList.Count + 1;
 
-                        Tracks newTrack = new Tracks(newId, newTitle, newAuthor, newAlbum, newPath, false);
+                        Tracks newTrack = new Tracks(newId, newTitle, newAuthor, newAlbum, newPath,true ,formattedTime);
                         tracksList.Add(newTrack);
 
                         var NewJsonData = JsonConvert.SerializeObject(tracksList);
@@ -119,10 +131,17 @@ namespace SM_Audio_Player.View.UserControls
                         string newTitle = file.Tag.Title ?? title;
                         string newAuthor = file.Tag.FirstPerformer ?? "Unknown";
                         string newAlbum = file.Tag.Album ?? "Unknown";
+                        int duration = (int)file.Properties.Duration.TotalSeconds;
+
+                        int hours = duration / 3600;
+                        int minutes = (duration % 3600) / 60;
+                        int seconds = duration % 60;
+
+                        string formattedTime = string.Format("{0:D2}:{1:D2}:{2:D2}", hours, minutes, seconds);
 
                         int newId = tracksList.Count + 1;
 
-                    Tracks newTrack = new Tracks(newId, newTitle, newAuthor, newAlbum, newPath, true);
+                    Tracks newTrack = new Tracks(newId, newTitle, newAuthor, newAlbum, newPath, true, formattedTime);
                     
                     tracksList.Add(newTrack);
                     var NewJsonData = JsonConvert.SerializeObject(tracksList);

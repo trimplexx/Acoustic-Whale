@@ -5,14 +5,14 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:SM_Audio_Player.View.UserControls.buttons"
              mc:Ignorable="d" 
-             d:DesignHeight="40" d:DesignWidth="40">
+             d:DesignHeight="30" d:DesignWidth="30">
 
-    <Button Width="37" Height="37" x:Name="btnClose" Click="btnClose_Click">
+    <Button Width="30" Height="30" x:Name="btnClose" Click="btnClose_Click">
         <Button.Template>
             <ControlTemplate TargetType="Button">
                 <Viewbox>
-                    <Canvas Height="512" Width="512">
-                        <Rectangle Height="384" Width="320" Margin="0, 64, 0, 0" Fill="Transparent"/>
+                    <Canvas Height="512" Width="384">
+                        <Rectangle Height="320" Width="320" Margin="32, 96, 0, 0" Fill="Transparent"/>
                         <Path Name="effect" Fill="#45a7bc" Data="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
                     </Canvas>
                 </Viewbox>

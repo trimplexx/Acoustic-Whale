@@ -17,9 +17,9 @@
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="100"/>
-                <ColumnDefinition Width="150*"/>
+                <ColumnDefinition Width="150"/>
                 <ColumnDefinition Width="500*"/>
-                <ColumnDefinition Width="200"/>
+                <ColumnDefinition Width="250"/>
             </Grid.ColumnDefinitions>
             
             <!-- Obraz albumu -->
@@ -70,7 +70,7 @@
                     <BTN:buttonVolume Height="30" Width="30" Margin="5, 0, 0, 0"/>
                     <Slider Height="20" Width="140"  Margin="5, 5, 5, 3" Value="50" Maximum="100" x:Name="sldVolume"/>
                 </StackPanel>
-                <TextBlock Grid.Row="1" Text="Tutaj cosik potem będzie (chyba)" Foreground="White"/>
+                <TextBlock Grid.Row="1" Text="Tutaj cosik potem będzie (chyba)" Foreground="White" HorizontalAlignment="Right"/>
             </Grid>
         </Grid>
 

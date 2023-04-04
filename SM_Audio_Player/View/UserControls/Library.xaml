@@ -21,6 +21,7 @@
                     <GridViewColumn Header="Tytuł" Width="300" DisplayMemberBinding="{Binding Title}"/>
                     <GridViewColumn Header="Autor" Width="100" DisplayMemberBinding="{Binding Author}"/>
                     <GridViewColumn Header="Płyta" Width="100" DisplayMemberBinding="{Binding Album}"/>
+                    <GridViewColumn Header="Czas trwania" Width="100" DisplayMemberBinding="{Binding Time}"/>
                 </GridView>
             </ListView.View>
         </ListView>

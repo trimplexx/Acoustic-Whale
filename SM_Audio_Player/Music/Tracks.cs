@@ -14,8 +14,9 @@ namespace SM_Audio_Player.Music
         public string Album { get; set; }
         public string Path { get; set; }
         public bool IsSelected { get; set; }
+        public string Time { get; set; }
 
-        public Tracks(int I, string Ti, string Auth, string Alb, string Pa, bool isS) 
+        public Tracks(int I, string Ti, string Auth, string Alb, string Pa, bool isS, string Tim) 
         {
             Id = I;
             Title = Ti;
@@ -23,6 +24,7 @@ namespace SM_Audio_Player.Music
             Album = Alb;
             Path = Pa;
             IsSelected = isS;
+            Time = Tim;
         }
     }
 }
