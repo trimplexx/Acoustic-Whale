@@ -21,6 +21,7 @@ using System.Xml;
 using Newtonsoft.Json;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 using TagLib;
+using File = System.IO.File;
 
 namespace SM_Audio_Player.View.UserControls
 {
