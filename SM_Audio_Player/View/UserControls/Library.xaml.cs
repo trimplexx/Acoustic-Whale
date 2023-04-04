@@ -142,15 +142,7 @@ namespace SM_Audio_Player.View.UserControls
                 // Get the selected track
                 Tracks selectedTrack = lv.SelectedItem as Tracks;
 
-                // Remove the selected track from the tracksList
-                tracksList.Remove(selectedTrack);
-                var NewJsonData = JsonConvert.SerializeObject(tracksList);
-                File.WriteAllText(jsonPath, NewJsonData);
-                RefreshTrackListViewAndID();
-            }
-        }
-    }
-}
+                
                 // Ask the user for confirmation
                 MessageBoxResult result = MessageBox.Show($"Are you sure you want to delete {selectedTrack.Title}?", "Confirm Delete", MessageBoxButton.YesNo, MessageBoxImage.Question);
 
@@ -158,12 +150,12 @@ namespace SM_Audio_Player.View.UserControls
                 {
                     // Remove the selected track from the tracksList
                     tracksList.Remove(selectedTrack);
-
-                    // Refresh the ListView to update the list of tracks
-                    lv.ItemsSource = null;
-                    lv.ItemsSource = tracksList;
+                    var NewJsonData = JsonConvert.SerializeObject(tracksList);
+                    File.WriteAllText(jsonPath, NewJsonData);
+                    RefreshTrackListViewAndID();
                 }
             }
         }
     }
 }
+    
