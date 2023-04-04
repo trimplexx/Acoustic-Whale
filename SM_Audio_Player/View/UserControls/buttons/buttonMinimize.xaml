@@ -5,9 +5,9 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:SM_Audio_Player.View.UserControls.buttons"
              mc:Ignorable="d" 
-             d:DesignHeight="40" d:DesignWidth="40">
+             d:DesignHeight="20" d:DesignWidth="20">
 
-    <Button Width="30" Height="30" x:Name="btnMinimize" Click="btnMinimize_Click">
+    <Button Width="20" Height="20" x:Name="btnMinimize" Click="btnMinimize_Click">
         <Button.Template>
             <ControlTemplate TargetType="Button">
                 <Viewbox>
