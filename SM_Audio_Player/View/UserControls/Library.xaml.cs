@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
@@ -18,6 +19,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Xml;
+using NAudio.Wave;
 using Newtonsoft.Json;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 using TagLib;
@@ -25,15 +27,11 @@ using File = System.IO.File;
 
 namespace SM_Audio_Player.View.UserControls
 {
-    /// <summary>
-    /// Interaction logic for Library.xaml
-    /// </summary>
-    /// 
-
     public partial class Library : UserControl
     {
-        private List<Tracks> tracksList = new List<Tracks>();
-        private String jsonPath = @"MusicTrackList.json";
+        public List<Tracks> tracksList = new List<Tracks>();
+        public String jsonPath = @"MusicTrackList.json";
+        public Tracks selectedTrack { get; set; }
 
         public Library()
         {
@@ -45,17 +43,23 @@ namespace SM_Audio_Player.View.UserControls
                 RefreshTrackListViewAndID();
             }
         }
-
-        private void RefreshTrackListViewAndID()
+        
+        public void RefreshTrackListViewAndID()
         {
-            int countTracks = tracksList.Count;
-            for (int i = 0; i < countTracks; i++)
+            try
             {
-                tracksList.ElementAt(i).Id = i+1;
+                int countTracks = tracksList.Count;
+                for (int i = 0; i < countTracks; i++)
+                {
+                    tracksList.ElementAt(i).Id = i+1;
+                }
+                lv.ItemsSource = null;
+                lv.ItemsSource = tracksList;
             }
-                
-            lv.ItemsSource = null;
-            lv.ItemsSource = tracksList;
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Refresh Listview error");
+            }
         }
 
         void GridViewColumnHeaderClickedHandler(object sender, RoutedEventArgs e)
@@ -91,7 +95,7 @@ namespace SM_Audio_Player.View.UserControls
 
                             int newId = tracksList.Count + 1;
 
-                        Tracks newTrack = new Tracks(newId, newTitle, newAuthor, newAlbum, newPath);
+                        Tracks newTrack = new Tracks(newId, newTitle, newAuthor, newAlbum, newPath, false);
                         tracksList.Add(newTrack);
 
                         var NewJsonData = JsonConvert.SerializeObject(tracksList);
@@ -118,7 +122,7 @@ namespace SM_Audio_Player.View.UserControls
 
                         int newId = tracksList.Count + 1;
 
-                    Tracks newTrack = new Tracks(newId, newTitle, newAuthor, newAlbum, newPath);
+                    Tracks newTrack = new Tracks(newId, newTitle, newAuthor, newAlbum, newPath, true);
                     
                     tracksList.Add(newTrack);
                     var NewJsonData = JsonConvert.SerializeObject(tracksList);
@@ -137,25 +141,52 @@ namespace SM_Audio_Player.View.UserControls
 
         private void Delete_Btn_Click(object sender, RoutedEventArgs e)
         {
-            if (lv.SelectedItems.Count > 0)
+            try
             {
-                // Get the selected track
-                Tracks selectedTrack = lv.SelectedItem as Tracks;
-
-                
-                // Ask the user for confirmation
-                MessageBoxResult result = MessageBox.Show($"Are you sure you want to delete {selectedTrack.Title}?", "Confirm Delete", MessageBoxButton.YesNo, MessageBoxImage.Question);
-
-                if (result == MessageBoxResult.Yes)
+                if (lv.SelectedItems.Count > 0)
                 {
-                    // Remove the selected track from the tracksList
-                    tracksList.Remove(selectedTrack);
-                    var NewJsonData = JsonConvert.SerializeObject(tracksList);
-                    File.WriteAllText(jsonPath, NewJsonData);
-                    RefreshTrackListViewAndID();
+                    // Ask the user for confirmation
+                    MessageBoxResult result = MessageBox.Show($"Are you sure you want to delete {selectedTrack.Title}?",
+                        "Confirm Delete", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+                    if (result == MessageBoxResult.Yes)
+                    {
+                        // Remove the selected track from the tracksList
+                        tracksList.Remove(selectedTrack);
+                        var NewJsonData = JsonConvert.SerializeObject(tracksList);
+                        File.WriteAllText(jsonPath, NewJsonData);
+                        RefreshTrackListViewAndID();
+                        selectedTrack = null;
+                    }
                 }
             }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Delete Error");
+            }
         }
+
+        private void Lv_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            try
+            {
+                int countTracks = tracksList.Count;
+                for (int i = 0; i < countTracks; i++)
+                {
+                    tracksList.ElementAt(i).IsSelected = false;
+                }
+                selectedTrack = lv.SelectedItem as Tracks;
+                if(selectedTrack != null)
+                    selectedTrack.IsSelected = true;
+                var NewJsonData = JsonConvert.SerializeObject(tracksList);
+                File.WriteAllText(jsonPath, NewJsonData);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Selection elements listview error");
+            }
+        }
+        
     }
 }
     

@@ -13,7 +13,8 @@
         </Grid.RowDefinitions>
         
         <!-- Główna biblioteka (List View) -->
-        <ListView x:Name='lv' Background="Transparent" BorderThickness="0" Foreground="#45a7bc" GridViewColumnHeader.Click="GridViewColumnHeaderClickedHandler" FontSize="16"  >
+        <ListView x:Name='lv' Background="Transparent" BorderThickness="0" Foreground="#45a7bc" 
+                  GridViewColumnHeader.Click="GridViewColumnHeaderClickedHandler"  SelectionChanged="Lv_OnSelectionChanged" FontSize="16"  >
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Id" Width="30" DisplayMemberBinding="{Binding Id}"/>
