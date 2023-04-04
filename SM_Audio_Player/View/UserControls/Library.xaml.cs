@@ -20,7 +20,7 @@ using System.Windows.Shapes;
 using System.Xml;
 using Newtonsoft.Json;
 using JsonSerializer = System.Text.Json.JsonSerializer;
-
+using TagLib;
 
 namespace SM_Audio_Player.View.UserControls
 {
@@ -69,20 +69,25 @@ namespace SM_Audio_Player.View.UserControls
 
             if (openFileDialog.ShowDialog() == true)
             {
-                string newTitle = System.IO.Path.GetFileNameWithoutExtension(openFileDialog.FileName);
+                string title = System.IO.Path.GetFileNameWithoutExtension(openFileDialog.FileName);
                 string newPath = openFileDialog.FileName;
-                
-                
+
                 if (tracksList.Any(track => track.Path == newPath))
                 {
-                    MessageBoxResult result = MessageBox.Show("This music is already in the list. Do you want to add it again?", "Duplicate Music", 
+                    MessageBoxResult result = MessageBox.Show("This music is already in the list. Do you want to add it again?", "Duplicate Music",
                         MessageBoxButton.YesNo);
 
                     if (result == MessageBoxResult.Yes)
                     {
-                        int newId = tracksList.Count + 1;
-                        string newAuthor = "Unknown";
-                        string newAlbum = "Unknown";
+                        try
+                        {
+                            TagLib.File file = TagLib.File.Create(newPath);
+
+                            string newTitle = file.Tag.Title ?? title;
+                            string newAuthor = file.Tag.FirstPerformer ?? "Unknown";
+                            string newAlbum = file.Tag.Album ?? "Unknown";
+
+                            int newId = tracksList.Count + 1;
 
                         Tracks newTrack = new Tracks(newId, newTitle, newAuthor, newAlbum, newPath);
                         tracksList.Add(newTrack);
@@ -91,14 +96,25 @@ namespace SM_Audio_Player.View.UserControls
                         File.WriteAllText(jsonPath, NewJsonData);
                         RefreshTrackListViewAndID();
 
-                        MessageBox.Show($"Successfully added {newTitle} to the list.", "Add Music");
+                            MessageBox.Show($"Successfully added {newTitle} to the list.", "Add Music");
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show($"Error reading metadata from file: {ex.Message}", "Error");
+                        }
                     }
                 }
                 else
                 {
-                    int newId = tracksList.Count + 1;
-                    string newAuthor = "Unknown";
-                    string newAlbum = "Unknown";
+                    try
+                    {
+                        TagLib.File file = TagLib.File.Create(newPath);
+
+                        string newTitle = file.Tag.Title ?? title;
+                        string newAuthor = file.Tag.FirstPerformer ?? "Unknown";
+                        string newAlbum = file.Tag.Album ?? "Unknown";
+
+                        int newId = tracksList.Count + 1;
 
                     Tracks newTrack = new Tracks(newId, newTitle, newAuthor, newAlbum, newPath);
                     
@@ -107,7 +123,12 @@ namespace SM_Audio_Player.View.UserControls
                     File.WriteAllText(jsonPath, NewJsonData);
                     RefreshTrackListViewAndID();
 
-                    MessageBox.Show($"Successfully added {newTitle} to the list.", "Add Music");
+                        MessageBox.Show($"Successfully added {newTitle} to the list.", "Add Music");
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Error reading metadata from file: {ex.Message}", "Error");
+                    }
                 }
             }
         }
