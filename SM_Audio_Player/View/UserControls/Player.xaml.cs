@@ -1,4 +1,7 @@
-﻿using System;
+﻿using NAudio.Wave;
+using SM_Audio_Player.Music;
+using SM_Audio_Player.View.UserControls.buttons;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
