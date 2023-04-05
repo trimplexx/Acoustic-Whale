@@ -26,6 +26,7 @@ namespace SM_Audio_Player.View.UserControls.buttons
         private WaveOut waveOut = new WaveOut();
         private AudioFileReader audioFileReader;
         private bool isPlaying = false;
+        private Library _library;
 
         public buttonPlay()
         {

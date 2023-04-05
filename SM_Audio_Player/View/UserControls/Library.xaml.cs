@@ -42,8 +42,6 @@ namespace SM_Audio_Player.View.UserControls
             InitializeComponent();
             if(File.Exists(jsonPath))
             {
-                string json = File.ReadAllText(jsonPath);
-                tracksList = JsonConvert.DeserializeObject<List<Tracks>>(json);
                 RefreshTrackListViewAndID();
             }
         }
@@ -52,13 +50,25 @@ namespace SM_Audio_Player.View.UserControls
         {
             try
             {
-                int countTracks = tracksList.Count;
-                for (int i = 0; i < countTracks; i++)
+                lv.Items.Clear();
+                string json = File.ReadAllText(jsonPath);
+                tracksList = JsonConvert.DeserializeObject<List<Tracks>>(json);
+                int coutTracksOnJson = tracksList.Count;
+                for(int i = 0; i < coutTracksOnJson; i++)
                 {
-                    tracksList.ElementAt(i).Id = i+1;
+                    if (!File.Exists(tracksList.ElementAt(i).Path))
+                    {
+                        tracksList.Remove(tracksList.ElementAt(i));
+                        coutTracksOnJson--;
+                    }
+                    else
+                    {
+                        tracksList.ElementAt(i).Id = i + 1;
+                        lv.Items.Add(tracksList.ElementAt(i));
+                    }
                 }
-                lv.ItemsSource = null;
-                lv.ItemsSource = tracksList;
+                var NewJsonData = JsonConvert.SerializeObject(tracksList);
+                File.WriteAllText(jsonPath, NewJsonData);
             }
             catch (Exception ex)
             {
@@ -108,9 +118,6 @@ namespace SM_Audio_Player.View.UserControls
 
                         Tracks newTrack = new Tracks(newId, newTitle, newAuthor, newAlbum, newPath, formattedTime);
                         tracksList.Add(newTrack);
-
-                        var NewJsonData = JsonConvert.SerializeObject(tracksList);
-                        File.WriteAllText(jsonPath, NewJsonData);
                         RefreshTrackListViewAndID();
 
                             MessageBox.Show($"Successfully added {newTitle} to the list.", "Add Music");
