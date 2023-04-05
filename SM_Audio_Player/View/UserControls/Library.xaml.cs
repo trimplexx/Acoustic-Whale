@@ -36,7 +36,6 @@ namespace SM_Audio_Player.View.UserControls
     {
         public List<Tracks> tracksList = new List<Tracks>();
         public String jsonPath = @"MusicTrackList.json";
-        public Tracks selectedTrack { get; set; }
 
         public Library()
         {
@@ -165,17 +164,17 @@ namespace SM_Audio_Player.View.UserControls
                 if (lv.SelectedItems.Count > 0)
                 {
                     // Ask the user for confirmation
-                    MessageBoxResult result = MessageBox.Show($"Are you sure you want to delete {selectedTrack.Title}?",
+                    MessageBoxResult result = MessageBox.Show($"Are you sure you want to delete {listViewSelectedItemModel.selectedTrack.Title}?",
                         "Confirm Delete", MessageBoxButton.YesNo, MessageBoxImage.Question);
 
                     if (result == MessageBoxResult.Yes)
                     {
                         // Remove the selected track from the tracksList
-                        tracksList.Remove(selectedTrack);
+                        tracksList.Remove(listViewSelectedItemModel.selectedTrack);
                         var NewJsonData = JsonConvert.SerializeObject(tracksList);
                         File.WriteAllText(jsonPath, NewJsonData);
                         RefreshTrackListViewAndID();
-                        selectedTrack = null;
+                        listViewSelectedItemModel.selectedTrack = null;
                     }
                 }
             }
@@ -194,9 +193,9 @@ namespace SM_Audio_Player.View.UserControls
                 {
                     tracksList.ElementAt(i).IsSelected = false;
                 }
-                selectedTrack = lv.SelectedItem as Tracks;
-                if(selectedTrack != null)
-                    selectedTrack.IsSelected = true;
+                listViewSelectedItemModel.selectedTrack= lv.SelectedItem as Tracks;
+                if(listViewSelectedItemModel.selectedTrack != null)
+                    listViewSelectedItemModel.selectedTrack.IsSelected = true;
                 var NewJsonData = JsonConvert.SerializeObject(tracksList);
                 File.WriteAllText(jsonPath, NewJsonData);
             }

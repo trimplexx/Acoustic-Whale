@@ -23,7 +23,6 @@ namespace SM_Audio_Player.View.UserControls.buttons
 {
     public partial class buttonPlay : UserControl
     {
-        private Tracks selectedTrack;
         private WaveOut waveOut = new WaveOut();
         private AudioFileReader audioFileReader;
         private bool isPlaying = false;
@@ -37,18 +36,11 @@ namespace SM_Audio_Player.View.UserControls.buttons
         {
             try
             {
-                Library _library = new Library();
-                foreach (var VARIABLE in _library.tracksList)
-                {
-                    if (VARIABLE.IsSelected == true)
-                        selectedTrack = VARIABLE;
-                }
-
-                if (selectedTrack != null)
+                if (listViewSelectedItemModel.selectedTrack != null)
                 {
                     if (!isPlaying)
                     {
-                        audioFileReader = new AudioFileReader(selectedTrack.Path);
+                        audioFileReader = new AudioFileReader(listViewSelectedItemModel.selectedTrack.Path);
                         waveOut.Init(audioFileReader);
                         waveOut.Play();
                         isPlaying = true;

@@ -4,8 +4,8 @@ using System.Windows.Controls;
 
 namespace SM_Audio_Player.Music;
 
-public class listViewSelectedItemModel
+public static class listViewSelectedItemModel
 {
-    public ListViewItem selectedItemPom { get; set; }
+    public static Tracks selectedTrack { get; set; }
     
 }
