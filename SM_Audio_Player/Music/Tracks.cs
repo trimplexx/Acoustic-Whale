@@ -13,17 +13,15 @@ namespace SM_Audio_Player.Music
         public string Author { get; set; }
         public string Album { get; set; }
         public string Path { get; set; }
-        public bool IsSelected { get; set; }
         public string Time { get; set; }
 
-        public Tracks(int I, string Ti, string Auth, string Alb, string Pa, bool isS, string Tim) 
+        public Tracks(int I, string Ti, string Auth, string Alb, string Pa, string Tim) 
         {
             Id = I;
             Title = Ti;
             Author = Auth;
             Album = Alb;
             Path = Pa;
-            IsSelected = isS;
             Time = Tim;
         }
     }

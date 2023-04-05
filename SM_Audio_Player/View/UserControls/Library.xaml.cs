@@ -106,7 +106,7 @@ namespace SM_Audio_Player.View.UserControls
 
                             int newId = tracksList.Count + 1;
 
-                        Tracks newTrack = new Tracks(newId, newTitle, newAuthor, newAlbum, newPath,true ,formattedTime);
+                        Tracks newTrack = new Tracks(newId, newTitle, newAuthor, newAlbum, newPath, formattedTime);
                         tracksList.Add(newTrack);
 
                         var NewJsonData = JsonConvert.SerializeObject(tracksList);
@@ -140,7 +140,7 @@ namespace SM_Audio_Player.View.UserControls
 
                         int newId = tracksList.Count + 1;
 
-                    Tracks newTrack = new Tracks(newId, newTitle, newAuthor, newAlbum, newPath, true, formattedTime);
+                    Tracks newTrack = new Tracks(newId, newTitle, newAuthor, newAlbum, newPath, formattedTime);
                     
                     tracksList.Add(newTrack);
                     var NewJsonData = JsonConvert.SerializeObject(tracksList);
@@ -188,16 +188,7 @@ namespace SM_Audio_Player.View.UserControls
         {
             try
             {
-                int countTracks = tracksList.Count;
-                for (int i = 0; i < countTracks; i++)
-                {
-                    tracksList.ElementAt(i).IsSelected = false;
-                }
                 listViewSelectedItemModel.selectedTrack= lv.SelectedItem as Tracks;
-                if(listViewSelectedItemModel.selectedTrack != null)
-                    listViewSelectedItemModel.selectedTrack.IsSelected = true;
-                var NewJsonData = JsonConvert.SerializeObject(tracksList);
-                File.WriteAllText(jsonPath, NewJsonData);
             }
             catch (Exception ex)
             {
