@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SM_Audio_Player" Background="#333333"
         xmlns:UC="clr-namespace:SM_Audio_Player.View.UserControls"
+        xmlns:BTN="clr-namespace:SM_Audio_Player.View.UserControls.buttons"
         mc:Ignorable="d" WindowStyle="None"
         Title="Nazwa Projektu" Height="800" Width="1000"
         MinHeight="600" MinWidth="800" 
@@ -22,12 +23,17 @@
             <RowDefinition Height="40"/>
             <RowDefinition Height="70*"/>
         </Grid.RowDefinitions>
-
         <Rectangle Fill="#222222" MouseMove="Window_MouseDown"/>
-        <UC:Menu MouseMove="Window_MouseDown" Margin="6, 6, 10, 0"/>
+        <StackPanel Orientation="Horizontal"  HorizontalAlignment="Right" Margin="0, 0, 10, 0" MouseMove="Window_MouseDown">
+            <BTN:buttonMinimize Height="30" Width="30" Margin="0, 0, 10, 0"/>
+            <BTN:buttonMaximize x:Name="btnMAX" Height="30" Width="30" Margin="0, 0, 10, 0"/>
+            <BTN:buttonClose Height="30" Width="30"/>
+        </StackPanel>
         <UC:Player Grid.Row="1" Margin="15, 0, 15, 0"/>
-        <UC:Options Grid.Row="2" Margin="15, 0, 15, 0"/>
+        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Orientation="Horizontal" Grid.Row="2">
+            <Button Name="Playlist_Btn" Click="Playlist_Btn_Click" Content="Playlist" FontSize="16" Background="Transparent" Foreground="#45a7bc" BorderThickness="0" Padding="5" Margin="5,0,5,0"/>
+            <Button Name="Equalizer_Btn" Click="Equalizer_Btn_Click" Content="Equalizer" FontSize="16" Background="Transparent" Foreground="#45a7bc" BorderThickness="0" Padding="5" Margin="5,0,5,0"/>
+        </StackPanel>
         <UC:Library Grid.Row="3" Margin="15, 0, 15, 0"/>
-
     </Grid>
 </Window>

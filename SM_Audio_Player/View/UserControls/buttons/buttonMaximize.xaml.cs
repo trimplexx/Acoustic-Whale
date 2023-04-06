@@ -17,6 +17,7 @@ public partial class buttonMaximize : UserControl, INotifyPropertyChanged
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
+    /*PropertyChanged - pozwala na przekazywanie wartości do widoku*/
     public string MaximizeIcon
     {
         get { return maximizeIcon; }
@@ -27,8 +28,7 @@ public partial class buttonMaximize : UserControl, INotifyPropertyChanged
         }
     }
 
-
-    /* Maxymalizacja okno playera*/
+    /*Maxymalizacja okno playera*/
     private void btnMaximize_Click(object sender, RoutedEventArgs e)
     {
         if (Application.Current.MainWindow.WindowState == WindowState.Normal)
