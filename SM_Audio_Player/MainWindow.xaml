@@ -23,7 +23,7 @@
             <RowDefinition Height="70*"/>
         </Grid.RowDefinitions>
 
-        <Rectangle Fill="#222222"/>
+        <Rectangle Fill="#222222" MouseMove="Window_MouseDown"/>
         <UC:Menu MouseMove="Window_MouseDown" Margin="6, 6, 10, 0"/>
         <UC:Player Grid.Row="1" Margin="15, 0, 15, 0"/>
         <UC:Options Grid.Row="2" Margin="15, 0, 15, 0"/>
