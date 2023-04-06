@@ -34,7 +34,7 @@ namespace SM_Audio_Player.View.UserControls
 
     public partial class Library : UserControl
     {
-        public List<Tracks> tracksList = new List<Tracks>();
+        
         public String jsonPath = @"MusicTrackList.json";
 
         public Library()
@@ -52,22 +52,22 @@ namespace SM_Audio_Player.View.UserControls
             {
                 lv.Items.Clear();
                 string json = File.ReadAllText(jsonPath);
-                tracksList = JsonConvert.DeserializeObject<List<Tracks>>(json);
-                int coutTracksOnJson = tracksList.Count;
+                TracksProperties.tracksList = JsonConvert.DeserializeObject<List<Tracks>>(json);
+                int coutTracksOnJson = TracksProperties.tracksList.Count;
                 for(int i = 0; i < coutTracksOnJson; i++)
                 {
-                    if (!File.Exists(tracksList.ElementAt(i).Path))
+                    if (!File.Exists(TracksProperties.tracksList.ElementAt(i).Path))
                     {
-                        tracksList.Remove(tracksList.ElementAt(i));
+                        TracksProperties.tracksList.Remove(TracksProperties.tracksList.ElementAt(i));
                         coutTracksOnJson--;
                     }
                     else
                     {
-                        tracksList.ElementAt(i).Id = i + 1;
-                        lv.Items.Add(tracksList.ElementAt(i));
+                        TracksProperties.tracksList.ElementAt(i).Id = i + 1;
+                        lv.Items.Add(TracksProperties.tracksList.ElementAt(i));
                     }
                 }
-                var NewJsonData = JsonConvert.SerializeObject(tracksList);
+                var NewJsonData = JsonConvert.SerializeObject(TracksProperties.tracksList);
                 File.WriteAllText(jsonPath, NewJsonData);
             }
             catch (Exception ex)
@@ -81,6 +81,7 @@ namespace SM_Audio_Player.View.UserControls
 
         }
 
+
         private void Add_Btn_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
@@ -92,7 +93,7 @@ namespace SM_Audio_Player.View.UserControls
                 string title = System.IO.Path.GetFileNameWithoutExtension(openFileDialog.FileName);
                 string newPath = openFileDialog.FileName;
 
-                if (tracksList.Any(track => track.Path == newPath))
+                if (TracksProperties.tracksList.Any(track => track.Path == newPath))
                 {
                     MessageBoxResult result = MessageBox.Show("This music is already in the list. Do you want to add it again?", "Duplicate Music",
                         MessageBoxButton.YesNo);
@@ -114,10 +115,10 @@ namespace SM_Audio_Player.View.UserControls
 
                             string formattedTime = string.Format("{0:D2}:{1:D2}:{2:D2}", hours, minutes, seconds);
 
-                            int newId = tracksList.Count + 1;
+                            int newId = TracksProperties.tracksList.Count + 1;
 
                         Tracks newTrack = new Tracks(newId, newTitle, newAuthor, newAlbum, newPath, formattedTime);
-                        tracksList.Add(newTrack);
+                        TracksProperties.tracksList.Add(newTrack);
                         RefreshTrackListViewAndID();
 
                             MessageBox.Show($"Successfully added {newTitle} to the list.", "Add Music");
@@ -145,12 +146,12 @@ namespace SM_Audio_Player.View.UserControls
 
                         string formattedTime = string.Format("{0:D2}:{1:D2}:{2:D2}", hours, minutes, seconds);
 
-                        int newId = tracksList.Count + 1;
+                        int newId = TracksProperties.tracksList.Count + 1;
 
                     Tracks newTrack = new Tracks(newId, newTitle, newAuthor, newAlbum, newPath, formattedTime);
                     
-                    tracksList.Add(newTrack);
-                    var NewJsonData = JsonConvert.SerializeObject(tracksList);
+                    TracksProperties.tracksList.Add(newTrack);
+                    var NewJsonData = JsonConvert.SerializeObject(TracksProperties.tracksList);
                     File.WriteAllText(jsonPath, NewJsonData);
                     RefreshTrackListViewAndID();
 
@@ -171,17 +172,17 @@ namespace SM_Audio_Player.View.UserControls
                 if (lv.SelectedItems.Count > 0)
                 {
                     // Ask the user for confirmation
-                    MessageBoxResult result = MessageBox.Show($"Are you sure you want to delete {listViewSelectedItemModel.selectedTrack.Title}?",
+                    MessageBoxResult result = MessageBox.Show($"Are you sure you want to delete {TracksProperties.SelectedTrack.Title}?",
                         "Confirm Delete", MessageBoxButton.YesNo, MessageBoxImage.Question);
 
                     if (result == MessageBoxResult.Yes)
                     {
                         // Remove the selected track from the tracksList
-                        tracksList.Remove(listViewSelectedItemModel.selectedTrack);
-                        var NewJsonData = JsonConvert.SerializeObject(tracksList);
+                        TracksProperties.tracksList.Remove(TracksProperties.SelectedTrack);
+                        var NewJsonData = JsonConvert.SerializeObject(TracksProperties.tracksList);
                         File.WriteAllText(jsonPath, NewJsonData);
                         RefreshTrackListViewAndID();
-                        listViewSelectedItemModel.selectedTrack = null;
+                        TracksProperties.SelectedTrack = null;
                     }
                 }
             }
@@ -195,7 +196,7 @@ namespace SM_Audio_Player.View.UserControls
         {
             try
             {
-                listViewSelectedItemModel.selectedTrack= lv.SelectedItem as Tracks;
+                TracksProperties.SelectedTrack = lv.SelectedItem as Tracks;
             }
             catch (Exception ex)
             {
