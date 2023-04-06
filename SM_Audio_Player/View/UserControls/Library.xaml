@@ -27,7 +27,7 @@
         </ListView>
 
         <!-- Menu na dole układu -->
-        <Menu VerticalAlignment="Center" Background="#333333" Foreground="#45a7bc" Grid.Row="1">
+        <Menu VerticalAlignment="Center" Background="Transparent" Foreground="#45a7bc" Grid.Row="1">
             <MenuItem Name="Add_Btn" Click="Add_Btn_Click" Header="Add" FontSize="16" Padding="20,5,20,5"/>
             <MenuItem Name="Delete_Btn" Click="Delete_Btn_Click" Header="Delete" FontSize="16" Padding="20,5,20,5"/>
         </Menu>

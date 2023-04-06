@@ -19,12 +19,15 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="40"/>
             <RowDefinition Height="30*"/>
+            <RowDefinition Height="40"/>
             <RowDefinition Height="70*"/>
         </Grid.RowDefinitions>
 
+        <Rectangle Fill="#222222"/>
         <UC:Menu MouseMove="Window_MouseDown" Margin="6, 6, 10, 0"/>
         <UC:Player Grid.Row="1" Margin="15, 0, 15, 0"/>
-        <UC:Library Grid.Row="2" Margin="15, 0, 15, 0"/>
+        <UC:Options Grid.Row="2" Margin="15, 0, 15, 0"/>
+        <UC:Library Grid.Row="3" Margin="15, 0, 15, 0"/>
 
     </Grid>
 </Window>
