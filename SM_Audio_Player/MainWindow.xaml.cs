@@ -34,8 +34,9 @@ namespace SM_Audio_Player
             /*Możliwość poruszania oknem oraz przywrócenie go do normalnego rozmiaru z trybu pełnego okna*/
             if (e.LeftButton == MouseButtonState.Pressed && Application.Current.MainWindow.WindowState == WindowState.Maximized)
             {
-                /*Pobieranie pozycji kursora*/
                 Application.Current.MainWindow.WindowState = WindowState.Normal;
+
+                /*Pobieranie pozycji kursora*/
                 Point mousePosition = Mouse.GetPosition(this);
                 double newX = mousePosition.X - (this.Width / 2);
                 double newY = mousePosition.Y - (this.Height / 2);

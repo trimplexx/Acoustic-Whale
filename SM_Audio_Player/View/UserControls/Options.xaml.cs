@@ -24,8 +24,15 @@ namespace SM_Audio_Player.View.UserControls
         {
             InitializeComponent();
         }
+
+        private void Playlist_Btn_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void Equalizer_Btn_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
-
-
-
 }
