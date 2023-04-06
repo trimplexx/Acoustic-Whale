@@ -35,7 +35,7 @@ namespace SM_Audio_Player.View.UserControls
                 if (TracksProperties.audioFileReader != null)
                 {
                     double sliderValue = sldVolume.Value / 100.0; // Skalowanie wartości na zakres od 0 do 1
-                    double newVolume = 1 - sliderValue; // Obliczamy nową wartość głośności
+                    double newVolume = sliderValue; // Obliczamy nową wartość głośności
                     TracksProperties.audioFileReader.Volume = (float)newVolume; // Aktualizujemy głośność pliku audio
                 }
             }
