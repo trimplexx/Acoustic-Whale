@@ -25,9 +25,11 @@ namespace SM_Audio_Player.View.UserControls.buttons
     public partial class buttonPlay : UserControl, INotifyPropertyChanged
     {
         private WaveOut waveOut = new WaveOut();
-        private AudioFileReader audioFileReader;
+        
         private bool isPlaying = false;
         private Library _library;
+        private long pausedPosition = 0; // zmienna pomocnicza do przechowywania miejsca pauzy
+        int currentTrackIndex = -1; // zmienna pomocnicza wskazujaca wybrany utwor
 
         public buttonPlay()
         {
@@ -54,18 +56,27 @@ namespace SM_Audio_Player.View.UserControls.buttons
         {
             try
             {
-                if (listViewSelectedItemModel.selectedTrack != null)
+                if (TracksProperties.SelectedTrack != null)
                 {
                     if (!isPlaying)
                     {
-                        audioFileReader = new AudioFileReader(listViewSelectedItemModel.selectedTrack.Path);
-                        waveOut.Init(audioFileReader);
-                        waveOut.Play();
+                        if (TracksProperties.audioFileReader == null) // create a new AudioFileReader if it doesn't exist yet
+                        {
+                            TracksProperties.audioFileReader = new AudioFileReader(TracksProperties.SelectedTrack.Path);
+                            //currentTrackIndex = TracksProperties.listViewSelectedIndex;
+                            waveOut.Init(TracksProperties.audioFileReader);
+                        }
+                        else // otherwise, simply resume playback
+                        {
+                            TracksProperties.audioFileReader.Position = pausedPosition;
+                            waveOut.Play();
+                        }
                         PlayIcon = "M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM192 160H320c17.7 0 32 14.3 32 32V320c0 17.7-14.3 32-32 32H192c-17.7 0-32-14.3-32-32V192c0-17.7 14.3-32 32-32z";
                         isPlaying = true;
                     }
-                    else
+                    else // if is playing pause
                     {
+                        pausedPosition = TracksProperties.audioFileReader.Position;
                         waveOut.Pause();
                         PlayIcon = "M0 256a256 256 0 1 1 512 0A256 256 0 1 1 0 256zM188.3 147.1c-7.6 4.2-12.3 12.3-12.3 20.9V344c0 8.7 4.7 16.7 12.3 20.9s16.8 4.1 24.3-.5l144-88c7.1-4.4 11.5-12.1 11.5-20.5s-4.4-16.1-11.5-20.5l-144-88c-7.4-4.5-16.7-4.7-24.3-.5z";
                         isPlaying = false;
@@ -76,6 +87,9 @@ namespace SM_Audio_Player.View.UserControls.buttons
             {
                 MessageBox.Show($"Play/Pause music error");
             }
+
+
+
         }
     }
 }
