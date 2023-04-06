@@ -65,6 +65,7 @@ namespace SM_Audio_Player.View.UserControls.buttons
                             TracksProperties.audioFileReader = new AudioFileReader(TracksProperties.SelectedTrack.Path);
                             //currentTrackIndex = TracksProperties.listViewSelectedIndex;
                             waveOut.Init(TracksProperties.audioFileReader);
+                            waveOut.Play();
                         }
                         else // otherwise, simply resume playback
                         {
@@ -82,14 +83,28 @@ namespace SM_Audio_Player.View.UserControls.buttons
                         isPlaying = false;
                     }
                 }
+
+                // Subscribe to the PlaybackStopped event
+                waveOut.PlaybackStopped += WaveOut_PlaybackStopped;
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Play/Pause music error");
             }
+        }
 
-
-
+        private void WaveOut_PlaybackStopped(object sender, StoppedEventArgs e)
+        {
+            // Check if there is another track in the list and if so, start playing it
+            if (TracksProperties.tracksList.Count > 1)
+            {
+                int currentIndex = TracksProperties.tracksList.IndexOf(TracksProperties.SelectedTrack);
+                int nextIndex = (currentIndex + 1) % TracksProperties.tracksList.Count;
+                TracksProperties.SelectedTrack = TracksProperties.tracksList[nextIndex];
+                TracksProperties.audioFileReader = new AudioFileReader(TracksProperties.SelectedTrack.Path);
+                waveOut.Init(TracksProperties.audioFileReader);
+                waveOut.Play();
+            }
         }
     }
 }
