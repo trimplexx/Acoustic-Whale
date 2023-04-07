@@ -66,11 +66,8 @@
                     <RowDefinition Height="40*"/>
                     <RowDefinition Height="60*"/>
                 </Grid.RowDefinitions>
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
-                    <BTN:buttonVolume Height="30" Width="30" Margin="5, 0, 0, 0"/>
-                    <Slider Height="20" Width="140"  Margin="5, 5, 5, 3" Minimum="0" Maximum="100" x:Name="sldVolume" ValueChanged="sliderVolume_ValueChanged"/>
-                </StackPanel>
-                <TextBlock Grid.Row="1" Text="Tutaj cosik potem będzie (chyba)" Foreground="White" HorizontalAlignment="Right"/>
+                <BTN:buttonVolume Height="30" Width="185" Margin="5, 0, 0, 0" x:Name="btnVOL"/>
+                    <TextBlock Grid.Row="1" Text="Tutaj cosik potem będzie (chyba)" Foreground="White" HorizontalAlignment="Right"/>
             </Grid>
         </Grid>
 
