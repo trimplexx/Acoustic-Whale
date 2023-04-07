@@ -24,7 +24,6 @@ namespace SM_Audio_Player.View.UserControls
         public Player()
         {
             InitializeComponent();
-            sldVolume.ValueChanged += sliderVolume_ValueChanged;
             sldVolume.Value = 100;
         }
 
