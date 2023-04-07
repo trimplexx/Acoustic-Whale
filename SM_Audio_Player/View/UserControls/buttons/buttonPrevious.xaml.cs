@@ -30,17 +30,37 @@ namespace SM_Audio_Player.View.UserControls.buttons
         {
             try
             {
-                // Sprawdzanie czy to pierwszy utwór na liście, jeżeli tak odtworzony zostanie od nowa.
-                if (TracksProperties.SelectedTrack.Id == 1)
-                    btnPlay.PlayNewTrack();
+                if (TracksProperties.isSchuffleOn)
+                {
+                    if (TracksProperties.PrevTrack.Count == 0)
+                    {
+                        TracksProperties.availableNumbers = Enumerable.Range(0, TracksProperties.tracksList.Count).ToList();
+                        btnPlay.PlayNewTrack();
+                    }
+                    else
+                    {
+                        if(TracksProperties.SelectedTrack != TracksProperties.firstPlayed)
+                            TracksProperties.availableNumbers.Add(TracksProperties.SelectedTrack.Id - 1);
+                        TracksProperties.SelectedTrack =
+                            TracksProperties.PrevTrack.ElementAt(TracksProperties.PrevTrack.Count - 1);
+                        TracksProperties.PrevTrack.RemoveAt(TracksProperties.PrevTrack.Count - 1);
+                        btnPlay.PlayNewTrack();
+                    }
+                }
                 else
                 {
-                    // W innym wypadku zostanie odtworzony poprzedni utwór.
-                    TracksProperties.SelectedTrack = TracksProperties.tracksList.ElementAt(TracksProperties.SelectedTrack.Id-2);
-                    btnPlay.PlayNewTrack();
+                    // Sprawdzanie czy to pierwszy utwór na liście, jeżeli tak odtworzony zostanie od nowa.
+                    if (TracksProperties.SelectedTrack.Id == 1)
+                        btnPlay.PlayNewTrack();
+                    else
+                    {
+                        // W innym wypadku zostanie odtworzony poprzedni utwór.
+                        TracksProperties.SelectedTrack = TracksProperties.tracksList.ElementAt(TracksProperties.SelectedTrack.Id-2);
+                        btnPlay.PlayNewTrack();
+                    }
                 }
-                // Przypisanie eventu, aby następny utwór po skończeniu przewiniętego został automatycznie odtworzony.
-                TracksProperties.waveOut.PlaybackStopped += btnPlay.WaveOut_PlaybackStopped;
+
+
             }
                 catch (Exception ex)
             {

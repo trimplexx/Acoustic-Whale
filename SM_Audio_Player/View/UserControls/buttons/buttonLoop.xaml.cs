@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using SM_Audio_Player.Music;
 
 namespace SM_Audio_Player.View.UserControls.buttons
 {
@@ -25,7 +26,13 @@ namespace SM_Audio_Player.View.UserControls.buttons
         /*Powtarzaj aktualnie włączony utwór*/
         private void btnLoop_Click(object sender, RoutedEventArgs e)
         {
-
+            if (!TracksProperties.isSchuffleOn)
+            {
+                if(TracksProperties.isLoopOn)
+                    TracksProperties.isLoopOn = false;
+                else
+                    TracksProperties.isLoopOn = true;
+            }
         }
     }
 }

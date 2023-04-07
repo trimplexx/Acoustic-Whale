@@ -36,6 +36,7 @@ namespace SM_Audio_Player.View.UserControls
     public partial class Library : UserControl
     {
         public String jsonPath = @"MusicTrackList.json";
+        
 
         public Library()
         {
@@ -45,12 +46,13 @@ namespace SM_Audio_Player.View.UserControls
                 RefreshTrackListViewAndID();
             }
         }
-        
+
         public void RefreshTrackListViewAndID()
         {
             try
             {
                 lv.Items.Clear();
+                TracksProperties.tracksList.Clear();
                 string json = File.ReadAllText(jsonPath);
                 TracksProperties.tracksList = JsonConvert.DeserializeObject<List<Tracks>>(json);
                 int coutTracksOnJson = TracksProperties.tracksList.Count;
@@ -69,6 +71,7 @@ namespace SM_Audio_Player.View.UserControls
                 }
                 var NewJsonData = JsonConvert.SerializeObject(TracksProperties.tracksList);
                 File.WriteAllText(jsonPath, NewJsonData);
+                lv.SelectedIndex = -1;
             }
             catch (Exception ex)
             {
@@ -98,40 +101,12 @@ namespace SM_Audio_Player.View.UserControls
                     MessageBoxResult result = MessageBox.Show("This music is already in the list. Do you want to add it again?", "Duplicate Music",
                         MessageBoxButton.YesNo);
 
-                    if (result == MessageBoxResult.Yes)
+                    if (result == MessageBoxResult.No)
                     {
-                        try
-                        {
-                            TagLib.File file = TagLib.File.Create(newPath);
-
-                            string newTitle = file.Tag.Title ?? title;
-                            string newAuthor = file.Tag.FirstPerformer ?? "Unknown";
-                            string newAlbum = file.Tag.Album ?? "Unknown";
-                            int duration = (int)file.Properties.Duration.TotalSeconds;
-
-                            int hours = duration / 3600;
-                            int minutes = (duration % 3600) / 60;
-                            int seconds = duration % 60;
-
-                            string formattedTime = string.Format("{0:D2}:{1:D2}:{2:D2}", hours, minutes, seconds);
-
-                            int newId = TracksProperties.tracksList.Count + 1;
-
-                        Tracks newTrack = new Tracks(newId, newTitle, newAuthor, newAlbum, newPath, formattedTime);
-                        TracksProperties.tracksList.Add(newTrack);
-                        RefreshTrackListViewAndID();
-
-                            MessageBox.Show($"Successfully added {newTitle} to the list.", "Add Music");
-                        }
-                        catch (Exception ex)
-                        {
-                            MessageBox.Show($"Error reading metadata from file: {ex.Message}", "Error");
-                        }
+                        return;
                     }
                 }
-                else
-                {
-                    try
+                try
                     {
                         TagLib.File file = TagLib.File.Create(newPath);
 
@@ -161,7 +136,6 @@ namespace SM_Audio_Player.View.UserControls
                     {
                         MessageBox.Show($"Error reading metadata from file: {ex.Message}", "Error");
                     }
-                }
             }
         }
 
@@ -169,7 +143,7 @@ namespace SM_Audio_Player.View.UserControls
         {
             try
             {
-                if (lv.SelectedItems.Count > 0)
+                if (lv.SelectedItem != null)
                 {
                     // Ask the user for confirmation
                     MessageBoxResult result = MessageBox.Show($"Are you sure you want to delete {TracksProperties.SelectedTrack.Title}?",
@@ -178,11 +152,11 @@ namespace SM_Audio_Player.View.UserControls
                     if (result == MessageBoxResult.Yes)
                     {
                         // Remove the selected track from the tracksList
-                        TracksProperties.tracksList.Remove(TracksProperties.SelectedTrack);
+                        TracksProperties.tracksList.RemoveAt(lv.SelectedIndex);
                         var NewJsonData = JsonConvert.SerializeObject(TracksProperties.tracksList);
                         File.WriteAllText(jsonPath, NewJsonData);
-                        RefreshTrackListViewAndID();
                         TracksProperties.SelectedTrack = null;
+                        RefreshTrackListViewAndID();
                     }
                 }
             }
@@ -194,14 +168,10 @@ namespace SM_Audio_Player.View.UserControls
 
         private void Lv_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            try
+            if (lv.SelectedIndex != -1)
             {
                 int elementId = lv.SelectedIndex;
                 TracksProperties.SelectedTrack = TracksProperties.tracksList.ElementAt(elementId);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Selection elements listview error");
             }
         }
     }

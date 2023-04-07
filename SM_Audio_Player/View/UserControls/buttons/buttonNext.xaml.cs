@@ -30,21 +30,26 @@ namespace SM_Audio_Player.View.UserControls.buttons
         {
             try
             {
-                // Sprawdzanie czy to nie był ostatni utwór na liście
-                if (TracksProperties.SelectedTrack.Id != TracksProperties.tracksList.Count)
+                if (TracksProperties.isSchuffleOn)
                 {
-                    TracksProperties.SelectedTrack =
-                        TracksProperties.tracksList.ElementAt(TracksProperties.SelectedTrack.Id);
-                    btnPlay.PlayNewTrack();
+                   btnPlay.SchuffleFun();
                 }
                 else
                 {
-                    // Przełączenie na 1 utwór z listy po zakończeniu ostatniego
-                    TracksProperties.SelectedTrack = TracksProperties.tracksList.ElementAt(0);
-                    btnPlay.PlayNewTrack();
+                    // Sprawdzanie czy to nie był ostatni utwór na liście
+                    if (TracksProperties.SelectedTrack.Id != TracksProperties.tracksList.Count)
+                    {
+                        TracksProperties.SelectedTrack =
+                            TracksProperties.tracksList.ElementAt(TracksProperties.SelectedTrack.Id);
+                        btnPlay.PlayNewTrack();
+                    }
+                    else
+                    {
+                        // Przełączenie na 1 utwór z listy po zakończeniu ostatniego
+                        TracksProperties.SelectedTrack = TracksProperties.tracksList.ElementAt(0);
+                        btnPlay.PlayNewTrack();
+                    }
                 }
-                // Przypisanie eventu, aby następny utwór po skończeniu przewiniętego został automatycznie odtworzony.
-                TracksProperties.waveOut.PlaybackStopped += btnPlay.WaveOut_PlaybackStopped;
             }
             catch (Exception ex)
             {

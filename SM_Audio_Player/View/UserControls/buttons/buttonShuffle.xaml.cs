@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using SM_Audio_Player.Music;
 
 namespace SM_Audio_Player.View.UserControls.buttons
 {
@@ -25,7 +26,23 @@ namespace SM_Audio_Player.View.UserControls.buttons
         /*Włącz losowe odtwarzanie utworów*/
         private void btnShuffle_Click(object sender, RoutedEventArgs e)
         {
-
+            if (!TracksProperties.isLoopOn)
+            {
+                if (TracksProperties.isSchuffleOn)
+                {
+                    TracksProperties.isSchuffleOn = false;
+                    TracksProperties.availableNumbers = Enumerable.Range(0, TracksProperties.tracksList.Count).ToList();
+                    TracksProperties.PrevTrack.Clear();
+                }
+                else
+                {
+                    TracksProperties.firstPlayed = TracksProperties.SelectedTrack;
+                    TracksProperties.availableNumbers = Enumerable.Range(0, TracksProperties.tracksList.Count).ToList();
+                    TracksProperties.availableNumbers.RemoveAt(TracksProperties.SelectedTrack.Id - 1);
+                    TracksProperties.isSchuffleOn = true;
+                }
+                    
+            }
         }
     }
 }
