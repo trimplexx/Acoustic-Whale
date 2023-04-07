@@ -18,17 +18,28 @@ namespace SM_Audio_Player.View.UserControls.buttons
 {
     public partial class buttonVolume : UserControl
     {
+        bool isMuted = false;
+        private double lastVolumeValue = 100;
         public buttonVolume()
         {
             InitializeComponent();
-            sldVolume.ValueChanged += sliderVolume_ValueChanged;
-            sldVolume.Value = 100;
+            sldVolume.Value = lastVolumeValue;
         }
 
         /*Wycisz/Zmień poziom głośności*/
         private void btnVolume_Click(object sender, RoutedEventArgs e)
         {
-
+            if (isMuted)
+            {
+                sldVolume.Value = lastVolumeValue;
+                isMuted = false;
+            }
+            else
+            {
+                lastVolumeValue = sldVolume.Value;
+                sldVolume.Value = 0;
+                isMuted = true;
+            }
         }
 
         private void sliderVolume_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
