@@ -19,6 +19,7 @@ namespace SM_Audio_Player.View.UserControls.buttons
 {
     public partial class buttonPrevious : UserControl
     {
+        private buttonPlay btnPlay = new buttonPlay();
         public buttonPrevious()
         {
             InitializeComponent();
@@ -27,17 +28,24 @@ namespace SM_Audio_Player.View.UserControls.buttons
         /*Włącz pooprzedni utwór*/
         private void btnPrevious_Click(object sender, RoutedEventArgs e)
         {
-            int currentIndex = TracksProperties.tracksList.IndexOf(TracksProperties.SelectedTrack);
-            int nextIndex = (currentIndex - 1) % TracksProperties.tracksList.Count;
-            if (nextIndex < 0)
+            try
             {
-                nextIndex = TracksProperties.tracksList.Count - 1;
+                // Sprawdzanie czy to pierwszy utwór na liście, jeżeli tak odtworzony zostanie od nowa.
+                if (TracksProperties.SelectedTrack.Id == 1)
+                    btnPlay.PlayNewTrack();
+                else
+                {
+                    // W innym wypadku zostanie odtworzony poprzedni utwór.
+                    TracksProperties.SelectedTrack = TracksProperties.tracksList.ElementAt(TracksProperties.SelectedTrack.Id-2);
+                    btnPlay.PlayNewTrack();
+                }
+                // Przypisanie eventu, aby następny utwór po skończeniu przewiniętego został automatycznie odtworzony.
+                TracksProperties.waveOut.PlaybackStopped += btnPlay.WaveOut_PlaybackStopped;
             }
-            TracksProperties.SelectedTrack = TracksProperties.tracksList[nextIndex];
-            TracksProperties.waveOut.Dispose();
-            TracksProperties.audioFileReader = new AudioFileReader(TracksProperties.SelectedTrack.Path);
-            TracksProperties.waveOut.Init(TracksProperties.audioFileReader);
-            TracksProperties.waveOut.Play();
+                catch (Exception ex)
+            {
+                MessageBox.Show($"Previous button error!");
+            }
         }
     }
 }

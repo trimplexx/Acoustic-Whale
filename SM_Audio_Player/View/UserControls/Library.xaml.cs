@@ -21,6 +21,7 @@ using System.Windows.Shapes;
 using System.Xml;
 using NAudio.Wave;
 using Newtonsoft.Json;
+using SM_Audio_Player.View.UserControls.buttons;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 using TagLib;
 using File = System.IO.File;
@@ -34,7 +35,6 @@ namespace SM_Audio_Player.View.UserControls
 
     public partial class Library : UserControl
     {
-        
         public String jsonPath = @"MusicTrackList.json";
 
         public Library()
@@ -196,14 +196,14 @@ namespace SM_Audio_Player.View.UserControls
         {
             try
             {
-                TracksProperties.SelectedTrack = lv.SelectedItem as Tracks;
+                int elementId = lv.SelectedIndex;
+                TracksProperties.SelectedTrack = TracksProperties.tracksList.ElementAt(elementId);
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Selection elements listview error");
             }
         }
-        
     }
 }
     

@@ -8,17 +8,15 @@ namespace SM_Audio_Player.Music;
 public static class TracksProperties
 {
 
-    // list of tracks
+    // lista z utworami
     public static List<Tracks>? tracksList = new List<Tracks>();
 
 
-    // selected track
+    // wybrany aktualnie utwor
     public static Tracks? SelectedTrack { get; set; }
 
-    //file of currently playing track
+    //trwajacy aktualnie utwór
     public static AudioFileReader? audioFileReader { get; set; }
-
-    //wave of currently playing track
-    public static WaveOutEvent waveOut = new WaveOutEvent();
+    public static WaveOutEvent? waveOut { get; set; }
 
 }
