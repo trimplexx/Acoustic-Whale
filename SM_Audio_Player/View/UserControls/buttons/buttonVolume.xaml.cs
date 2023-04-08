@@ -32,6 +32,10 @@ namespace SM_Audio_Player.View.UserControls.buttons
             InitializeComponent();
             readFromJson();
             sldVolume.Value = lastVolumeValue;
+            buttonNext.NextButtonClicked += OnTrackSwitch;
+            buttonPrevious.PreviousButtonClicked += OnTrackSwitch;
+            buttonPlay.TrackEnd += OnTrackSwitch;
+            Library.DoubleClickEvent += OnTrackSwitch;
         }
 
         private string volumeIcon;
@@ -136,6 +140,25 @@ namespace SM_Audio_Player.View.UserControls.buttons
             catch (Exception ex)
             {
                 MessageBox.Show($"Błąd zapisu pliku: {ex.Message}");
+            }
+        }
+        // Aktualizacja głośności po zmienionym tracku
+        private void OnTrackSwitch(object sender, EventArgs e)
+        {
+            try
+            {
+                valueIconChange(sldVolume.Value);
+                if (TracksProperties.audioFileReader != null)
+                {
+                    double sliderValue = sldVolume.Value / 100.0; // Skalowanie wartości na zakres od 0 do 1
+                    double newVolume = sliderValue; // Obliczamy nową wartość głośności
+                    TracksProperties.audioFileReader.Volume = (float)newVolume; // Aktualizujemy głośność pliku audio
+                    writeToJson();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Volume change error: {ex.Message}");
             }
         }
     }
