@@ -29,11 +29,10 @@ namespace SM_Audio_Player.View.UserControls.buttons
     public partial class buttonPlay : UserControl, INotifyPropertyChanged
     {
         
-        // Zmienna sprawdzająca, czy muzyka już gra.
-        private bool isPlaying = false;
+        
+        private bool isPlaying = false; // Zmienna sprawdzająca, czy muzyka już gra.
         private Library _library = new Library();
-        // zmienna pomocnicza do przechowywania miejsca pauzy
-        private long pausedPosition = 0; 
+        private long pausedPosition = 0; // zmienna pomocnicza do przechowywania miejsca pauzy
         public delegate void NextButtonClickedEventHandler(object sender, EventArgs e);
         public static event NextButtonClickedEventHandler TrackEnd;
         
@@ -53,7 +52,7 @@ namespace SM_Audio_Player.View.UserControls.buttons
         public buttonPlay()
         {
             DataContext = this;
-            PlayIcon = "M0 256a256 256 0 1 1 512 0A256 256 0 1 1 0 256zM188.3 147.1c-7.6 4.2-12.3 12.3-12.3 20.9V344c0 8.7 4.7 16.7 12.3 20.9s16.8 4.1 24.3-.5l144-88c7.1-4.4 11.5-12.1 11.5-20.5s-4.4-16.1-11.5-20.5l-144-88c-7.4-4.5-16.7-4.7-24.3-.5z";
+            PlayIcon = Icons.GetPlayIcon();
             InitializeComponent();
             buttonNext.NextButtonClicked += OnTrackSwitch;
             buttonPrevious.PreviousButtonClicked += OnTrackSwitch;
@@ -123,7 +122,7 @@ namespace SM_Audio_Player.View.UserControls.buttons
                             TracksProperties.audioFileReader.Position = pausedPosition;
                             TracksProperties.waveOut.Play();
                         }
-                        PlayIcon = "M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM192 160H320c17.7 0 32 14.3 32 32V320c0 17.7-14.3 32-32 32H192c-17.7 0-32-14.3-32-32V192c0-17.7 14.3-32 32-32z";
+                        PlayIcon = Icons.GetStopIcon();
                         isPlaying = true;
                     }
                     // Jezżeli muzyka jest zapauzowana,zapamięta zostaje pozycja i zmieniona ikona przycisku.
@@ -131,7 +130,7 @@ namespace SM_Audio_Player.View.UserControls.buttons
                     {
                         pausedPosition = TracksProperties.audioFileReader.Position;
                         TracksProperties.waveOut.Pause();
-                        PlayIcon = "M0 256a256 256 0 1 1 512 0A256 256 0 1 1 0 256zM188.3 147.1c-7.6 4.2-12.3 12.3-12.3 20.9V344c0 8.7 4.7 16.7 12.3 20.9s16.8 4.1 24.3-.5l144-88c7.1-4.4 11.5-12.1 11.5-20.5s-4.4-16.1-11.5-20.5l-144-88c-7.4-4.5-16.7-4.7-24.3-.5z";
+                        PlayIcon = Icons.GetPlayIcon();
                         isPlaying = false;
                     }
                 }
@@ -251,7 +250,7 @@ namespace SM_Audio_Player.View.UserControls.buttons
         }
         private void OnTrackSwitch(object sender, EventArgs e)
         {
-            PlayIcon = "M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM192 160H320c17.7 0 32 14.3 32 32V320c0 17.7-14.3 32-32 32H192c-17.7 0-32-14.3-32-32V192c0-17.7 14.3-32 32-32z";
+            PlayIcon = Icons.GetStopIcon();
             isPlaying = true;
         }
     }

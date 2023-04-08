@@ -25,7 +25,7 @@ public static class TracksProperties
     // Lista poprzednich utworów do przycisku schuffle
     public static List<Tracks> PrevTrack = new List<Tracks>();
     // lista dostępnych numerów do wylosowania po użyciu schuffle
-    public static List<int> availableNumbers { get; set; }
+    public static List<int>? availableNumbers { get; set; }
     // Pierwszy zagrany utwór, po użyciu schuffle
-    public static Tracks firstPlayed { get; set; }
+    public static Tracks? firstPlayed { get; set; }
 }
