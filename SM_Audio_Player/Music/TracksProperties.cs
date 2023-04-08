@@ -19,10 +19,14 @@ public static class TracksProperties
     public static AudioFileReader? audioFileReader { get; set; }
     public static WaveOutEvent? waveOut { get; set; }
     
+    // Flagi przycisków
     public static bool isLoopOn = false;
     public static bool isSchuffleOn = false;
+    // Lista poprzednich utworów do przycisku schuffle
     public static List<Tracks> PrevTrack = new List<Tracks>();
+    // lista dostępnych numerów do wylosowania po użyciu schuffle
     public static List<int> availableNumbers { get; set; }
+    // Pierwszy zagrany utwór, po użyciu schuffle
     public static Tracks firstPlayed { get; set; }
 
 }
