@@ -36,11 +36,15 @@ namespace SM_Audio_Player.View.UserControls
     public partial class Library : UserControl
     {
         public String jsonPath = @"MusicTrackList.json";
-        
+        public delegate void NextButtonClickedEventHandler(object sender, EventArgs e);
+        public static event NextButtonClickedEventHandler DoubleClickEvent;
 
         public Library()
         {
             InitializeComponent();
+            buttonNext.NextButtonClicked += OnTrackSwitch;
+            buttonPrevious.PreviousButtonClicked += OnTrackSwitch;
+            buttonPlay.TrackEnd += OnTrackSwitch;
             if(File.Exists(jsonPath))
             {
                 RefreshTrackListViewAndID();
@@ -173,6 +177,17 @@ namespace SM_Audio_Player.View.UserControls
                 int elementId = lv.SelectedIndex;
                 TracksProperties.SelectedTrack = TracksProperties.tracksList.ElementAt(elementId);
             }
+        }
+        private void OnTrackSwitch(object sender, EventArgs e)
+        {
+            lv.SelectedIndex = TracksProperties.SelectedTrack.Id - 1;
+        }
+
+        private void OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            buttonPlay btnPlay = new buttonPlay();
+            btnPlay.btnPlay_Click(sender, e);
+            DoubleClickEvent?.Invoke(this, EventArgs.Empty);
         }
     }
 }

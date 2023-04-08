@@ -19,6 +19,9 @@ namespace SM_Audio_Player.View.UserControls.buttons
 {
     public partial class buttonNext : UserControl
     {
+        public delegate void NextButtonClickedEventHandler(object sender, EventArgs e);
+        public static event NextButtonClickedEventHandler NextButtonClicked;
+
         private buttonPlay btnPlay = new buttonPlay();
         public buttonNext()
         {
@@ -32,7 +35,7 @@ namespace SM_Audio_Player.View.UserControls.buttons
             {
                 if (TracksProperties.isSchuffleOn)
                 {
-                   btnPlay.SchuffleFun();
+                    btnPlay.SchuffleFun();
                 }
                 else
                 {
@@ -50,6 +53,7 @@ namespace SM_Audio_Player.View.UserControls.buttons
                         btnPlay.PlayNewTrack();
                     }
                 }
+                NextButtonClicked?.Invoke(this, EventArgs.Empty);
             }
             catch (Exception ex)
             {

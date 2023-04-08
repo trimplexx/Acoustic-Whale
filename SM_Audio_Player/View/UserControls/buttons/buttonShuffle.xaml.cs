@@ -19,12 +19,17 @@ namespace SM_Audio_Player.View.UserControls.buttons
 {
     public partial class buttonShuffle : UserControl, INotifyPropertyChanged
     {
+        public delegate void NextButtonClickedEventHandler(object sender, EventArgs e);
+
+        public static event NextButtonClickedEventHandler SchuffleButtonClicked;
+        
         public buttonShuffle()
         {
             DataContext = this;
             ShuffleColor = "#037994";
             ShuffleMouseColor = "#2FC7E9";
             InitializeComponent();
+            buttonLoop.LoopButtonClick += OnButtonSwap;
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;
@@ -57,10 +62,7 @@ namespace SM_Audio_Player.View.UserControls.buttons
         /*Włącz losowe odtwarzanie utworów*/
         private void btnShuffle_Click(object sender, RoutedEventArgs e)
         {
-            // Sprawdzanie, czy funckaj loop nie została już użyta 
-            if (!TracksProperties.isLoopOn)
-            {
-                // Jeżeli przycisk schuffle jest włączony 
+            // Jeżeli przycisk schuffle jest włączony 
                 if (TracksProperties.isSchuffleOn)
                 {
                     // Zresetuj wartości i wyczyść zapamiętane poprzednie utwory.
@@ -69,20 +71,31 @@ namespace SM_Audio_Player.View.UserControls.buttons
                     ShuffleColor = "#037994";
                     ShuffleMouseColor = "#2FC7E9";
                     TracksProperties.isSchuffleOn = false;
+                    
                 }
                 // Jeżeli był wyłączony.
                 else
                 {
-                    // Zapamiętaj pierwszy utwór, jako obecnie wybrany oraz zresetuj dostępne opcje.
-                    TracksProperties.firstPlayed = TracksProperties.SelectedTrack;
-                    TracksProperties.availableNumbers = Enumerable.Range(0, TracksProperties.tracksList.Count).ToList();
-                    TracksProperties.availableNumbers.RemoveAt(TracksProperties.SelectedTrack.Id - 1);
+                    if (TracksProperties.SelectedTrack != null)
+                    {
+                        // Zapamiętaj pierwszy utwór, jako obecnie wybrany oraz zresetuj dostępne opcje.
+                        TracksProperties.firstPlayed = TracksProperties.SelectedTrack;
+                        TracksProperties.availableNumbers = Enumerable.Range(0, TracksProperties.tracksList.Count).ToList();
+                        TracksProperties.availableNumbers.RemoveAt(TracksProperties.SelectedTrack.Id - 1);
+                    }
                     ShuffleColor = "#2FC7E9";
                     ShuffleMouseColor = "#45a7bc";
                     TracksProperties.isSchuffleOn = true;
+                    SchuffleButtonClicked?.Invoke(this, EventArgs.Empty);
                 }
-                    
-            }
         }
+        // Event wymieniający się przyciskami wywołany w momencie kliknięcia przycisku Loop
+        private void OnButtonSwap(object sender, EventArgs e)
+        {
+            ShuffleColor = "#037994";
+            ShuffleMouseColor = "#2FC7E9";
+            TracksProperties.isSchuffleOn = false;
+        }
+        
     }
 }

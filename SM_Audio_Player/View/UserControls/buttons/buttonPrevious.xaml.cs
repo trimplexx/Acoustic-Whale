@@ -20,6 +20,9 @@ namespace SM_Audio_Player.View.UserControls.buttons
     public partial class buttonPrevious : UserControl
     {
         private buttonPlay btnPlay = new buttonPlay();
+        public delegate void NextButtonClickedEventHandler(object sender, EventArgs e);
+
+        public static event NextButtonClickedEventHandler PreviousButtonClicked;
         public buttonPrevious()
         {
             InitializeComponent();
@@ -70,6 +73,7 @@ namespace SM_Audio_Player.View.UserControls.buttons
                         btnPlay.PlayNewTrack();
                     }
                 }
+                PreviousButtonClicked?.Invoke(this, EventArgs.Empty);
             }
                 catch (Exception ex)
             {

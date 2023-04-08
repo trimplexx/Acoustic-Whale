@@ -34,9 +34,9 @@
                     <RowDefinition Height="30*"/>
                     <RowDefinition Height="30*"/>
                 </Grid.RowDefinitions>
-                <TextBlock Text="Tytuł" VerticalAlignment="Center" Foreground="#45a7bc" Margin="8, 10, 5, 0" FontSize="17"/>
-                <TextBlock Grid.Row="1" Text="Autor" VerticalAlignment="Center" Foreground="#45a7bc" Margin="8, 0, 5, 0"/>
-                <TextBlock Grid.Row="2" Text="Płyta" VerticalAlignment="Center" Foreground="#45a7bc" Margin="8, 0, 5, 0"/>
+                <TextBlock x:Name="title" Text="Tytuł" VerticalAlignment="Center" Foreground="#45a7bc" Margin="8, 10, 5, 0" FontSize="17"/>
+                <TextBlock Grid.Row="1" x:Name="author" Text="Autor" VerticalAlignment="Center" Foreground="#45a7bc" Margin="8, 0, 5, 0"/>
+                <TextBlock Grid.Row="2" x:Name="CD" Text="Płyta" VerticalAlignment="Center" Foreground="#45a7bc" Margin="8, 0, 5, 0"/>
             </Grid>
 
             <!-- Główne menu playera -->
@@ -65,9 +65,16 @@
         </Grid>
 
         <!-- Dolna część playera zawierająca slider odpowiedzialny za odpowiednią minutę w utworze -->
-        <StackPanel Grid.Row="1"  Orientation="Vertical">
-            <TextBlock Text="hh:mm:ss" TextAlignment="Left" Foreground="#45a7bc" Margin="25, 5, 5, 5" x:Name="tbTimer"/>
-            <Slider Margin="10, 20, 10, 0" x:Name="sldTime" Value="0"/>
+        <StackPanel Grid.Row="1">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" Text="hh:mm:ss" TextAlignment="Left" Foreground="#45a7bc" Margin="10, 5, 5, 5" x:Name="tbCurrTime"/>
+                <TextBlock Grid.Column="1" Text="hh:mm:ss" HorizontalAlignment="Right" Foreground="#45a7bc" Margin="10, 0, 10, 5" x:Name="tbTime"/>
+            </Grid>
+            <Slider Margin="10, 10, 5, 0" x:Name="sldTime" Value="0"/>
         </StackPanel>
     </Grid>
 </UserControl>

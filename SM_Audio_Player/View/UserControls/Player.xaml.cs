@@ -16,14 +16,26 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace SM_Audio_Player.View.UserControls
-{
-    public partial class Player : UserControl
+    namespace SM_Audio_Player.View.UserControls
     {
-
-        public Player()
+        public partial class Player : UserControl
         {
-            InitializeComponent();
+
+            public Player()
+            {
+                InitializeComponent();
+                buttonNext.NextButtonClicked += OnTrackSwitch;
+                buttonPrevious.PreviousButtonClicked += OnTrackSwitch;
+                buttonPlay.TrackEnd += OnTrackSwitch;
+                Library.DoubleClickEvent += OnTrackSwitch;
+            }
+
+            private void OnTrackSwitch(object sender, EventArgs e)
+            {
+                title.Text = TracksProperties.SelectedTrack.Title;
+                author.Text = TracksProperties.SelectedTrack.Author;
+                CD.Text = TracksProperties.SelectedTrack.Album;
+                tbTime.Text = TracksProperties.SelectedTrack.Time;
+            }
         }
     }
-}
