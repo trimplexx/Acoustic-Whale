@@ -26,16 +26,21 @@ namespace SM_Audio_Player.View.UserControls.buttons
         /*Włącz losowe odtwarzanie utworów*/
         private void btnShuffle_Click(object sender, RoutedEventArgs e)
         {
+            // Sprawdzanie, czy funckaj loop nie została już użyta 
             if (!TracksProperties.isLoopOn)
             {
+                // Jeżeli przycisk schuffle jest włączony 
                 if (TracksProperties.isSchuffleOn)
                 {
-                    TracksProperties.isSchuffleOn = false;
+                    // Zresetuj wartości i wyczyść zapamiętane poprzednie utwory.
                     TracksProperties.availableNumbers = Enumerable.Range(0, TracksProperties.tracksList.Count).ToList();
                     TracksProperties.PrevTrack.Clear();
+                    TracksProperties.isSchuffleOn = false;
                 }
+                // Jeżeli był wyłączony.
                 else
                 {
+                    // Zapamiętaj pierwszy utwór, jako obecnie wybrany oraz zresetuj dostępne opcje.
                     TracksProperties.firstPlayed = TracksProperties.SelectedTrack;
                     TracksProperties.availableNumbers = Enumerable.Range(0, TracksProperties.tracksList.Count).ToList();
                     TracksProperties.availableNumbers.RemoveAt(TracksProperties.SelectedTrack.Id - 1);

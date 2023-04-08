@@ -30,15 +30,26 @@ namespace SM_Audio_Player.View.UserControls.buttons
         {
             try
             {
+                /*
+                 * Sprawdzenie, czy została użyta funkcja schuffle, w tym wypadku, jako poprzedni utwór nie zostanie
+                 * wzięty utwór z mniejszym id, tylko ten zapamiętany na liśćie PrevTrack, aby móc powrócić do
+                 * wylosowanego wcześniej kawałka.
+                 */
                 if (TracksProperties.isSchuffleOn)
                 {
+                    // Sprawdzanie, czy lista nie jest pusta, jeżeli tak to odtworzy obecny utwór.
                     if (TracksProperties.PrevTrack.Count == 0)
                     {
                         TracksProperties.availableNumbers = Enumerable.Range(0, TracksProperties.tracksList.Count).ToList();
                         btnPlay.PlayNewTrack();
                     }
+                    // Jeżeli lista posiada poprzedni utwór, zostanie on wpisany jako obecny oraz zostanie odtworzony
                     else
                     {
+                        /*
+                         * Jezeli track, nie jest pierwszym, także jego numer zostanie zwrócony do listy dostępnych
+                         * numerów, aby mógł być ponownie wybrany do odsłuchu
+                         */
                         if(TracksProperties.SelectedTrack != TracksProperties.firstPlayed)
                             TracksProperties.availableNumbers.Add(TracksProperties.SelectedTrack.Id - 1);
                         TracksProperties.SelectedTrack =
@@ -59,8 +70,6 @@ namespace SM_Audio_Player.View.UserControls.buttons
                         btnPlay.PlayNewTrack();
                     }
                 }
-
-
             }
                 catch (Exception ex)
             {
