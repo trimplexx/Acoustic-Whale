@@ -215,6 +215,7 @@ namespace SM_Audio_Player.View.UserControls.buttons
                 ts += TracksProperties.audioFileReader.CurrentTime;
                 if (ts > TracksProperties.audioFileReader.TotalTime)
                 {
+
                     // sprawdzanie czy następny utwór ma być loopem odtwarzanego
                     if (TracksProperties.isLoopOn)
                         PlayNewTrack();

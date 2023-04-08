@@ -15,7 +15,7 @@
                     <Border x:Name="scale">
                         <Canvas Height="512" Width="512" x:Name="clickEffect">
                             <Ellipse  Height="512" Width="512" Fill="Transparent"/>
-                            <Path x:Name="test" Fill="#45a7bc" Data="{Binding PlayIcon}" />
+                            <Path x:Name="test" Fill="#45a7bc" Data="{Binding PlayIcon,Mode=OneWay}" />
                         </Canvas>
                     </Border>
                 </Viewbox>
