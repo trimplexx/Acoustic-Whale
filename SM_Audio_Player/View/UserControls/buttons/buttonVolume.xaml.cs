@@ -28,10 +28,10 @@ namespace SM_Audio_Player.View.UserControls.buttons
         public buttonVolume()
         {
             DataContext = this;
-            VolumeIcon = Icons.GetVolumeIconHalf();
             InitializeComponent();
             readFromJson();
             sldVolume.Value = lastVolumeValue;
+            VolumeIcon = valueIconChange(sldVolume.Value);
             buttonNext.NextButtonClicked += OnTrackSwitch;
             buttonPrevious.PreviousButtonClicked += OnTrackSwitch;
             buttonPlay.TrackEnd += OnTrackSwitch;
@@ -53,20 +53,29 @@ namespace SM_Audio_Player.View.UserControls.buttons
         }
 
         /*Metoda sprawdzająca aktualną wartość slidera i na jej podstawie ustawiająca ikonkę*/
-        private void valueIconChange(double VolumeValue)
+        private string valueIconChange(double VolumeValue)
         {
             if (VolumeValue == 0) 
             {
                 VolumeIcon = Icons.GetVolumeIconZero();
+                return Icons.GetVolumeIconZero();
             }
-            else if (VolumeValue > 0 && VolumeValue <= 50)
+            else if (VolumeValue > 0 && VolumeValue <= 40)
+            {
+                VolumeIcon = Icons.GetVolumeIconLow();
+                return Icons.GetVolumeIconLow();
+            }
+            else if (VolumeValue > 40 && VolumeValue <= 75) 
             {
                 VolumeIcon = Icons.GetVolumeIconHalf();
+                return Icons.GetVolumeIconHalf();
             }
-            else if (VolumeValue > 50) 
+            else if (VolumeValue > 75)
             {
                 VolumeIcon = Icons.GetVolumeIconMax();
+                return Icons.GetVolumeIconMax();
             }
+            return Icons.GetVolumeIconHalf();
         }
 
         /*Wycisz/Zmień poziom głośności*/
