@@ -27,11 +27,25 @@ namespace SM_Audio_Player.View.UserControls.buttons
             DataContext = this;
             LoopColor = "#037994";
             LoopMouseColor = "#2FC7E9";
+            LoopIcon = Icons.GetLoopOff();
             InitializeComponent();
             buttonShuffle.SchuffleButtonClicked += OnButtonSwap;
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;
+
+        private string loopIcon;
+
+        public string LoopIcon
+        {
+            get { return loopIcon; }
+            set 
+            { 
+                loopIcon = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("LoopIcon"));
+            }
+        }
+
 
         private string loopColor;
 
@@ -63,6 +77,7 @@ namespace SM_Audio_Player.View.UserControls.buttons
             // Gdy loop jest włączony
             if (TracksProperties.isLoopOn)
                 {
+                    LoopIcon = Icons.GetLoopOff();
                     LoopColor = "#037994";
                     LoopMouseColor = "#2FC7E9";
                     TracksProperties.isLoopOn = false;
@@ -70,6 +85,7 @@ namespace SM_Audio_Player.View.UserControls.buttons
             // Gdy loop jest wyłączony
                 else
                 {
+                    LoopIcon = Icons.GetLoopOn();
                     LoopColor = "#2FC7E9";
                     LoopMouseColor = "#45a7bc";
                     TracksProperties.isLoopOn = true;
