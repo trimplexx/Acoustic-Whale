@@ -28,11 +28,25 @@ namespace SM_Audio_Player.View.UserControls.buttons
             DataContext = this;
             ShuffleColor = "#037994";
             ShuffleMouseColor = "#2FC7E9";
+            ShuffleIcon = Icons.GetShuffleIconOFF();
             InitializeComponent();
             buttonLoop.LoopButtonClick += OnButtonSwap;
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;
+
+        private string shuffleIcon;
+
+        public string ShuffleIcon
+        {
+            get { return shuffleIcon; }
+            set 
+            { 
+                shuffleIcon = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ShuffleIcon"));
+            }
+        }
+
 
         private string shuffleColor;
 
@@ -68,6 +82,7 @@ namespace SM_Audio_Player.View.UserControls.buttons
                     // Zresetuj wartości i wyczyść zapamiętane poprzednie utwory.
                     TracksProperties.availableNumbers = Enumerable.Range(0, TracksProperties.tracksList.Count).ToList();
                     TracksProperties.PrevTrack.Clear();
+                    ShuffleIcon = Icons.GetShuffleIconOFF();
                     ShuffleColor = "#037994";
                     ShuffleMouseColor = "#2FC7E9";
                     TracksProperties.isSchuffleOn = false;
@@ -83,6 +98,7 @@ namespace SM_Audio_Player.View.UserControls.buttons
                         TracksProperties.availableNumbers = Enumerable.Range(0, TracksProperties.tracksList.Count).ToList();
                         TracksProperties.availableNumbers.RemoveAt(TracksProperties.SelectedTrack.Id - 1);
                     }
+                    ShuffleIcon = Icons.GetShuffleIconON();
                     ShuffleColor = "#2FC7E9";
                     ShuffleMouseColor = "#45a7bc";
                     TracksProperties.isSchuffleOn = true;
