@@ -92,25 +92,29 @@ namespace SM_Audio_Player.View.UserControls
         private void Add_Btn_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Multiselect = true;
             openFileDialog.Filter = "Music files (*.mp3)|*.mp3|Waveform Audio File Format (.wav)|.wav|Windows Media Audio Professional (.wma)|.wma|MPEG-4 Audio (.mp4)|.mp4|" +
                 "Free Lossless Audio Codec (.flac)|.flac|All files (*.*)|*.*";
 
             if (openFileDialog.ShowDialog() == true)
             {
-                string title = System.IO.Path.GetFileNameWithoutExtension(openFileDialog.FileName);
-                string newPath = openFileDialog.FileName;
-
-                if (TracksProperties.tracksList.Any(track => track.Path == newPath))
+                foreach (string filePath in openFileDialog.FileNames)
                 {
-                    MessageBoxResult result = MessageBox.Show("This music is already in the list. Do you want to add it again?", "Duplicate Music",
-                        MessageBoxButton.YesNo);
+                    string title = System.IO.Path.GetFileNameWithoutExtension(filePath);
+                    string newPath = filePath;
 
-                    if (result == MessageBoxResult.No)
+                    if (TracksProperties.tracksList.Any(track => track.Path == newPath))
                     {
-                        return;
+                        MessageBoxResult result = MessageBox.Show("This music is already in the list. Do you want to add it again?", "Duplicate Music",
+                            MessageBoxButton.YesNo);
+
+                        if (result == MessageBoxResult.No)
+                        {
+                            continue;
+                        }
                     }
-                }
-                try
+
+                    try
                     {
                         TagLib.File file = TagLib.File.Create(newPath);
 
@@ -127,12 +131,12 @@ namespace SM_Audio_Player.View.UserControls
 
                         int newId = TracksProperties.tracksList.Count + 1;
 
-                    Tracks newTrack = new Tracks(newId, newTitle, newAuthor, newAlbum, newPath, formattedTime);
-                    
-                    TracksProperties.tracksList.Add(newTrack);
-                    var NewJsonData = JsonConvert.SerializeObject(TracksProperties.tracksList);
-                    File.WriteAllText(jsonPath, NewJsonData);
-                    RefreshTrackListViewAndID();
+                        Tracks newTrack = new Tracks(newId, newTitle, newAuthor, newAlbum, newPath, formattedTime);
+
+                        TracksProperties.tracksList.Add(newTrack);
+                        var NewJsonData = JsonConvert.SerializeObject(TracksProperties.tracksList);
+                        File.WriteAllText(jsonPath, NewJsonData);
+                        RefreshTrackListViewAndID();
 
                         MessageBox.Show($"Successfully added {newTitle} to the list.", "Add Music");
                     }
@@ -140,6 +144,7 @@ namespace SM_Audio_Player.View.UserControls
                     {
                         MessageBox.Show($"Error reading metadata from file: {ex.Message}", "Error");
                     }
+                }
             }
         }
 
