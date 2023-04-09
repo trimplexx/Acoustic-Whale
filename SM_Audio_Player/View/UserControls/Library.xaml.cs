@@ -136,11 +136,14 @@ namespace SM_Audio_Player.View.UserControls
                     }
                 }
                 RefreshTrackListViewAndID();
-                foreach (var track in TracksProperties.tracksList)
+                if(TracksProperties.tracksList != null && TracksProperties.SelectedTrack != null)
                 {
-                    if (TracksProperties.SelectedTrack.Title == track.Title)
-                        lv.SelectedIndex = track.Id -1 ;
-                }
+                    foreach (var track in TracksProperties.tracksList)
+                    {
+                        if (TracksProperties.SelectedTrack.Title == track.Title)
+                            lv.SelectedIndex = track.Id - 1;
+                    }
+                } 
             }
         }
 
