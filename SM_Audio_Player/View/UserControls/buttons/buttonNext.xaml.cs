@@ -50,7 +50,12 @@ namespace SM_Audio_Player.View.UserControls.buttons
                     {
                         // Przełączenie na 1 utwór z listy po zakończeniu ostatniego
                         TracksProperties.SelectedTrack = TracksProperties.tracksList.ElementAt(0);
-                        btnPlay.PlayNewTrack();
+                        btnPlay.PlayNewTrack(); 
+                        if (!TracksProperties.isLoopOn)
+                        {
+                            TracksProperties.waveOut.Pause();
+                        }
+                        
                     }
                 }
                 NextButtonClicked?.Invoke(this, EventArgs.Empty);

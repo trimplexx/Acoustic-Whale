@@ -22,7 +22,7 @@ namespace SM_Audio_Player.View.UserControls.buttons
     public partial class buttonVolume : UserControl, INotifyPropertyChanged
     {
         bool isMuted = false;
-        private const string SettingsFileName = "SettingsVolume.json";
+        private double savedVolumeValue = 0;
 
         public buttonVolume()
         {
@@ -79,15 +79,15 @@ namespace SM_Audio_Player.View.UserControls.buttons
         /*Wycisz/Zmień poziom głośności*/
         private void btnVolume_Click(object sender, RoutedEventArgs e)
         {
-            if (isMuted && TracksProperties.Volume != 0)
+            if (isMuted && savedVolumeValue != 0)
             {
-                sldVolume.Value = TracksProperties.Volume;
+                sldVolume.Value = savedVolumeValue;
                 valueIconChange(TracksProperties.Volume);
                 isMuted = false;
             }
             else
             {
-                TracksProperties.Volume = sldVolume.Value;
+                savedVolumeValue = sldVolume.Value;
                 sldVolume.Value = 0;
                 VolumeIcon = Icons.GetVolumeIconZero();
                 isMuted = true;

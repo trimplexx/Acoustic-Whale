@@ -74,7 +74,8 @@
                 <TextBlock Grid.Column="0" Text="hh:mm:ss" TextAlignment="Left" Foreground="#45a7bc" Margin="10, 5, 5, 5" x:Name="tbCurrTime"/>
                 <TextBlock Grid.Column="1" Text="hh:mm:ss" HorizontalAlignment="Right" Foreground="#45a7bc" Margin="10, 0, 10, 5" x:Name="tbTime"/>
             </Grid>
-            <Slider Margin="10, 10, 5, 0" x:Name="sldTime" ValueChanged="TimeSlider_ValueChanged" Minimum="0" Maximum="{Binding TracksProperties.SelectedTrack.Duration.TotalSeconds}" Value="0"/>
+            <Slider Margin="10, 10, 5, 0" x:Name="sldTime" PreviewMouseLeftButtonDown="TimeSlider_PreviewMouseLeftButtonDown" 
+                    PreviewMouseLeftButtonUp="TimeSlider_PreviewMouseLeftButtonUp" Minimum="0" Maximum="{Binding TracksProperties.SelectedTrack.Duration.TotalSeconds}" Value="0"/>
         </StackPanel>
     </Grid>
 </UserControl>

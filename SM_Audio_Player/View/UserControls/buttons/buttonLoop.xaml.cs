@@ -19,9 +19,6 @@ namespace SM_Audio_Player.View.UserControls.buttons
 {
     public partial class buttonLoop : UserControl, INotifyPropertyChanged
     {
-        public delegate void NextButtonClickedEventHandler(object sender, EventArgs e);
-
-        public static event NextButtonClickedEventHandler LoopButtonClick;
         public buttonLoop()
         {
             DataContext = this;
@@ -29,7 +26,6 @@ namespace SM_Audio_Player.View.UserControls.buttons
             LoopMouseColor = "#2FC7E9";
             LoopIcon = Icons.GetLoopOff();
             InitializeComponent();
-            buttonShuffle.SchuffleButtonClicked += OnButtonSwap;
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;
@@ -89,16 +85,7 @@ namespace SM_Audio_Player.View.UserControls.buttons
                     LoopColor = "#2FC7E9";
                     LoopMouseColor = "#45a7bc";
                     TracksProperties.isLoopOn = true;
-                    LoopButtonClick?.Invoke(this, EventArgs.Empty);
                 }
         }
-        // Event wymieniający się przyciskami wywołany w momencie kliknięcia przycisku Schuffle
-        private void OnButtonSwap(object sender, EventArgs e)
-        {
-            LoopColor = "#037994";
-            LoopMouseColor = "#2FC7E9";
-            TracksProperties.isLoopOn = false;
-        }
-
     }
 }

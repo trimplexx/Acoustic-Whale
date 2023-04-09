@@ -29,4 +29,5 @@ public static class TracksProperties
     // Pierwszy zagrany utwór, po użyciu schuffle
     public static Tracks? firstPlayed { get; set; }
     public static double Volume = 50;
+    public static int idPlayedTrack;
 }

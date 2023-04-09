@@ -30,16 +30,15 @@ using File = System.IO.File;
 
 namespace SM_Audio_Player.View.UserControls
 {
-    /// <summary>
-    /// Interaction logic for Library.xaml
-    /// </summary>
-    /// 
-
     public partial class Library : UserControl
     {
         public String jsonPath = @"MusicTrackList.json";
         public delegate void NextButtonClickedEventHandler(object sender, EventArgs e);
         public static event NextButtonClickedEventHandler DoubleClickEvent;
+        
+        public delegate void SortListViewEventHandler(object sender, EventArgs e);
+        public static event SortListViewEventHandler ListViewSort;
+        
         private bool sortingtype = true;
         private string prevColumnSorted;
 
@@ -137,6 +136,11 @@ namespace SM_Audio_Player.View.UserControls
                     }
                 }
                 RefreshTrackListViewAndID();
+                foreach (var track in TracksProperties.tracksList)
+                {
+                    if (TracksProperties.SelectedTrack.Title == track.Title)
+                        lv.SelectedIndex = track.Id -1 ;
+                }
             }
         }
 
@@ -243,7 +247,15 @@ namespace SM_Audio_Player.View.UserControls
         private void OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             buttonPlay btnPlay = new buttonPlay();
+            if (TracksProperties.isSchuffleOn)
+            {
+                TracksProperties.waveOut.Stop();
+                TracksProperties.waveOut.Dispose();
+                TracksProperties.audioFileReader = null;
+            }
+            
             btnPlay.btnPlay_Click(sender, e);
+            
             DoubleClickEvent?.Invoke(this, EventArgs.Empty);
         }
     }
