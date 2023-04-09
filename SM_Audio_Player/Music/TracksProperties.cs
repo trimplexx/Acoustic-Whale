@@ -28,4 +28,5 @@ public static class TracksProperties
     public static List<int>? availableNumbers { get; set; }
     // Pierwszy zagrany utwór, po użyciu schuffle
     public static Tracks? firstPlayed { get; set; }
+    public static double Volume = 50;
 }

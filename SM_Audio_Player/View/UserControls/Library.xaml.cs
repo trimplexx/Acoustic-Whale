@@ -2,6 +2,8 @@
 using SM_Audio_Player.Music;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
@@ -38,6 +40,8 @@ namespace SM_Audio_Player.View.UserControls
         public String jsonPath = @"MusicTrackList.json";
         public delegate void NextButtonClickedEventHandler(object sender, EventArgs e);
         public static event NextButtonClickedEventHandler DoubleClickEvent;
+        private bool sortingtype = true;
+        private string prevColumnSorted;
 
         public Library()
         {
@@ -45,47 +49,95 @@ namespace SM_Audio_Player.View.UserControls
             buttonNext.NextButtonClicked += OnTrackSwitch;
             buttonPrevious.PreviousButtonClicked += OnTrackSwitch;
             buttonPlay.TrackEnd += OnTrackSwitch;
-            if(File.Exists(jsonPath))
-            {
-                RefreshTrackListViewAndID();
-            }
+            RefreshTrackListViewAndID();
         }
 
+        // Metoda służąca odświeżaniu listView z pliku JSON, do ktorego zapisana zostaje lista piosenek
         public void RefreshTrackListViewAndID()
         {
             try
             {
                 lv.Items.Clear();
                 TracksProperties.tracksList.Clear();
-                string json = File.ReadAllText(jsonPath);
-                TracksProperties.tracksList = JsonConvert.DeserializeObject<List<Tracks>>(json);
-                int coutTracksOnJson = TracksProperties.tracksList.Count;
-                for(int i = 0; i < coutTracksOnJson; i++)
+                if (File.Exists(jsonPath))
                 {
-                    if (!File.Exists(TracksProperties.tracksList.ElementAt(i).Path))
+                    string json = File.ReadAllText(jsonPath);
+                    TracksProperties.tracksList = JsonConvert.DeserializeObject<List<Tracks>>(json);
+                    int coutTracksOnJson = TracksProperties.tracksList.Count;
+                    for (int i = 0; i < coutTracksOnJson; i++)
                     {
-                        TracksProperties.tracksList.Remove(TracksProperties.tracksList.ElementAt(i));
-                        coutTracksOnJson--;
+                        if (!File.Exists(TracksProperties.tracksList.ElementAt(i).Path))
+                        {
+                            TracksProperties.tracksList.Remove(TracksProperties.tracksList.ElementAt(i));
+                            coutTracksOnJson--;
+                            i--;
+                        }
+                        else
+                        {
+                            TracksProperties.tracksList.ElementAt(i).Id = i + 1;
+                            lv.Items.Add(TracksProperties.tracksList.ElementAt(i));
+                        }
                     }
-                    else
-                    {
-                        TracksProperties.tracksList.ElementAt(i).Id = i + 1;
-                        lv.Items.Add(TracksProperties.tracksList.ElementAt(i));
-                    }
+                    var NewJsonData = JsonConvert.SerializeObject(TracksProperties.tracksList);
+                    File.WriteAllText(jsonPath, NewJsonData);
+                    lv.SelectedIndex = -1;
                 }
-                var NewJsonData = JsonConvert.SerializeObject(TracksProperties.tracksList);
-                File.WriteAllText(jsonPath, NewJsonData);
-                lv.SelectedIndex = -1;
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Refresh Listview error");
+                MessageBox.Show($"Refresh Listview error: {ex.Message}");
             }
         }
 
-        void GridViewColumnHeaderClickedHandler(object sender, RoutedEventArgs e)
+        // Metoda sortująca trackList.
+        public void SortTracksList(bool ascending, string property)
         {
-
+            if (ascending)
+                TracksProperties.tracksList = TracksProperties.tracksList.
+                    OrderBy(track => track.GetType().GetProperty(property).GetValue(track)).ToList();
+            else
+                TracksProperties.tracksList = TracksProperties.tracksList.
+                    OrderByDescending(track => track.GetType().GetProperty(property).GetValue(track)).ToList();
+            
+            // Zapisanie posortowanej listy do JSON
+            var NewJsonData = JsonConvert.SerializeObject(TracksProperties.tracksList);
+            File.WriteAllText(jsonPath, NewJsonData);
+        }
+        
+        // Metoda odpowiadająca za kliknięcie nagłówka, po którym następuje sortowanie elementów w liście oraz na listview
+        private void GridViewColumnHeaderClickedHandler(object sender, RoutedEventArgs e)
+        {
+            var headerClicked = e.OriginalSource as GridViewColumnHeader;
+            if (headerClicked != null)
+            {
+                var binding = headerClicked.Column.DisplayMemberBinding as Binding;
+                if (binding != null)
+                {
+                    string bindingPath = binding.Path.Path;
+                    
+                    if (prevColumnSorted == bindingPath && bindingPath != "Id")
+                    {
+                        if (!sortingtype)
+                        {
+                            SortTracksList(false, bindingPath);
+                            sortingtype = true;
+                        }
+                        else
+                        {
+                            SortTracksList(true, bindingPath);
+                            sortingtype = false;
+                        }
+                        prevColumnSorted = bindingPath;
+                    }
+                    else if (prevColumnSorted != bindingPath&& bindingPath != "Id")
+                    {
+                        SortTracksList(true, bindingPath);
+                        sortingtype = false;
+                        prevColumnSorted = bindingPath;
+                    }
+                }
+                RefreshTrackListViewAndID();
+            }
         }
 
 

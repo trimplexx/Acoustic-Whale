@@ -33,6 +33,7 @@ namespace SM_Audio_Player.View.UserControls
             Library.DoubleClickEvent += OnTrackSwitch;
             //timer.Interval = TimeSpan.FromMilliseconds(100);
             timer.Tick += Timer_Tick;
+            timer.Interval = new TimeSpan(0, 0, 1);
         }
 
         private void OnTrackSwitch(object sender, EventArgs e)
@@ -41,6 +42,8 @@ namespace SM_Audio_Player.View.UserControls
             author.Text = TracksProperties.SelectedTrack.Author;
             CD.Text = TracksProperties.SelectedTrack.Album;
             tbTime.Text = TracksProperties.SelectedTrack.Time;
+            sldTime.Value = 0;
+            timer.Start();
         }
 
         private void Timer_Tick(object sender, EventArgs e)
