@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:SM_Audio_Player.View.UserControls.buttons"
+             xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
              mc:Ignorable="d" 
              d:DesignHeight="30" d:DesignWidth="185">
 
@@ -49,7 +50,7 @@
                 </ControlTemplate>
             </Button.Template>
         </Button>
-        <Slider Height="18" Width="140" Margin="5, 5, 5, 3" Minimum="0" Maximum="100" x:Name="sldVolume" ValueChanged="sliderVolume_ValueChanged"/>
+        <Slider Style="{DynamicResource SliderStyle1}" Height="22" Width="140" IsSelectionRangeEnabled="True" Margin="5, 5, 5, 3" Minimum="0" Maximum="100" x:Name="sldVolume" ValueChanged="sliderVolume_ValueChanged" SelectionEnd="{Binding ElementName=sldVolume, Path=Value}"/>
     </StackPanel>
 
 </UserControl>
