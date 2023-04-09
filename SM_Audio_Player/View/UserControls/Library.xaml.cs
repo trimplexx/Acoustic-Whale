@@ -247,7 +247,8 @@ namespace SM_Audio_Player.View.UserControls
         private void OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             buttonPlay btnPlay = new buttonPlay();
-            if (TracksProperties.isSchuffleOn)
+            if (TracksProperties.isSchuffleOn && TracksProperties.waveOut != null &&
+                TracksProperties.audioFileReader != null)
             {
                 TracksProperties.waveOut.Stop();
                 TracksProperties.waveOut.Dispose();

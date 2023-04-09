@@ -304,7 +304,7 @@ namespace SM_Audio_Player.View.UserControls.buttons
                 isPlaying = false;
             }
             // Sprawdzenie czy ostatni track schuffli nie został zagrany, aby na pierwszym się zatrzymać
-            else if (TracksProperties.isSchuffleOn && TracksProperties.SelectedTrack == TracksProperties.firstPlayed)
+            if (TracksProperties.isSchuffleOn && TracksProperties.SelectedTrack == TracksProperties.firstPlayed)
             {
                 TracksProperties.waveOut.Pause();
                 PlayIcon = Icons.GetPlayIcon();
