@@ -22,15 +22,13 @@ namespace SM_Audio_Player.View.UserControls.buttons
     public partial class buttonVolume : UserControl, INotifyPropertyChanged
     {
         bool isMuted = false;
-        private double lastVolumeValue = 100;
         private const string SettingsFileName = "SettingsVolume.json";
 
         public buttonVolume()
         {
             DataContext = this;
             InitializeComponent();
-            readFromJson();
-            sldVolume.Value = lastVolumeValue;
+            sldVolume.Value = TracksProperties.Volume;
             VolumeIcon = valueIconChange(sldVolume.Value);
             buttonNext.NextButtonClicked += OnTrackSwitch;
             buttonPrevious.PreviousButtonClicked += OnTrackSwitch;
@@ -81,15 +79,15 @@ namespace SM_Audio_Player.View.UserControls.buttons
         /*Wycisz/Zmień poziom głośności*/
         private void btnVolume_Click(object sender, RoutedEventArgs e)
         {
-            if (isMuted && lastVolumeValue != 0)
+            if (isMuted && TracksProperties.Volume != 0)
             {
-                sldVolume.Value = lastVolumeValue;
-                valueIconChange(lastVolumeValue);
+                sldVolume.Value = TracksProperties.Volume;
+                valueIconChange(TracksProperties.Volume);
                 isMuted = false;
             }
             else
             {
-                lastVolumeValue = sldVolume.Value;
+                TracksProperties.Volume = sldVolume.Value;
                 sldVolume.Value = 0;
                 VolumeIcon = Icons.GetVolumeIconZero();
                 isMuted = true;
@@ -101,15 +99,14 @@ namespace SM_Audio_Player.View.UserControls.buttons
             try
             {
                 /*Pobieranie aktualnej wartości slidera*/
-                double currentValue = e.NewValue;
-                valueIconChange(currentValue);
+                TracksProperties.Volume = e.NewValue;
+                valueIconChange(TracksProperties.Volume);
 
                 if (TracksProperties.audioFileReader != null)
                 {
-                    double sliderValue = sldVolume.Value / 100.0; // Skalowanie wartości na zakres od 0 do 1
+                    double sliderValue = TracksProperties.Volume / 100.0; // Skalowanie wartości na zakres od 0 do 1
                     double newVolume = sliderValue; // Obliczamy nową wartość głośności
                     TracksProperties.audioFileReader.Volume = (float)newVolume; // Aktualizujemy głośność pliku audio
-                    writeToJson();
                 }
             }
             catch (Exception ex)
@@ -117,53 +114,21 @@ namespace SM_Audio_Player.View.UserControls.buttons
                 MessageBox.Show($"Volume change error: {ex.Message}");
             }
         }
-
-        private void readFromJson()
-        {
-            // Odczytanie wartości suwaka z pliku
-            try
-            {
-                if (File.Exists(SettingsFileName))
-                {
-                    string settingsJson = File.ReadAllText(SettingsFileName);
-                    var settings = JsonConvert.DeserializeAnonymousType(settingsJson, new { LastVolumeValue = 0.0 });
-                    lastVolumeValue = settings.LastVolumeValue;
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Błąd odczytu pliku: {ex.Message}");
-            }
-        }
-
-        private void writeToJson()
-        {
-            // Zapisanie wartości suwaka do pliku
-            try
-            {
-                // Zapisanie wartości suwaka do pliku
-                var settings = new { LastVolumeValue = sldVolume.Value };
-                string settingsJson = JsonConvert.SerializeObject(settings);
-                File.WriteAllText(SettingsFileName, settingsJson);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Błąd zapisu pliku: {ex.Message}");
-            }
-        }
+        
         // Aktualizacja głośności po zmienionym tracku
         private void OnTrackSwitch(object sender, EventArgs e)
         {
             try
             {
-                valueIconChange(sldVolume.Value);
+                valueIconChange(TracksProperties.Volume);
+
                 if (TracksProperties.audioFileReader != null)
                 {
-                    double sliderValue = sldVolume.Value / 100.0; // Skalowanie wartości na zakres od 0 do 1
+                    double sliderValue = TracksProperties.Volume / 100.0; // Skalowanie wartości na zakres od 0 do 1
                     double newVolume = sliderValue; // Obliczamy nową wartość głośności
                     TracksProperties.audioFileReader.Volume = (float)newVolume; // Aktualizujemy głośność pliku audio
-                    writeToJson();
                 }
+
             }
             catch (Exception ex)
             {
