@@ -147,7 +147,6 @@ namespace SM_Audio_Player.View.UserControls
             }
         }
 
-
         private void Add_Btn_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
@@ -172,7 +171,6 @@ namespace SM_Audio_Player.View.UserControls
                             continue;
                         }
                     }
-
                     try
                     {
                         TagLib.File file = TagLib.File.Create(newPath);
@@ -257,9 +255,7 @@ namespace SM_Audio_Player.View.UserControls
                 TracksProperties.waveOut.Dispose();
                 TracksProperties.audioFileReader = null;
             }
-            
             btnPlay.btnPlay_Click(sender, e);
-            
             DoubleClickEvent?.Invoke(this, EventArgs.Empty);
         }
     }

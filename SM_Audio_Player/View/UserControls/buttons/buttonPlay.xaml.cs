@@ -29,16 +29,14 @@ namespace SM_Audio_Player.View.UserControls.buttons
     public partial class buttonPlay : UserControl, INotifyPropertyChanged
     {
 
-
         private bool isPlaying = false; // Zmienna sprawdzająca, czy muzyka już gra.
         private Library _library = new Library();
         private long pausedPosition = 0; // zmienna pomocnicza do przechowywania miejsca pauzy
-
         public delegate void NextButtonClickedEventHandler(object sender, EventArgs e);
-
         public static event NextButtonClickedEventHandler TrackEnd;
-
         private Random random = new Random();
+        private string playIcon;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         // Funkcja losująca randomowy numer z dostępnego zakresu, używana do odtwarzania Schuffle.
         public int GetRandomNumber()
@@ -58,7 +56,7 @@ namespace SM_Audio_Player.View.UserControls.buttons
             InitializeComponent();
             buttonNext.NextButtonClicked += OnTrackSwitch;
             buttonPrevious.PreviousButtonClicked += PreviousTrackEvent;
-            Library.DoubleClickEvent += OnTrackSwitch;
+            Library.DoubleClickEvent += OnTrackDoubleClickSwitch;
             /*
              * Gdy aplikacja zostanie odpalona, użyty zostaje if, który to sprawdza przy inicjalizacji, aby po
              *  kliknięciu przycisku play od razu włączyła się pierwsza piosenka z listy bez potrzeby wybierania utworu ręcznie
@@ -68,10 +66,6 @@ namespace SM_Audio_Player.View.UserControls.buttons
                 TracksProperties.SelectedTrack = TracksProperties.tracksList.ElementAt(0);
             }
         }
-
-        private string playIcon;
-
-        public event PropertyChangedEventHandler? PropertyChanged;
 
         // Zmiana ikony Play.
         public string PlayIcon
@@ -274,15 +268,19 @@ namespace SM_Audio_Player.View.UserControls.buttons
                             PlayNewTrack();
                         }
                     }
-                    
                     TrackEnd?.Invoke(this, EventArgs.Empty);
-                    }
+                }
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"EventHandler after pause music Exception");
             }
+        }
 
+        private void OnTrackDoubleClickSwitch(object sender, EventArgs e)
+        {
+            PlayIcon = Icons.GetStopIcon();
+            isPlaying = true;
         }
 
         private void OnTrackSwitch(object sender, EventArgs e)
@@ -325,4 +323,3 @@ namespace SM_Audio_Player.View.UserControls.buttons
         }
     }
 }
-

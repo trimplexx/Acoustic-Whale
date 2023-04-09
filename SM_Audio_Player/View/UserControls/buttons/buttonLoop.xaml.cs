@@ -19,6 +19,12 @@ namespace SM_Audio_Player.View.UserControls.buttons
 {
     public partial class buttonLoop : UserControl, INotifyPropertyChanged
     {
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+        private string loopIcon;
+        private string loopColor;
+        private string loopMouseColor;
+
         public buttonLoop()
         {
             DataContext = this;
@@ -27,10 +33,6 @@ namespace SM_Audio_Player.View.UserControls.buttons
             LoopIcon = Icons.GetLoopOff();
             InitializeComponent();
         }
-
-        public event PropertyChangedEventHandler? PropertyChanged;
-
-        private string loopIcon;
 
         public string LoopIcon
         {
@@ -42,9 +44,6 @@ namespace SM_Audio_Player.View.UserControls.buttons
             }
         }
 
-
-        private string loopColor;
-
         public string LoopColor
         {
             get { return loopColor; }
@@ -55,7 +54,7 @@ namespace SM_Audio_Player.View.UserControls.buttons
             }
         }
 
-        private string loopMouseColor;
+
 
         public string LoopMouseColor
         {
@@ -72,20 +71,20 @@ namespace SM_Audio_Player.View.UserControls.buttons
         {
             // Gdy loop jest włączony
             if (TracksProperties.isLoopOn)
-                {
-                    LoopIcon = Icons.GetLoopOff();
-                    LoopColor = "#037994";
-                    LoopMouseColor = "#2FC7E9";
-                    TracksProperties.isLoopOn = false;
-                }
+            {
+                LoopIcon = Icons.GetLoopOff();
+                LoopColor = "#037994";
+                LoopMouseColor = "#2FC7E9";
+                TracksProperties.isLoopOn = false;
+            }
             // Gdy loop jest wyłączony
-                else
-                {
-                    LoopIcon = Icons.GetLoopOn();
-                    LoopColor = "#2FC7E9";
-                    LoopMouseColor = "#45a7bc";
-                    TracksProperties.isLoopOn = true;
-                }
+            else
+            {
+                LoopIcon = Icons.GetLoopOn();
+                LoopColor = "#2FC7E9";
+                LoopMouseColor = "#45a7bc";
+                TracksProperties.isLoopOn = true;
+            }
         }
     }
 }

@@ -6,16 +6,15 @@ namespace SM_Audio_Player.View.UserControls.buttons;
 
 public partial class buttonMaximize : UserControl, INotifyPropertyChanged
 {
+    private string maximizeIcon;
+    public event PropertyChangedEventHandler? PropertyChanged;
+
     public buttonMaximize()
     {
         DataContext = this;
         MaximizeIcon = Icons.GetMaxIcon();
         InitializeComponent();
     }
-
-    private string maximizeIcon;
-
-    public event PropertyChangedEventHandler? PropertyChanged;
 
     /*PropertyChanged - pozwala na przekazywanie wartości do widoku*/
     public string MaximizeIcon

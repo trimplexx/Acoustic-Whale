@@ -23,6 +23,8 @@ namespace SM_Audio_Player.View.UserControls.buttons
     {
         bool isMuted = false;
         private double savedVolumeValue = 0;
+        private string volumeIcon;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         public buttonVolume()
         {
@@ -35,10 +37,6 @@ namespace SM_Audio_Player.View.UserControls.buttons
             buttonPlay.TrackEnd += OnTrackSwitch;
             Library.DoubleClickEvent += OnTrackSwitch;
         }
-
-        private string volumeIcon;
-
-        public event PropertyChangedEventHandler? PropertyChanged;
 
         public string VolumeIcon
         {
