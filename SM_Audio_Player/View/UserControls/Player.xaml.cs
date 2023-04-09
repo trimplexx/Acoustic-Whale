@@ -15,27 +15,69 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
-    namespace SM_Audio_Player.View.UserControls
+namespace SM_Audio_Player.View.UserControls
+{
+    public partial class Player : UserControl
     {
-        public partial class Player : UserControl
+        private bool isDraggingSlider = false;
+        private DispatcherTimer timer = new DispatcherTimer();
+
+        public Player()
         {
+            InitializeComponent();
+            buttonNext.NextButtonClicked += OnTrackSwitch;
+            buttonPrevious.PreviousButtonClicked += OnTrackSwitch;
+            buttonPlay.TrackEnd += OnTrackSwitch;
+            Library.DoubleClickEvent += OnTrackSwitch;
+            //timer.Interval = TimeSpan.FromMilliseconds(100);
+            timer.Tick += Timer_Tick;
+        }
 
-            public Player()
+        private void OnTrackSwitch(object sender, EventArgs e)
+        {
+            title.Text = TracksProperties.SelectedTrack.Title;
+            author.Text = TracksProperties.SelectedTrack.Author;
+            CD.Text = TracksProperties.SelectedTrack.Album;
+            tbTime.Text = TracksProperties.SelectedTrack.Time;
+        }
+
+        private void Timer_Tick(object sender, EventArgs e)
+        {
+            try
             {
-                InitializeComponent();
-                buttonNext.NextButtonClicked += OnTrackSwitch;
-                buttonPrevious.PreviousButtonClicked += OnTrackSwitch;
-                buttonPlay.TrackEnd += OnTrackSwitch;
-                Library.DoubleClickEvent += OnTrackSwitch;
+                if (TracksProperties.audioFileReader != null)
+                {
+                    double totalSeconds = TracksProperties.audioFileReader.TotalTime.TotalSeconds;
+                    double currentPosition = TracksProperties.audioFileReader.CurrentTime.TotalSeconds;
+                    double progress = currentPosition / totalSeconds;
+                    tbCurrTime.Text = TimeSpan.FromSeconds(currentPosition).ToString(@"hh\:mm\:ss");
+                    sldTime.Value = progress * sldTime.Maximum;
+                }
             }
-
-            private void OnTrackSwitch(object sender, EventArgs e)
+            catch (Exception ex)
             {
-                title.Text = TracksProperties.SelectedTrack.Title;
-                author.Text = TracksProperties.SelectedTrack.Author;
-                CD.Text = TracksProperties.SelectedTrack.Album;
-                tbTime.Text = TracksProperties.SelectedTrack.Time;
+                MessageBox.Show($"Timer error: {ex.Message}");
+            }
+        }
+
+        private void TimeSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            try
+            {
+                if (TracksProperties.audioFileReader != null && !isDraggingSlider)
+                {
+                    double totalSeconds = TracksProperties.audioFileReader.TotalTime.TotalSeconds;
+                    double progress = sldTime.Value / sldTime.Maximum;
+                    double newPosition = totalSeconds * progress;
+                    TracksProperties.audioFileReader.CurrentTime = TimeSpan.FromSeconds(newPosition);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Position change error: {ex.Message}");
             }
         }
     }
+}
