@@ -189,8 +189,13 @@ namespace SM_Audio_Player.View.UserControls.buttons
                 TracksProperties.waveOut = new WaveOutEvent();
                 TracksProperties.audioFileReader = new AudioFileReader(TracksProperties.SelectedTrack.Path);
                 TracksProperties.waveOut.Init(TracksProperties.audioFileReader);
-                // Zapauzwanie oznaczające, że skończyły się dostępne utwory
-                TracksProperties.waveOut.Pause();
+                
+                // Jeżeli schuffle i loop występują razem to nie pauzuje muzyki na pierwszym utworze
+                if (TracksProperties.isLoopOn)
+                    TracksProperties.waveOut.Play();
+                else
+                    TracksProperties.waveOut.Pause();
+                
                 TracksProperties.waveOut.PlaybackStopped += WaveOut_PlaybackStopped;
                 // Reset listy dostępnych numerów utworów
                 TracksProperties.availableNumbers = Enumerable.Range(0, TracksProperties.tracksList.Count).ToList();
@@ -288,21 +293,16 @@ namespace SM_Audio_Player.View.UserControls.buttons
             PlayIcon = Icons.GetStopIcon();
             isPlaying = true;
             
-            // Jednoczesne schufflowanie i zapętlanie, aby muzyka leciała schufflowana bez przerwy
-            if (TracksProperties.isSchuffleOn && TracksProperties.isLoopOn && TracksProperties.SelectedTrack == 
-                TracksProperties.firstPlayed)
-            {
-                TracksProperties.waveOut.Play();
-            }
             // Sprawdzenie, czy bez użycia loopa pierwszy element z listy został włącozny.
-            else if (!TracksProperties.isLoopOn && !TracksProperties.isSchuffleOn
+            if (!TracksProperties.isLoopOn && !TracksProperties.isSchuffleOn
                                                 && TracksProperties.SelectedTrack == TracksProperties.tracksList.ElementAt(0))
             {
                 PlayIcon = Icons.GetPlayIcon();
                 isPlaying = false;
             }
             // Sprawdzenie czy ostatni track schuffli nie został zagrany, aby na pierwszym się zatrzymać
-            if (TracksProperties.isSchuffleOn && TracksProperties.SelectedTrack == TracksProperties.firstPlayed)
+            if (TracksProperties.isSchuffleOn && !TracksProperties.isLoopOn &&  
+                    TracksProperties.SelectedTrack == TracksProperties.firstPlayed)
             {
                 TracksProperties.waveOut.Pause();
                 PlayIcon = Icons.GetPlayIcon();
