@@ -36,7 +36,7 @@ public partial class Library
             ButtonPlay.TrackEnd += OnTrackSwitch;
             ButtonNext.NextButtonClicked += OnTrackSwitch;
             ButtonPrevious.PreviousButtonClicked += OnTrackSwitch;
-            
+
             ButtonPlay.RefreshList += RefreshTrackList;
             ButtonNext.RefreshList += RefreshTrackList;
             ButtonPrevious.RefreshList += RefreshTrackList;
@@ -126,7 +126,7 @@ public partial class Library
             MessageBox.Show($"Sort TrackList error: {ex.Message}");
             throw;
         }
-        
+
     }
 
     // Metoda odpowiadająca za kliknięcie nagłówka, po którym następuje sortowanie elementów w liście oraz na listview
@@ -189,7 +189,10 @@ public partial class Library
                 "Music files (*.mp3)|*.mp3|Waveform Audio File Format (.wav)|.wav|Windows Media Audio Professional (.wma)|.wma|MPEG-4 Audio (.mp4)|.mp4|" +
                 "Free Lossless Audio Codec (.flac)|.flac|All files (*.*)|*.*";
 
+            bool addedToTheList = false;
+
             if (openFileDialog.ShowDialog() == true)
+            {
                 foreach (var filePath in openFileDialog.FileNames)
                 {
                     var title = System.IO.Path.GetFileNameWithoutExtension(filePath);
@@ -198,13 +201,13 @@ public partial class Library
                     if (TracksProperties.TracksList != null &&
                         TracksProperties.TracksList.Any(track => track.Path == newPath))
                     {
-                        var result = MessageBox.Show("This music is already in the list. Do you want to add it again?",
+                        var duplicateTrack = System.IO.Path.GetFileNameWithoutExtension(newPath);
+                        var result = MessageBox.Show($"The track '{duplicateTrack}' is already in the list. Do you want to add it again?",
                             "Duplicate Music",
                             MessageBoxButton.YesNo);
 
                         if (result == MessageBoxResult.No) continue;
                     }
-
 
                     var file = TagLib.File.Create(newPath);
 
@@ -226,14 +229,19 @@ public partial class Library
                         var newTrack = new Tracks(newId, newTitle, newAuthor, newAlbum, newPath, formattedTime);
 
                         TracksProperties.TracksList.Add(newTrack);
+                        addedToTheList = true;
                     }
 
                     var newJsonData = JsonConvert.SerializeObject(TracksProperties.TracksList);
                     File.WriteAllText(JsonPath, newJsonData);
                     RefreshTrackListViewAndId();
-
-                    MessageBox.Show($"Successfully added {newTitle} to the list.", "Add Music");
                 }
+
+                if (addedToTheList)
+                {
+                    MessageBox.Show($"Successfully added to the list.", "Add Music");
+                }
+            }
         }
         catch (Exception ex)
         {
@@ -246,21 +254,39 @@ public partial class Library
     {
         try
         {
-            if (lv.SelectedItem != null)
+            if (lv.SelectedItems.Count > 0)
             {
-                // Ask the user for confirmation
                 var result = MessageBox.Show(
-                    $"Are you sure you want to delete {TracksProperties.SelectedTrack?.Title}?",
+                    $"Are you sure you want to delete {lv.SelectedItems.Count} track(s)?",
                     "Confirm Delete", MessageBoxButton.YesNo, MessageBoxImage.Question);
 
                 if (result == MessageBoxResult.Yes)
                 {
-                    // Remove the selected track from the tracksList
-                    TracksProperties.TracksList?.RemoveAt(lv.SelectedIndex);
+                    var selectedIndices = new List<int>();
+                    foreach (var item in lv.SelectedItems)
+                    {
+                        selectedIndices.Add(lv.Items.IndexOf(item));
+                    }
+
+                    // Posortuj indeksy w porządku malejącym, aby uniknąć problemów z usuwaniem wielu elementów
+                    selectedIndices.Sort((a, b) => b.CompareTo(a));
+
+                    // Sortuj indeksy w kolejności malejącej, aby uniknąć problemów z usuwaniem wielu elementów
+                    foreach (var index in selectedIndices)
+                    {
+                        TracksProperties.TracksList.RemoveAt(index);
+                    }
+
                     var newJsonData = JsonConvert.SerializeObject(TracksProperties.TracksList);
                     File.WriteAllText(JsonPath, newJsonData);
                     TracksProperties.SelectedTrack = null;
                     RefreshTrackListViewAndId();
+
+                    if (lv.Items.Count > 0)
+                    {
+                        var selectedIndex = Math.Max(selectedIndices.Min() - 1, 0);
+                        lv.SelectedIndex = selectedIndex;
+                    }
                 }
             }
         }
@@ -270,6 +296,7 @@ public partial class Library
             throw;
         }
     }
+
 
     private void Lv_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
     {
@@ -309,7 +336,7 @@ public partial class Library
             int selectedIndex = lv.SelectedIndex;
             RefreshTrackListViewAndId();
             lv.SelectedIndex = selectedIndex;
-            
+
             var btnPlay = new ButtonPlay();
             if (TracksProperties.IsSchuffleOn && TracksProperties.WaveOut != null &&
                 TracksProperties.AudioFileReader != null)

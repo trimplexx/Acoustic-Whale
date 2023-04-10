@@ -150,7 +150,6 @@ public partial class ButtonPlay : INotifyPropertyChanged
                     }
                     else // wznawianie odtwarzania, jeżeli utwór sie nie różni w pożądanym miejscu
                     {
-                        TracksProperties.AudioFileReader.Position = _pausedPosition;
                         TracksProperties.WaveOut?.Play();
                     }
 
