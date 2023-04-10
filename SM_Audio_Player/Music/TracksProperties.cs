@@ -19,7 +19,7 @@ public static class TracksProperties
     public static WaveOutEvent? WaveOut { get; set; }
 
     // Flagi przycisków Loop oraz Schuffle
-    public static bool IsLoopOn = false;
+    public static int IsLoopOn = 0;
     public static bool IsSchuffleOn = false;
 
     // Lista poprzednich utworów do przycisku schuffle

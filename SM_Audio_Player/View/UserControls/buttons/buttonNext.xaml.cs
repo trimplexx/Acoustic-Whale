@@ -56,7 +56,7 @@ public partial class ButtonNext
                     if (TracksProperties.TracksList != null)
                         TracksProperties.SelectedTrack = TracksProperties.TracksList.ElementAt(0);
                     _btnPlay.PlayNewTrack();
-                    if (!TracksProperties.IsLoopOn) TracksProperties.WaveOut?.Pause();
+                    if (TracksProperties.IsLoopOn == 0) TracksProperties.WaveOut?.Pause();
                 }
             }
 

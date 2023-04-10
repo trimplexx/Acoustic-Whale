@@ -221,7 +221,7 @@ public partial class ButtonPlay : INotifyPropertyChanged
                 TracksProperties.WaveOut.Init(TracksProperties.AudioFileReader);
 
                 // Jeżeli schuffle i loop występują razem to nie pauzuje muzyki na pierwszym utworze
-                if (TracksProperties.IsLoopOn)
+                if (TracksProperties.IsLoopOn == 1)
                     TracksProperties.WaveOut.Play();
                 else
                     TracksProperties.WaveOut.Pause();
@@ -275,11 +275,13 @@ public partial class ButtonPlay : INotifyPropertyChanged
                 ts += TracksProperties.AudioFileReader.CurrentTime;
                 if (ts > TracksProperties.AudioFileReader.TotalTime)
                 {
+                    if (TracksProperties.IsLoopOn == 2)
+                        PlayNewTrack();
                     // Sprawdzenie czy jest włączona opcja schuffle, ponieważ ona zmienia następny track
-                    if (TracksProperties.IsSchuffleOn)
+                    else if (TracksProperties.IsSchuffleOn)
                     {
                         SchuffleFun();
-                        if (TracksProperties.IsLoopOn)
+                        if (TracksProperties.IsLoopOn == 1)
                         {
                             if (TracksProperties.SelectedTrack == TracksProperties.FirstPlayed)
                                 if (TracksProperties.WaveOut != null)
@@ -302,7 +304,7 @@ public partial class ButtonPlay : INotifyPropertyChanged
                             TracksProperties.SelectedTrack = TracksProperties.TracksList?.ElementAt(0);
                             PlayNewTrack();
                             // Sprawdzenie czy jest loop, jeżeli nie to zatrzymaj muzykę i zmień ikone
-                            if (!TracksProperties.IsLoopOn)
+                            if (TracksProperties.IsLoopOn == 0)
                             {
                                 TracksProperties.WaveOut?.Pause();
                                 PlayIcon = Icons.GetPlayIcon();
@@ -365,16 +367,15 @@ public partial class ButtonPlay : INotifyPropertyChanged
             _isPlaying = true;
 
             // Sprawdzenie, czy bez użycia loopa pierwszy element z listy został włącozny.
-            if (!TracksProperties.IsLoopOn && !TracksProperties.IsSchuffleOn
-                                           && TracksProperties.SelectedTrack ==
-                                           TracksProperties.TracksList?.ElementAt(0))
+            if (TracksProperties.IsLoopOn == 0 && !TracksProperties.IsSchuffleOn && 
+                TracksProperties.SelectedTrack == TracksProperties.TracksList?.ElementAt(0))
             {
                 PlayIcon = Icons.GetPlayIcon();
                 _isPlaying = false;
             }
 
             // Sprawdzenie czy ostatni track schuffli nie został zagrany, aby na pierwszym się zatrzymać
-            if (TracksProperties.IsSchuffleOn && !TracksProperties.IsLoopOn &&
+            if (TracksProperties.IsSchuffleOn && TracksProperties.IsLoopOn != 1 &&
                 TracksProperties.SelectedTrack == TracksProperties.FirstPlayed)
             {
                 TracksProperties.WaveOut?.Pause();
@@ -398,7 +399,7 @@ public partial class ButtonPlay : INotifyPropertyChanged
         {
             PlayIcon = Icons.GetStopIcon();
             _isPlaying = true;
-            if (TracksProperties.IsLoopOn && TracksProperties.SelectedTrack?.Id == 1)
+            if (TracksProperties.IsLoopOn == 1 && TracksProperties.SelectedTrack?.Id == 1)
             {
                 PlayIcon = Icons.GetPlayIcon();
                 _isPlaying = false;

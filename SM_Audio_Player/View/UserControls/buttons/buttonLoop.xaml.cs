@@ -65,21 +65,29 @@ public partial class ButtonLoop : INotifyPropertyChanged
     {
         try
         {
-            // Gdy loop jest włączony
-            if (TracksProperties.IsLoopOn)
-            {
-                LoopIcon = Icons.GetLoopOff();
-                LoopColor = "#037994";
-                LoopMouseColor = "#2FC7E9";
-                TracksProperties.IsLoopOn = false;
-            }
-            // Gdy loop jest wyłączony
-            else
+            // Wyłączony
+            if (TracksProperties.IsLoopOn == 0)
             {
                 LoopIcon = Icons.GetLoopOn();
                 LoopColor = "#2FC7E9";
                 LoopMouseColor = "#45a7bc";
-                TracksProperties.IsLoopOn = true;
+                TracksProperties.IsLoopOn = 1;
+            }
+            // Cała playlista
+            else if(TracksProperties.IsLoopOn == 1)
+            {
+                LoopIcon = Icons.GetLoopOnce();
+                LoopColor = "#2FC7E9";
+                LoopMouseColor = "#45a7bc";
+                TracksProperties.IsLoopOn = 2;
+            }
+            // Pojedynczy track
+            else if (TracksProperties.IsLoopOn == 2)
+            {
+                LoopIcon = Icons.GetLoopOff();
+                LoopColor = "#037994";
+                LoopMouseColor = "#2FC7E9";
+                TracksProperties.IsLoopOn = 0;
             }
         }
         catch (Exception ex)
