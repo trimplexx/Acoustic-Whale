@@ -1,37 +1,34 @@
 ﻿using Newtonsoft.Json;
 using SM_Audio_Player.Music;
 using System;
-using System.Collections.Generic;
+
 using System.ComponentModel;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace SM_Audio_Player.View.UserControls.buttons
 {
-    public partial class buttonVolume : UserControl, INotifyPropertyChanged
+    public partial class buttonVolume : INotifyPropertyChanged
     {
-        bool isMuted = false;
-        private double savedVolumeValue = 0;
-        private string volumeIcon;
+        bool _isMuted;
+        private double _savedVolumeValue;
+        private string _volumeIcon;
+        
+        private const String JsonPath = @"MusicVolumeJSON.json";
         public event PropertyChangedEventHandler? PropertyChanged;
 
         public buttonVolume()
         {
             DataContext = this;
-            InitializeComponent();
+            InitializeComponent();           
+            if (File.Exists(JsonPath))
+                TracksProperties.Volume = ReadVolumeFromJsonFile();
+            else
+                TracksProperties.Volume = 50;
+
             sldVolume.Value = TracksProperties.Volume;
-            VolumeIcon = valueIconChange(sldVolume.Value);
+            VolumeIcon = ValueIconChange(sldVolume.Value);
             buttonNext.NextButtonClicked += OnTrackSwitch;
             buttonPrevious.PreviousButtonClicked += OnTrackSwitch;
             buttonPlay.TrackEnd += OnTrackSwitch;
@@ -40,33 +37,33 @@ namespace SM_Audio_Player.View.UserControls.buttons
 
         public string VolumeIcon
         {
-            get { return volumeIcon; }
+            get { return _volumeIcon; }
             set 
             { 
-                volumeIcon = value;
+                _volumeIcon = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("VolumeIcon"));
             }
         }
 
         /*Metoda sprawdzająca aktualną wartość slidera i na jej podstawie ustawiająca ikonkę*/
-        private string valueIconChange(double VolumeValue)
+        private string ValueIconChange(double volumeValue)
         {
-            if (VolumeValue == 0) 
+            if (volumeValue == 0) 
             {
                 VolumeIcon = Icons.GetVolumeIconZero();
                 return Icons.GetVolumeIconZero();
             }
-            else if (VolumeValue > 0 && VolumeValue <= 40)
+            else if (volumeValue > 0 && volumeValue <= 40)
             {
                 VolumeIcon = Icons.GetVolumeIconLow();
                 return Icons.GetVolumeIconLow();
             }
-            else if (VolumeValue > 40 && VolumeValue <= 75) 
+            else if (volumeValue > 40 && volumeValue <= 75) 
             {
                 VolumeIcon = Icons.GetVolumeIconHalf();
                 return Icons.GetVolumeIconHalf();
             }
-            else if (VolumeValue > 75)
+            else if (volumeValue > 75)
             {
                 VolumeIcon = Icons.GetVolumeIconMax();
                 return Icons.GetVolumeIconMax();
@@ -77,18 +74,18 @@ namespace SM_Audio_Player.View.UserControls.buttons
         /*Wycisz/Zmień poziom głośności*/
         private void btnVolume_Click(object sender, RoutedEventArgs e)
         {
-            if (isMuted && savedVolumeValue != 0)
+            if (_isMuted && _savedVolumeValue != 0)
             {
-                sldVolume.Value = savedVolumeValue;
-                valueIconChange(TracksProperties.Volume);
-                isMuted = false;
+                sldVolume.Value = _savedVolumeValue;
+                ValueIconChange(TracksProperties.Volume);
+                _isMuted = false;
             }
             else
             {
-                savedVolumeValue = sldVolume.Value;
+                _savedVolumeValue = sldVolume.Value;
                 sldVolume.Value = 0;
                 VolumeIcon = Icons.GetVolumeIconZero();
-                isMuted = true;
+                _isMuted = true;
             }
         }
 
@@ -98,18 +95,40 @@ namespace SM_Audio_Player.View.UserControls.buttons
             {
                 /*Pobieranie aktualnej wartości slidera*/
                 TracksProperties.Volume = e.NewValue;
-                valueIconChange(TracksProperties.Volume);
+                ValueIconChange(TracksProperties.Volume);
 
                 if (TracksProperties.audioFileReader != null)
                 {
                     double sliderValue = TracksProperties.Volume / 100.0; // Skalowanie wartości na zakres od 0 do 1
                     double newVolume = sliderValue; // Obliczamy nową wartość głośności
                     TracksProperties.audioFileReader.Volume = (float)newVolume; // Aktualizujemy głośność pliku audio
+                    
+                    // Zapis do pliku JSON w celu ponownego odpalenia aplikacji z zapisaną wartością głośności
+                    string output = JsonConvert.SerializeObject(TracksProperties.Volume, Formatting.Indented);
+                    File.WriteAllText(JsonPath, output);
                 }
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Volume change error: {ex.Message}");
+            }
+        }
+
+        public double ReadVolumeFromJsonFile()
+        {
+            try
+            {
+                double volume = 50;
+                string json = File.ReadAllText(JsonPath);
+                dynamic jsonObj = JsonConvert.DeserializeObject(json);
+                if (jsonObj != null)
+                    volume = jsonObj;
+                return volume;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"ReadValueJson error: {ex.Message}");
+                return 0;
             }
         }
         
@@ -118,7 +137,7 @@ namespace SM_Audio_Player.View.UserControls.buttons
         {
             try
             {
-                valueIconChange(TracksProperties.Volume);
+                ValueIconChange(TracksProperties.Volume);
 
                 if (TracksProperties.audioFileReader != null)
                 {

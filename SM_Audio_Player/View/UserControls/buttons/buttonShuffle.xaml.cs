@@ -76,7 +76,7 @@ namespace SM_Audio_Player.View.UserControls.buttons
                 ShuffleIcon = Icons.GetShuffleIconOFF();
                 ShuffleColor = "#037994";
                 ShuffleMouseColor = "#2FC7E9";
-                TracksProperties.isSchuffleOn = false
+                TracksProperties.isSchuffleOn = false;
             }
             // Jeżeli był wyłączony.
             else

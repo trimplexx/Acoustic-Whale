@@ -35,10 +35,7 @@ namespace SM_Audio_Player.View.UserControls
         public String jsonPath = @"MusicTrackList.json";
         public delegate void NextButtonClickedEventHandler(object sender, EventArgs e);
         public static event NextButtonClickedEventHandler DoubleClickEvent;
-        
-        public delegate void SortListViewEventHandler(object sender, EventArgs e);
-        public static event SortListViewEventHandler ListViewSort;
-        
+
         private bool sortingtype = true;
         private string prevColumnSorted;
 
