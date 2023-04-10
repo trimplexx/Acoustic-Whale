@@ -1,17 +1,26 @@
-﻿using System.Windows;
-using System.Windows.Controls;
+﻿using System;
+using System.Windows;
 
 namespace SM_Audio_Player.View.UserControls.buttons;
 
-public partial class buttonClose : UserControl
+public partial class ButtonClose
 {
-    public buttonClose()
+    public ButtonClose()
     {
         InitializeComponent();
     }
+
     /* Zamknięcie aplikacji */
     private void btnClose_Click(object sender, RoutedEventArgs e)
     {
-        Application.Current.Shutdown();
+        try
+        {
+            Application.Current.Shutdown();
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Close window exception: {ex.Message}");
+            throw;
+        }
     }
 }

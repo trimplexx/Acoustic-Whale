@@ -2,106 +2,137 @@
 using SM_Audio_Player.Music;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Xml;
-using NAudio.Wave;
 using Newtonsoft.Json;
 using SM_Audio_Player.View.UserControls.buttons;
-using JsonSerializer = System.Text.Json.JsonSerializer;
-using TagLib;
 using File = System.IO.File;
 
-namespace SM_Audio_Player.View.UserControls
+namespace SM_Audio_Player.View.UserControls;
+
+public partial class Library
 {
-    public partial class Library : UserControl
+    public const string JsonPath = @"MusicTrackList.json";
+
+    /*
+    * Zdarzenie odnoszące się do double clicka w wybrany utwór, dzięki któremu w innych miejscach kodu wyniknie reakcja.
+    * Utworzone zostało aby aktualizować poszczególne dane innych klas. 
+    */
+    public delegate void LibraryEventHandler(object sender, EventArgs e);
+
+    public static event LibraryEventHandler? DoubleClickEvent;
+
+    private bool _sortingtype = true;
+    private string? _prevColumnSorted;
+
+    public Library()
     {
-        public String jsonPath = @"MusicTrackList.json";
-        public delegate void NextButtonClickedEventHandler(object sender, EventArgs e);
-        public static event NextButtonClickedEventHandler DoubleClickEvent;
-
-        private bool sortingtype = true;
-        private string prevColumnSorted;
-
-        public Library()
+        try
         {
             InitializeComponent();
-            buttonNext.NextButtonClicked += OnTrackSwitch;
-            buttonPrevious.PreviousButtonClicked += OnTrackSwitch;
-            buttonPlay.TrackEnd += OnTrackSwitch;
-            RefreshTrackListViewAndID();
+            ButtonPlay.TrackEnd += OnTrackSwitch;
+            ButtonNext.NextButtonClicked += OnTrackSwitch;
+            ButtonPrevious.PreviousButtonClicked += OnTrackSwitch;
+            
+            ButtonPlay.RefreshList += RefreshTrackList;
+            ButtonNext.RefreshList += RefreshTrackList;
+            ButtonPrevious.RefreshList += RefreshTrackList;
+            RefreshTrackListViewAndId();
         }
-
-        // Metoda służąca odświeżaniu listView z pliku JSON, do ktorego zapisana zostaje lista piosenek
-        public void RefreshTrackListViewAndID()
+        catch (Exception ex)
         {
-            try
-            {
-                lv.Items.Clear();
-                TracksProperties.tracksList.Clear();
-                if (File.Exists(jsonPath))
-                {
-                    string json = File.ReadAllText(jsonPath);
-                    TracksProperties.tracksList = JsonConvert.DeserializeObject<List<Tracks>>(json);
-                    int coutTracksOnJson = TracksProperties.tracksList.Count;
-                    for (int i = 0; i < coutTracksOnJson; i++)
-                    {
-                        if (!File.Exists(TracksProperties.tracksList.ElementAt(i).Path))
-                        {
-                            TracksProperties.tracksList.Remove(TracksProperties.tracksList.ElementAt(i));
-                            coutTracksOnJson--;
-                            i--;
-                        }
-                        else
-                        {
-                            TracksProperties.tracksList.ElementAt(i).Id = i + 1;
-                            lv.Items.Add(TracksProperties.tracksList.ElementAt(i));
-                        }
-                    }
-                    var NewJsonData = JsonConvert.SerializeObject(TracksProperties.tracksList);
-                    File.WriteAllText(jsonPath, NewJsonData);
-                    lv.SelectedIndex = -1;
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Refresh Listview error: {ex.Message}");
-            }
+            MessageBox.Show($"Library constructor exception: {ex.Message}");
+            throw;
+        }
+    }
+    /*
+     * Istotne odświeżanie listy gdyby scieżka do pliku się zmieniła w trakcie odtwarzania, track z złą ściażka z pliku
+     * JSON jest wyrzucany przed otworzeniem.
+     */
+    private void RefreshTrackList(object sender, EventArgs e)
+    {
+        try
+        {
+            int selectedIndex = lv.SelectedIndex;
+            RefreshTrackListViewAndId();
+            lv.SelectedIndex = selectedIndex;
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Library RefreshTrackList exception: {ex.Message}");
+            throw;
         }
 
-        // Metoda sortująca trackList.
-        public void SortTracksList(bool ascending, string property)
+    }
+
+    // Metoda służąca odświeżaniu listView z pliku JSON, do ktorego zapisana zostaje lista piosenek
+    private void RefreshTrackListViewAndId()
+    {
+        try
+        {
+            lv.Items.Clear();
+            TracksProperties.TracksList?.Clear();
+            if (File.Exists(JsonPath))
+            {
+                var json = File.ReadAllText(JsonPath);
+                TracksProperties.TracksList = JsonConvert.DeserializeObject<List<Tracks>>(json);
+                var coutTracksOnJson = TracksProperties.TracksList?.Count;
+                for (var i = 0; i < coutTracksOnJson; i++)
+                    if (!File.Exists(TracksProperties.TracksList?.ElementAt(i).Path))
+                    {
+                        TracksProperties.TracksList?.Remove(TracksProperties.TracksList.ElementAt(i));
+                        coutTracksOnJson--;
+                        i--;
+                    }
+                    else
+                    {
+                        TracksProperties.TracksList.ElementAt(i).Id = i + 1;
+                        lv.Items.Add(TracksProperties.TracksList.ElementAt(i));
+                    }
+
+                var newJsonData = JsonConvert.SerializeObject(TracksProperties.TracksList);
+                File.WriteAllText(JsonPath, newJsonData);
+                lv.SelectedIndex = -1;
+            }
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Refresh Listview error: {ex.Message}");
+            throw;
+        }
+    }
+
+    // Metoda sortująca trackList.
+    public void SortTracksList(bool ascending, string property)
+    {
+        try
         {
             if (ascending)
-                TracksProperties.tracksList = TracksProperties.tracksList.
-                    OrderBy(track => track.GetType().GetProperty(property).GetValue(track)).ToList();
+                TracksProperties.TracksList = TracksProperties.TracksList?
+                    .OrderBy(track => track.GetType().GetProperty(property)?.GetValue(track)).ToList();
             else
-                TracksProperties.tracksList = TracksProperties.tracksList.
-                    OrderByDescending(track => track.GetType().GetProperty(property).GetValue(track)).ToList();
-            
+                TracksProperties.TracksList = TracksProperties.TracksList?
+                    .OrderByDescending(track => track.GetType().GetProperty(property)?.GetValue(track)).ToList();
+
             // Zapisanie posortowanej listy do JSON
-            var NewJsonData = JsonConvert.SerializeObject(TracksProperties.tracksList);
-            File.WriteAllText(jsonPath, NewJsonData);
+            var newJsonData = JsonConvert.SerializeObject(TracksProperties.TracksList);
+            File.WriteAllText(JsonPath, newJsonData);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Sort TrackList error: {ex.Message}");
+            throw;
         }
         
-        // Metoda odpowiadająca za kliknięcie nagłówka, po którym następuje sortowanie elementów w liście oraz na listview
-        private void GridViewColumnHeaderClickedHandler(object sender, RoutedEventArgs e)
+    }
+
+    // Metoda odpowiadająca za kliknięcie nagłówka, po którym następuje sortowanie elementów w liście oraz na listview
+    private void GridViewColumnHeaderClickedHandler(object sender, RoutedEventArgs e)
+    {
+        try
         {
             var headerClicked = e.OriginalSource as GridViewColumnHeader;
             if (headerClicked != null)
@@ -109,152 +140,192 @@ namespace SM_Audio_Player.View.UserControls
                 var binding = headerClicked.Column.DisplayMemberBinding as Binding;
                 if (binding != null)
                 {
-                    string bindingPath = binding.Path.Path;
-                    
-                    if (prevColumnSorted == bindingPath && bindingPath != "Id")
+                    var bindingPath = binding.Path.Path;
+
+                    if (_prevColumnSorted == bindingPath && bindingPath != "Id")
                     {
-                        if (!sortingtype)
+                        if (!_sortingtype)
                         {
                             SortTracksList(false, bindingPath);
-                            sortingtype = true;
+                            _sortingtype = true;
                         }
                         else
                         {
                             SortTracksList(true, bindingPath);
-                            sortingtype = false;
+                            _sortingtype = false;
                         }
-                        prevColumnSorted = bindingPath;
+
+                        _prevColumnSorted = bindingPath;
                     }
-                    else if (prevColumnSorted != bindingPath&& bindingPath != "Id")
+                    else if (_prevColumnSorted != bindingPath && bindingPath != "Id")
                     {
                         SortTracksList(true, bindingPath);
-                        sortingtype = false;
-                        prevColumnSorted = bindingPath;
+                        _sortingtype = false;
+                        _prevColumnSorted = bindingPath;
                     }
                 }
-                RefreshTrackListViewAndID();
-                if(TracksProperties.tracksList != null && TracksProperties.SelectedTrack != null)
-                {
-                    foreach (var track in TracksProperties.tracksList)
-                    {
+
+                RefreshTrackListViewAndId();
+                if (TracksProperties.TracksList != null && TracksProperties.SelectedTrack != null)
+                    foreach (var track in TracksProperties.TracksList)
                         if (TracksProperties.SelectedTrack.Title == track.Title)
                             lv.SelectedIndex = track.Id - 1;
-                    }
-                } 
             }
         }
-
-        private void Add_Btn_Click(object sender, RoutedEventArgs e)
+        catch (Exception ex)
         {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
+            MessageBox.Show($"ListView header click exception: {ex.Message}");
+            throw;
+        }
+    }
+
+    private void Add_Btn_Click(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            var openFileDialog = new OpenFileDialog();
             openFileDialog.Multiselect = true;
-            openFileDialog.Filter = "Music files (*.mp3)|*.mp3|Waveform Audio File Format (.wav)|.wav|Windows Media Audio Professional (.wma)|.wma|MPEG-4 Audio (.mp4)|.mp4|" +
+            openFileDialog.Filter =
+                "Music files (*.mp3)|*.mp3|Waveform Audio File Format (.wav)|.wav|Windows Media Audio Professional (.wma)|.wma|MPEG-4 Audio (.mp4)|.mp4|" +
                 "Free Lossless Audio Codec (.flac)|.flac|All files (*.*)|*.*";
 
             if (openFileDialog.ShowDialog() == true)
-            {
-                foreach (string filePath in openFileDialog.FileNames)
+                foreach (var filePath in openFileDialog.FileNames)
                 {
-                    string title = System.IO.Path.GetFileNameWithoutExtension(filePath);
-                    string newPath = filePath;
+                    var title = System.IO.Path.GetFileNameWithoutExtension(filePath);
+                    var newPath = filePath;
 
-                    if (TracksProperties.tracksList.Any(track => track.Path == newPath))
+                    if (TracksProperties.TracksList != null &&
+                        TracksProperties.TracksList.Any(track => track.Path == newPath))
                     {
-                        MessageBoxResult result = MessageBox.Show("This music is already in the list. Do you want to add it again?", "Duplicate Music",
+                        var result = MessageBox.Show("This music is already in the list. Do you want to add it again?",
+                            "Duplicate Music",
                             MessageBoxButton.YesNo);
 
-                        if (result == MessageBoxResult.No)
-                        {
-                            continue;
-                        }
+                        if (result == MessageBoxResult.No) continue;
                     }
-                    try
+
+
+                    var file = TagLib.File.Create(newPath);
+
+                    var newTitle = file.Tag.Title ?? title;
+                    var newAuthor = file.Tag.FirstPerformer ?? "Unknown";
+                    var newAlbum = file.Tag.Album ?? "Unknown";
+                    var duration = (int)file.Properties.Duration.TotalSeconds;
+
+                    var hours = duration / 3600;
+                    var minutes = duration % 3600 / 60;
+                    var seconds = duration % 60;
+
+                    var formattedTime = string.Format("{0:D2}:{1:D2}:{2:D2}", hours, minutes, seconds);
+
+                    if (TracksProperties.TracksList != null)
                     {
-                        TagLib.File file = TagLib.File.Create(newPath);
+                        var newId = TracksProperties.TracksList.Count + 1;
 
-                        string newTitle = file.Tag.Title ?? title;
-                        string newAuthor = file.Tag.FirstPerformer ?? "Unknown";
-                        string newAlbum = file.Tag.Album ?? "Unknown";
-                        int duration = (int)file.Properties.Duration.TotalSeconds;
+                        var newTrack = new Tracks(newId, newTitle, newAuthor, newAlbum, newPath, formattedTime);
 
-                        int hours = duration / 3600;
-                        int minutes = (duration % 3600) / 60;
-                        int seconds = duration % 60;
-
-                        string formattedTime = string.Format("{0:D2}:{1:D2}:{2:D2}", hours, minutes, seconds);
-
-                        int newId = TracksProperties.tracksList.Count + 1;
-
-                        Tracks newTrack = new Tracks(newId, newTitle, newAuthor, newAlbum, newPath, formattedTime);
-
-                        TracksProperties.tracksList.Add(newTrack);
-                        var NewJsonData = JsonConvert.SerializeObject(TracksProperties.tracksList);
-                        File.WriteAllText(jsonPath, NewJsonData);
-                        RefreshTrackListViewAndID();
-
-                        MessageBox.Show($"Successfully added {newTitle} to the list.", "Add Music");
+                        TracksProperties.TracksList.Add(newTrack);
                     }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show($"Error reading metadata from file: {ex.Message}", "Error");
-                    }
+
+                    var newJsonData = JsonConvert.SerializeObject(TracksProperties.TracksList);
+                    File.WriteAllText(JsonPath, newJsonData);
+                    RefreshTrackListViewAndId();
+
+                    MessageBox.Show($"Successfully added {newTitle} to the list.", "Add Music");
                 }
-            }
         }
-
-        private void Delete_Btn_Click(object sender, RoutedEventArgs e)
+        catch (Exception ex)
         {
-            try
-            {
-                if (lv.SelectedItem != null)
-                {
-                    // Ask the user for confirmation
-                    MessageBoxResult result = MessageBox.Show($"Are you sure you want to delete {TracksProperties.SelectedTrack.Title}?",
-                        "Confirm Delete", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            MessageBox.Show($"Add track exception {ex.Message}");
+            throw;
+        }
+    }
 
-                    if (result == MessageBoxResult.Yes)
-                    {
-                        // Remove the selected track from the tracksList
-                        TracksProperties.tracksList.RemoveAt(lv.SelectedIndex);
-                        var NewJsonData = JsonConvert.SerializeObject(TracksProperties.tracksList);
-                        File.WriteAllText(jsonPath, NewJsonData);
-                        TracksProperties.SelectedTrack = null;
-                        RefreshTrackListViewAndID();
-                    }
+    private void Delete_Btn_Click(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            if (lv.SelectedItem != null)
+            {
+                // Ask the user for confirmation
+                var result = MessageBox.Show(
+                    $"Are you sure you want to delete {TracksProperties.SelectedTrack?.Title}?",
+                    "Confirm Delete", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+                if (result == MessageBoxResult.Yes)
+                {
+                    // Remove the selected track from the tracksList
+                    TracksProperties.TracksList?.RemoveAt(lv.SelectedIndex);
+                    var newJsonData = JsonConvert.SerializeObject(TracksProperties.TracksList);
+                    File.WriteAllText(JsonPath, newJsonData);
+                    TracksProperties.SelectedTrack = null;
+                    RefreshTrackListViewAndId();
                 }
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Delete Error");
-            }
         }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Delete track exception {ex.Message}");
+            throw;
+        }
+    }
 
-        private void Lv_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+    private void Lv_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        try
         {
             if (lv.SelectedIndex != -1)
             {
-                int elementId = lv.SelectedIndex;
-                TracksProperties.SelectedTrack = TracksProperties.tracksList.ElementAt(elementId);
+                var elementId = lv.SelectedIndex;
+                TracksProperties.SelectedTrack = TracksProperties.TracksList?.ElementAt(elementId);
             }
         }
-        private void OnTrackSwitch(object sender, EventArgs e)
+        catch (Exception ex)
         {
-            lv.SelectedIndex = TracksProperties.SelectedTrack.Id - 1;
+            MessageBox.Show($"Track selectedIndex changing exception {ex.Message}");
+            throw;
         }
+    }
 
-        private void OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
+    private void OnTrackSwitch(object sender, EventArgs e)
+    {
+        try
         {
-            buttonPlay btnPlay = new buttonPlay();
-            if (TracksProperties.isSchuffleOn && TracksProperties.waveOut != null &&
-                TracksProperties.audioFileReader != null)
+            if (TracksProperties.SelectedTrack != null)
+                lv.SelectedIndex = TracksProperties.SelectedTrack.Id - 1;
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Track switch Library class exception {ex.Message}");
+            throw;
+        }
+    }
+
+    private void OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
+    {
+        try
+        {
+            int selectedIndex = lv.SelectedIndex;
+            RefreshTrackListViewAndId();
+            lv.SelectedIndex = selectedIndex;
+            
+            var btnPlay = new ButtonPlay();
+            if (TracksProperties.IsSchuffleOn && TracksProperties.WaveOut != null &&
+                TracksProperties.AudioFileReader != null)
             {
-                TracksProperties.waveOut.Stop();
-                TracksProperties.waveOut.Dispose();
-                TracksProperties.audioFileReader = null;
+                TracksProperties.WaveOut.Stop();
+                TracksProperties.WaveOut.Dispose();
+                TracksProperties.AudioFileReader = null;
             }
+
             btnPlay.btnPlay_Click(sender, e);
             DoubleClickEvent?.Invoke(this, EventArgs.Empty);
         }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"On double click track {ex.Message}");
+            throw;
+        }
     }
 }
-    

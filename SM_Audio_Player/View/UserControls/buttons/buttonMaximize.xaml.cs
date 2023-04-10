@@ -1,44 +1,61 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Windows;
-using System.Windows.Controls;
 
 namespace SM_Audio_Player.View.UserControls.buttons;
 
-public partial class buttonMaximize : UserControl, INotifyPropertyChanged
+public partial class ButtonMaximize : INotifyPropertyChanged
 {
-    private string maximizeIcon;
+    private string? _maximizeIcon;
     public event PropertyChangedEventHandler? PropertyChanged;
 
-    public buttonMaximize()
+    public ButtonMaximize()
     {
-        DataContext = this;
-        MaximizeIcon = Icons.GetMaxIcon();
-        InitializeComponent();
+        try
+        {
+            DataContext = this;
+            MaximizeIcon = Icons.GetMaxIcon();
+            InitializeComponent();
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"ButtonMaximize Constructor exception: {ex.Message}");
+            throw;
+        }
     }
 
-    /*PropertyChanged - pozwala na przekazywanie wartości do widoku*/
-    public string MaximizeIcon
+    /* PropertyChanged - pozwala na przekazywanie wartości do widoku */
+    public string? MaximizeIcon
     {
-        get { return maximizeIcon; }
-        set 
-        { 
-            maximizeIcon = value;
+        get => _maximizeIcon;
+        set
+        {
+            _maximizeIcon = value;
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MaximizeIcon"));
         }
     }
 
-    /*Maxymalizacja okno playera*/
+    /* Maxymalizacja okno playera */
     private void btnMaximize_Click(object sender, RoutedEventArgs e)
     {
-        if (Application.Current.MainWindow.WindowState == WindowState.Normal)
+        try
         {
-            Application.Current.MainWindow.WindowState = WindowState.Maximized;
-            MaximizeIcon = Icons.GetMinIcon();
+            if (Application.Current.MainWindow != null && Application.Current.MainWindow.WindowState == WindowState.Normal)
+            {
+                Application.Current.MainWindow.WindowState = WindowState.Maximized;
+                MaximizeIcon = Icons.GetMinIcon();
+            }
+            else if (Application.Current.MainWindow != null &&
+                     Application.Current.MainWindow.WindowState == WindowState.Maximized)
+            {
+                Application.Current.MainWindow.WindowState = WindowState.Normal;
+                MaximizeIcon = Icons.GetMaxIcon();
+            }
         }
-        else if(Application.Current.MainWindow.WindowState == WindowState.Maximized)
+        catch (Exception ex)
         {
-            Application.Current.MainWindow.WindowState = WindowState.Normal;
-            MaximizeIcon = Icons.GetMaxIcon();
+            MessageBox.Show($"ButtonMaximize click exception: {ex.Message}");
+            throw;
         }
     }
 }

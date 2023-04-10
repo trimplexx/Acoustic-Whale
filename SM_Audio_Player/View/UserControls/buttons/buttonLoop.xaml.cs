@@ -1,31 +1,20 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using SM_Audio_Player.Music;
 
-namespace SM_Audio_Player.View.UserControls.buttons
+namespace SM_Audio_Player.View.UserControls.buttons;
+
+public partial class ButtonLoop : INotifyPropertyChanged
 {
-    public partial class buttonLoop : UserControl, INotifyPropertyChanged
+    public event PropertyChangedEventHandler? PropertyChanged;
+    private string? _loopIcon;
+    private string? _loopColor;
+    private string? _loopMouseColor;
+
+    public ButtonLoop()
     {
-
-        public event PropertyChangedEventHandler? PropertyChanged;
-        private string loopIcon;
-        private string loopColor;
-        private string loopMouseColor;
-
-        public buttonLoop()
+        try
         {
             DataContext = this;
             LoopColor = "#037994";
@@ -33,49 +22,56 @@ namespace SM_Audio_Player.View.UserControls.buttons
             LoopIcon = Icons.GetLoopOff();
             InitializeComponent();
         }
-
-        public string LoopIcon
+        catch (Exception ex)
         {
-            get { return loopIcon; }
-            set 
-            { 
-                loopIcon = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("LoopIcon"));
-            }
+            MessageBox.Show($"ButtonLoop Constructor exception: {ex.Message}");
+            throw;
         }
+    }
 
-        public string LoopColor
+    public string? LoopIcon
+    {
+        get => _loopIcon;
+        set
         {
-            get { return loopColor; }
-            set 
-            { 
-                loopColor = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("LoopColor"));
-            }
+            _loopIcon = value;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("LoopIcon"));
         }
+    }
 
-
-
-        public string LoopMouseColor
+    public string? LoopColor
+    {
+        get => _loopColor;
+        set
         {
-            get { return loopMouseColor; }
-            set 
-            { 
-                loopMouseColor = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("LoopMouseColor"));
-            }
+            _loopColor = value;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("LoopColor"));
         }
-        
-        /*Powtarzaj aktualnie włączony utwór*/
-        private void btnLoop_Click(object sender, RoutedEventArgs e)
+    }
+
+
+    public string? LoopMouseColor
+    {
+        get => _loopMouseColor;
+        set
+        {
+            _loopMouseColor = value;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("LoopMouseColor"));
+        }
+    }
+
+    /*Powtarzaj aktualnie włączony utwór*/
+    private void btnLoop_Click(object sender, RoutedEventArgs e)
+    {
+        try
         {
             // Gdy loop jest włączony
-            if (TracksProperties.isLoopOn)
+            if (TracksProperties.IsLoopOn)
             {
                 LoopIcon = Icons.GetLoopOff();
                 LoopColor = "#037994";
                 LoopMouseColor = "#2FC7E9";
-                TracksProperties.isLoopOn = false;
+                TracksProperties.IsLoopOn = false;
             }
             // Gdy loop jest wyłączony
             else
@@ -83,8 +79,13 @@ namespace SM_Audio_Player.View.UserControls.buttons
                 LoopIcon = Icons.GetLoopOn();
                 LoopColor = "#2FC7E9";
                 LoopMouseColor = "#45a7bc";
-                TracksProperties.isLoopOn = true;
+                TracksProperties.IsLoopOn = true;
             }
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"ButtonLoop click exception: {ex.Message}");
+            throw;
         }
     }
 }

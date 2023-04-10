@@ -1,69 +1,71 @@
-﻿using NAudio.Wave;
-using SM_Audio_Player.Music;
+﻿using SM_Audio_Player.Music;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
-namespace SM_Audio_Player.View.UserControls.buttons
+namespace SM_Audio_Player.View.UserControls.buttons;
+
+public partial class ButtonNext
 {
-    public partial class buttonNext : UserControl
+    /*
+     * Zdarzenie odnoszące się do kliknięcia w ButtonNext, dzięki któremu w innych miejscach kodu wyniknie reakcja.
+     * Utworzone zostało aby aktualizować poszczególne dane innych klas. 
+     */
+    public delegate void NextButtonClickedEventHandler(object sender, EventArgs e);
+    public static event NextButtonClickedEventHandler? NextButtonClicked;
+        
+    /*
+     * Eventy służące odświeżaniu listy, aby wyrzucić piosenkę przed jej odtworzeniem, gdy jego ścieżka uległaby zmianie
+     * w trakcie odtwarzania. 
+     */
+    public delegate void RefreshListEventHandler(object sender, EventArgs e);
+    public static event RefreshListEventHandler? RefreshList;
+
+    private readonly ButtonPlay _btnPlay = new();
+
+    public ButtonNext()
     {
-        public delegate void NextButtonClickedEventHandler(object sender, EventArgs e);
-        public static event NextButtonClickedEventHandler NextButtonClicked;
+        InitializeComponent();
+    }
 
-        private buttonPlay btnPlay = new buttonPlay();
-        public buttonNext()
+    /*Włącz następny utwór*/
+    private void btnNext_Click(object sender, RoutedEventArgs e)
+    {
+        try
         {
-            InitializeComponent();
-        }
-
-        /*Włącz następny utwór*/
-        private void btnNext_Click(object sender, RoutedEventArgs e)
-        {
-            try
+            RefreshList?.Invoke(this, EventArgs.Empty);
+            
+            if (TracksProperties.IsSchuffleOn)
             {
-                if (TracksProperties.isSchuffleOn)
+                _btnPlay.SchuffleFun();
+            }
+            else
+            {
+                // Sprawdzanie czy to nie był ostatni utwór na liście
+                if (TracksProperties.TracksList != null && TracksProperties.SelectedTrack != null
+                                                        && TracksProperties.SelectedTrack.Id !=
+                                                        TracksProperties.TracksList.Count)
                 {
-                    btnPlay.SchuffleFun();
+                    TracksProperties.SelectedTrack =
+                        TracksProperties.TracksList.ElementAt(TracksProperties.SelectedTrack.Id);
+                    _btnPlay.PlayNewTrack();
                 }
                 else
                 {
-                    // Sprawdzanie czy to nie był ostatni utwór na liście
-                    if (TracksProperties.SelectedTrack.Id != TracksProperties.tracksList.Count)
-                    {
-                        TracksProperties.SelectedTrack =
-                            TracksProperties.tracksList.ElementAt(TracksProperties.SelectedTrack.Id);
-                        btnPlay.PlayNewTrack();
-                    }
-                    else
-                    {
-                        // Przełączenie na 1 utwór z listy po zakończeniu ostatniego
-                        TracksProperties.SelectedTrack = TracksProperties.tracksList.ElementAt(0);
-                        btnPlay.PlayNewTrack(); 
-                        if (!TracksProperties.isLoopOn)
-                        {
-                            TracksProperties.waveOut.Pause();
-                        }
-                        
-                    }
+                    // Przełączenie na 1 utwór z listy po zakończeniu ostatniego
+                    if (TracksProperties.TracksList != null)
+                        TracksProperties.SelectedTrack = TracksProperties.TracksList.ElementAt(0);
+                    _btnPlay.PlayNewTrack();
+                    if (!TracksProperties.IsLoopOn) TracksProperties.WaveOut?.Pause();
                 }
-                NextButtonClicked?.Invoke(this, EventArgs.Empty);
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Next button error!");
-            }
+
+            NextButtonClicked?.Invoke(this, EventArgs.Empty);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"NextButton click exception! {ex.Message}");
+            throw;
         }
     }
 }

@@ -1,33 +1,33 @@
-﻿using NAudio.Wave;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Windows.Controls;
+﻿using System.Collections.Generic;
+using NAudio.Wave;
 
 namespace SM_Audio_Player.Music;
 
+/*
+ * Klasa statyczna TrackProperties w celu przechowywania zmienych, do których odwołać można się w całym projekcie
+ */
 public static class TracksProperties
 {
+    // Lista z utworami
+    public static List<Tracks>? TracksList = new();
 
-    // lista z utworami
-    public static List<Tracks>? tracksList = new List<Tracks>();
-    
-    // wybrany aktualnie utwor
+    // Wybrany aktualnie utwor z listy
     public static Tracks? SelectedTrack { get; set; }
 
-    //trwajacy aktualnie utwór
-    public static AudioFileReader? audioFileReader { get; set; }
-    public static WaveOutEvent? waveOut { get; set; }
-    
-    // Flagi przycisków
-    public static bool isLoopOn = false;
-    public static bool isSchuffleOn = false;
+    // Trwający aktualnie utwór
+    public static AudioFileReader? AudioFileReader { get; set; }
+    public static WaveOutEvent? WaveOut { get; set; }
+
+    // Flagi przycisków Loop oraz Schuffle
+    public static bool IsLoopOn = false;
+    public static bool IsSchuffleOn = false;
+
     // Lista poprzednich utworów do przycisku schuffle
-    public static List<Tracks> PrevTrack = new List<Tracks>();
+    public static List<Tracks?> PrevTrack = new();
+
     // lista dostępnych numerów do wylosowania po użyciu schuffle
-    public static List<int>? availableNumbers { get; set; }
+    public static List<int>? AvailableNumbers { get; set; }
+
     // Pierwszy zagrany utwór, po użyciu schuffle
-    public static Tracks? firstPlayed { get; set; }
-    public static double Volume = 50;
-    public static int idPlayedTrack;
+    public static Tracks? FirstPlayed { get; set; }
 }
