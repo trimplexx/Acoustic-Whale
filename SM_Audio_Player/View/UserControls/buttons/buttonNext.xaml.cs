@@ -12,13 +12,15 @@ public partial class ButtonNext
      * Utworzone zostało aby aktualizować poszczególne dane innych klas. 
      */
     public delegate void NextButtonClickedEventHandler(object sender, EventArgs e);
+
     public static event NextButtonClickedEventHandler? NextButtonClicked;
-        
+
     /*
      * Eventy służące odświeżaniu listy, aby wyrzucić piosenkę przed jej odtworzeniem, gdy jego ścieżka uległaby zmianie
      * w trakcie odtwarzania. 
      */
     public delegate void RefreshListEventHandler(object sender, EventArgs e);
+
     public static event RefreshListEventHandler? RefreshList;
 
     private readonly ButtonPlay _btnPlay = new();
@@ -34,7 +36,7 @@ public partial class ButtonNext
         try
         {
             RefreshList?.Invoke(this, EventArgs.Empty);
-            
+
             if (TracksProperties.IsSchuffleOn)
             {
                 _btnPlay.SchuffleFun();

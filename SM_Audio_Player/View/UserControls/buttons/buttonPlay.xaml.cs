@@ -20,13 +20,15 @@ public partial class ButtonPlay : INotifyPropertyChanged
     * kodu wyniknie reakcja. Utworzone zostało aby aktualizować poszczególne dane innych klas. 
     */
     public delegate void TrackEndEventHandler(object sender, EventArgs e);
+
     public static event TrackEndEventHandler? TrackEnd;
-    
+
     /*
      * Eventy służące odświeżaniu listy, aby wyrzucić piosenkę przed jej odtworzeniem, gdy jego ścieżka uległaby zmianie
      * w trakcie odtwarzania. 
      */
     public delegate void RefreshListEventHandler(object sender, EventArgs e);
+
     public static event RefreshListEventHandler? RefreshList;
 
     // Obiekt do losowania liczb do Schufflowania utworów 
@@ -58,6 +60,7 @@ public partial class ButtonPlay : INotifyPropertyChanged
             MessageBox.Show($"Get random numer exception: {ex.Message}");
             throw;
         }
+
         return -1;
     }
 
@@ -98,15 +101,14 @@ public partial class ButtonPlay : INotifyPropertyChanged
         try
         {
             RefreshList?.Invoke(this, EventArgs.Empty);
-            /*
-            * Brak wybranego tracku powoduje odpalenie pierwszego dostępnego z listy.
-            */
-            if (TracksProperties.SelectedTrack == null)
-                if (TracksProperties.TracksList != null)
+            if (TracksProperties.TracksList.Count != 0)
+            {
+                /*
+                * Brak wybranego tracku powoduje odpalenie pierwszego dostępnego z listy.
+                */
+                if (TracksProperties.SelectedTrack == null)
                     TracksProperties.SelectedTrack = TracksProperties.TracksList.ElementAt(0);
 
-            if (TracksProperties.SelectedTrack != null)
-            {
                 // Obiekt do sprawdzania, czy poprzedni grany utwór, zgadza się z obecnym wybranym.
                 var checkReader = new AudioFileReader(TracksProperties.SelectedTrack.Path);
 
@@ -119,8 +121,7 @@ public partial class ButtonPlay : INotifyPropertyChanged
                          * W momencie, gdyby uzytkownik włączył pierw funkcje Schuffle, następnie odpalił pierwszy
                          * utwór, resetuje liste, a następnie ustanawia track jako pierwszy.
                          */
-                        if (TracksProperties.TracksList != null)
-                            TracksProperties.AvailableNumbers =
+                        TracksProperties.AvailableNumbers =
                                 Enumerable.Range(0, TracksProperties.TracksList.Count).ToList();
                         TracksProperties.AvailableNumbers?.RemoveAt(TracksProperties.SelectedTrack.Id - 1);
                         TracksProperties.FirstPlayed = TracksProperties.SelectedTrack;
@@ -142,8 +143,7 @@ public partial class ButtonPlay : INotifyPropertyChanged
                          * Resetowanie dostępnych numerów dla użycia funkcji schuffle oraz ustanowienie uttworu
                          * pierwszym na liście, do kolejnego losowego odtwarzania.
                          */
-                        if (TracksProperties.TracksList != null)
-                            TracksProperties.AvailableNumbers =
+                        TracksProperties.AvailableNumbers =
                                 Enumerable.Range(0, TracksProperties.TracksList.Count).ToList();
                         TracksProperties.AvailableNumbers?.RemoveAt(TracksProperties.SelectedTrack.Id - 1);
                         TracksProperties.FirstPlayed = TracksProperties.SelectedTrack;
@@ -275,7 +275,9 @@ public partial class ButtonPlay : INotifyPropertyChanged
                 if (ts > TracksProperties.AudioFileReader.TotalTime)
                 {
                     if (TracksProperties.IsLoopOn == 2)
+                    {
                         PlayNewTrack();
+                    }
                     // Sprawdzenie czy jest włączona opcja schuffle, ponieważ ona zmienia następny track
                     else if (TracksProperties.IsSchuffleOn)
                     {
@@ -366,7 +368,7 @@ public partial class ButtonPlay : INotifyPropertyChanged
             _isPlaying = true;
 
             // Sprawdzenie, czy bez użycia loopa pierwszy element z listy został włącozny.
-            if (TracksProperties.IsLoopOn == 0 && !TracksProperties.IsSchuffleOn && 
+            if (TracksProperties.IsLoopOn == 0 && !TracksProperties.IsSchuffleOn &&
                 TracksProperties.SelectedTrack == TracksProperties.TracksList?.ElementAt(0))
             {
                 PlayIcon = Icons.GetPlayIcon();

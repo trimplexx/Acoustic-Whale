@@ -40,7 +40,8 @@ public partial class ButtonMaximize : INotifyPropertyChanged
     {
         try
         {
-            if (Application.Current.MainWindow != null && Application.Current.MainWindow.WindowState == WindowState.Normal)
+            if (Application.Current.MainWindow != null &&
+                Application.Current.MainWindow.WindowState == WindowState.Normal)
             {
                 Application.Current.MainWindow.WindowState = WindowState.Maximized;
                 MaximizeIcon = Icons.GetMinIcon();

@@ -74,7 +74,7 @@ public partial class ButtonLoop : INotifyPropertyChanged
                 TracksProperties.IsLoopOn = 1;
             }
             // Cała playlista
-            else if(TracksProperties.IsLoopOn == 1)
+            else if (TracksProperties.IsLoopOn == 1)
             {
                 LoopIcon = Icons.GetLoopOnce();
                 LoopColor = "#2FC7E9";

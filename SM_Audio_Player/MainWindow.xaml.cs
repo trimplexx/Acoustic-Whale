@@ -39,7 +39,8 @@ public partial class MainWindow
                 if (newY < 0) newY = 0;
 
                 /*Sprawdzenie czy okno wychodzi poza prawą krawędź ekranu*/
-                if (newX + Width > SystemParameters.PrimaryScreenWidth) newX = SystemParameters.PrimaryScreenWidth - Width;
+                if (newX + Width > SystemParameters.PrimaryScreenWidth)
+                    newX = SystemParameters.PrimaryScreenWidth - Width;
 
                 /*Sprawdzenie czy okno wychodzi poza dolną krawędź ekranu*/
                 if (newY + Height > SystemParameters.PrimaryScreenHeight)

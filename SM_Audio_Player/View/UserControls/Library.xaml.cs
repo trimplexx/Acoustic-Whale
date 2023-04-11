@@ -48,6 +48,7 @@ public partial class Library
             throw;
         }
     }
+
     /*
      * Istotne odświeżanie listy gdyby scieżka do pliku się zmieniła w trakcie odtwarzania, track z złą ściażka z pliku
      * JSON jest wyrzucany przed otworzeniem.
@@ -56,7 +57,7 @@ public partial class Library
     {
         try
         {
-            int selectedIndex = lv.SelectedIndex;
+            var selectedIndex = lv.SelectedIndex;
             RefreshTrackListViewAndId();
             lv.SelectedIndex = selectedIndex;
         }
@@ -65,7 +66,6 @@ public partial class Library
             MessageBox.Show($"Library RefreshTrackList exception: {ex.Message}");
             throw;
         }
-
     }
 
     // Metoda służąca odświeżaniu listView z pliku JSON, do ktorego zapisana zostaje lista piosenek
@@ -126,7 +126,6 @@ public partial class Library
             MessageBox.Show($"Sort TrackList error: {ex.Message}");
             throw;
         }
-
     }
 
     // Metoda odpowiadająca za kliknięcie nagłówka, po którym następuje sortowanie elementów w liście oraz na listview
@@ -189,7 +188,7 @@ public partial class Library
                 "Music files (*.mp3)|*.mp3|Waveform Audio File Format (.wav)|.wav|Windows Media Audio Professional (.wma)|.wma|MPEG-4 Audio (.mp4)|.mp4|" +
                 "Free Lossless Audio Codec (.flac)|.flac|All files (*.*)|*.*";
 
-            bool addedToTheList = false;
+            var addedToTheList = false;
 
             if (openFileDialog.ShowDialog() == true)
             {
@@ -202,7 +201,8 @@ public partial class Library
                         TracksProperties.TracksList.Any(track => track.Path == newPath))
                     {
                         var duplicateTrack = System.IO.Path.GetFileNameWithoutExtension(newPath);
-                        var result = MessageBox.Show($"The track '{duplicateTrack}' is already in the list. Do you want to add it again?",
+                        var result = MessageBox.Show(
+                            $"The track '{duplicateTrack}' is already in the list. Do you want to add it again?",
                             "Duplicate Music",
                             MessageBoxButton.YesNo);
 
@@ -237,10 +237,7 @@ public partial class Library
                     RefreshTrackListViewAndId();
                 }
 
-                if (addedToTheList)
-                {
-                    MessageBox.Show($"Successfully added to the list.", "Add Music");
-                }
+                if (addedToTheList) MessageBox.Show($"Successfully added to the list.", "Add Music");
             }
         }
         catch (Exception ex)
@@ -263,19 +260,13 @@ public partial class Library
                 if (result == MessageBoxResult.Yes)
                 {
                     var selectedIndices = new List<int>();
-                    foreach (var item in lv.SelectedItems)
-                    {
-                        selectedIndices.Add(lv.Items.IndexOf(item));
-                    }
+                    foreach (var item in lv.SelectedItems) selectedIndices.Add(lv.Items.IndexOf(item));
 
                     // Posortuj indeksy w porządku malejącym, aby uniknąć problemów z usuwaniem wielu elementów
                     selectedIndices.Sort((a, b) => b.CompareTo(a));
 
                     // Sortuj indeksy w kolejności malejącej, aby uniknąć problemów z usuwaniem wielu elementów
-                    foreach (var index in selectedIndices)
-                    {
-                        TracksProperties.TracksList.RemoveAt(index);
-                    }
+                    foreach (var index in selectedIndices) TracksProperties.TracksList.RemoveAt(index);
 
                     var newJsonData = JsonConvert.SerializeObject(TracksProperties.TracksList);
                     File.WriteAllText(JsonPath, newJsonData);
@@ -333,7 +324,7 @@ public partial class Library
     {
         try
         {
-            int selectedIndex = lv.SelectedIndex;
+            var selectedIndex = lv.SelectedIndex;
             RefreshTrackListViewAndId();
             lv.SelectedIndex = selectedIndex;
 

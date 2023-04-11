@@ -14,13 +14,15 @@ public partial class ButtonPrevious
     * Utworzone zostało aby aktualizować poszczególne dane innych klas. 
     */
     public delegate void PreviousButtonClickedEventHandler(object sender, EventArgs e);
+
     public static event PreviousButtonClickedEventHandler? PreviousButtonClicked;
-        
+
     /*
      * Eventy służące odświeżaniu listy, aby wyrzucić piosenkę przed jej odtworzeniem, gdy jego ścieżka uległaby zmianie
      * w trakcie odtwarzania. 
      */
     public delegate void RefreshListEventHandler(object sender, EventArgs e);
+
     public static event RefreshListEventHandler? RefreshList;
 
     public ButtonPrevious()
