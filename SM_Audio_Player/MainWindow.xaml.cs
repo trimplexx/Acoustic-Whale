@@ -60,9 +60,13 @@ public partial class MainWindow
 
     private void Equalizer_Btn_Click(object sender, RoutedEventArgs e)
     {
+        Lib.Visibility = Visibility.Hidden;
+        Eq.Visibility = Visibility.Visible;
     }
 
     private void Playlist_Btn_Click(object sender, RoutedEventArgs e)
     {
+        Eq.Visibility = Visibility.Hidden;
+        Lib.Visibility = Visibility.Visible;
     }
 }
