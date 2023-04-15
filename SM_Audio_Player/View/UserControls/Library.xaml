@@ -14,10 +14,10 @@
         <!-- Główna biblioteka (List View) -->
         <ListView x:Name='lv' Background="Transparent" BorderThickness="0" Foreground="#45a7bc"
                   GridViewColumnHeader.Click="GridViewColumnHeaderClickedHandler"
-                  SelectionChanged="Lv_OnSelectionChanged" FontSize="16">
+                  SelectionChanged="Lv_OnSelectionChanged" FontSize="16" AlternationCount="2">
 
             <ListView.View>
-                <GridView>
+                <GridView AllowsColumnReorder="False" ColumnHeaderContainerStyle="{StaticResource GridViewColumnHeaderStyle1}">
                     <GridViewColumn Header="Id" Width="30" DisplayMemberBinding="{Binding Id}" />
                     <GridViewColumn Header="Tytuł" Width="300" DisplayMemberBinding="{Binding Title}" />
                     <GridViewColumn Header="Autor" Width="100" DisplayMemberBinding="{Binding Author}" />
@@ -28,6 +28,39 @@
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem">
                     <EventSetter Event="MouseDoubleClick" Handler="OnMouseDoubleClick" />
+                    <Setter Property="Background" Value="Transparent" />
+                    <Setter Property="Padding" Value="0" />
+                    <Setter Property="Margin" Value="0" />
+                    <Setter Property="VerticalContentAlignment" Value="Center" />
+                    <!-- Ten template usuwa domyślny efekt gradientu -->
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                <Border Padding="{TemplateBinding Padding}"
+                                        Background="{TemplateBinding Background}"
+                                        BorderBrush="{TemplateBinding BorderBrush}"
+                                        BorderThickness="{TemplateBinding BorderThickness}"
+                                        SnapsToDevicePixels="true">
+                                    <GridViewRowPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                                          SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                                </Border>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                    <Style.Triggers>
+                        <Trigger Property="ItemsControl.AlternationIndex" Value="1">
+                            <Setter Property="Background" Value="#292929" />
+                        </Trigger>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Background" Value="#45a7bc" />
+                            <Setter Property="Foreground" Value="White" />
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="#424242" />
+                            <Setter Property="Foreground" Value="White" />
+                        </Trigger>
+                    </Style.Triggers>
                 </Style>
             </ListView.ItemContainerStyle>
         </ListView>
