@@ -24,6 +24,6 @@ public class Tracks
         Album = alb;
         Path = pa;
         Time = tim;
-        AlbumCoverPath = imageFilePath; 
+        AlbumCoverPath = imageFilePath;
     }
 }

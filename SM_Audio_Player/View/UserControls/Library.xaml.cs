@@ -17,7 +17,7 @@ using System.CodeDom;
 
 namespace SM_Audio_Player.View.UserControls;
 
-public partial class Library : INotifyPropertyChanged
+public partial class Library
 {
     public const string JsonPath = @"MusicTrackList.json";
 
@@ -31,16 +31,11 @@ public partial class Library : INotifyPropertyChanged
 
     private bool _sortingtype = true;
     private string? _prevColumnSorted;
-    public event PropertyChangedEventHandler? PropertyChanged;
-    private string? _albumImg;
     
-
     public Library()
     {
         try
         {
-            DataContext = this;
-            AlbumImg = "..\\..\\assets\\default.png";
             InitializeComponent();
             ButtonPlay.TrackEnd += OnTrackSwitch;
             ButtonNext.NextButtonClicked += OnTrackSwitch;
@@ -58,15 +53,6 @@ public partial class Library : INotifyPropertyChanged
         }
     }
 
-    public string? AlbumImg
-    {
-        get => _albumImg;
-        set
-        {
-            _albumImg = value;
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("AlbumImg"));
-        }
-    }
 
     /*
      * Istotne odświeżanie listy gdyby scieżka do pliku się zmieniła w trakcie odtwarzania, track z złą ściażka z pliku
@@ -130,11 +116,15 @@ public partial class Library : INotifyPropertyChanged
         try
         {
             if (ascending)
+            {
                 TracksProperties.TracksList = TracksProperties.TracksList?
                     .OrderBy(track => track.GetType().GetProperty(property)?.GetValue(track)).ToList();
+            }
             else
+            {
                 TracksProperties.TracksList = TracksProperties.TracksList?
                     .OrderByDescending(track => track.GetType().GetProperty(property)?.GetValue(track)).ToList();
+            }
 
             // Zapisanie posortowanej listy do JSON
             var newJsonData = JsonConvert.SerializeObject(TracksProperties.TracksList);
@@ -186,8 +176,10 @@ public partial class Library : INotifyPropertyChanged
                 RefreshTrackListViewAndId();
                 if (TracksProperties.TracksList != null && TracksProperties.SelectedTrack != null)
                     foreach (var track in TracksProperties.TracksList)
+                    {
                         if (TracksProperties.SelectedTrack.Title == track.Title)
                             lv.SelectedIndex = track.Id - 1;
+                    }      
             }
         }
         catch (Exception ex)
@@ -206,7 +198,6 @@ public partial class Library : INotifyPropertyChanged
             openFileDialog.Filter =
                 "Music files (*.mp3)|*.mp3|Waveform Audio File Format (.wav)|.wav|Windows Media Audio Professional (.wma)|.wma|MPEG-4 Audio (.mp4)|.mp4|" +
                 "Free Lossless Audio Codec (.flac)|.flac|All files (*.*)|*.*";
-
             var addedToTheList = false;
 
             if (openFileDialog.ShowDialog() == true)
@@ -229,13 +220,11 @@ public partial class Library : INotifyPropertyChanged
                     }
 
                     var file = TagLib.File.Create(newPath);
-
                     var newTitle = file.Tag.Title ?? title;
                     var newAuthor = file.Tag.FirstPerformer ?? "Unknown";
                     var newAlbum = file.Tag.Album ?? "Unknown";
                     var duration = (int)file.Properties.Duration.TotalSeconds;
                     var albumCover = file.Tag.Pictures.FirstOrDefault();
-
                     var albumCoverPath = "";
 
                     if (albumCover != null)
@@ -261,10 +250,9 @@ public partial class Library : INotifyPropertyChanged
 
                     if (TracksProperties.TracksList != null)
                     {
+
                         var newId = TracksProperties.TracksList.Count + 1;
-
                         var newTrack = new Tracks(newId, newTitle, newAuthor, newAlbum, newPath, formattedTime, albumCoverPath);
-
                         TracksProperties.TracksList.Add(newTrack);
                         addedToTheList = true;
                     }
@@ -325,7 +313,6 @@ public partial class Library : INotifyPropertyChanged
         }
     }
 
-
     private void Lv_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
     {
         try
@@ -374,11 +361,9 @@ public partial class Library : INotifyPropertyChanged
                 TracksProperties.WaveOut.Dispose();
                 TracksProperties.AudioFileReader = null;
             }
-            btnPlay.btnPlay_Click(sender, e);
-            TracksProperties.AlbumImg = track.AlbumCoverPath;
 
+            btnPlay.btnPlay_Click(sender, e);
             DoubleClickEvent?.Invoke(this, EventArgs.Empty);
-            
         }
         catch (Exception ex)
         {

@@ -18,8 +18,6 @@ public static class TracksProperties
     public static AudioFileReader? AudioFileReader { get; set; }
     public static WaveOutEvent? WaveOut { get; set; }
 
-    public static string? AlbumImg { get; set; }
-
     // Flagi przycisków Loop oraz Schuffle
     public static int IsLoopOn = 0;
     public static bool IsSchuffleOn = false;
