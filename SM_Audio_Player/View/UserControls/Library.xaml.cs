@@ -13,6 +13,7 @@ using File = System.IO.File;
 using System.IO;
 using System.Windows.Media.Imaging;
 using System.ComponentModel;
+using System.CodeDom;
 
 namespace SM_Audio_Player.View.UserControls;
 
@@ -32,7 +33,7 @@ public partial class Library : INotifyPropertyChanged
     private string? _prevColumnSorted;
     public event PropertyChangedEventHandler? PropertyChanged;
     private string? _albumImg;
-
+    
 
     public Library()
     {
@@ -361,6 +362,7 @@ public partial class Library : INotifyPropertyChanged
         try
         {
             var selectedIndex = lv.SelectedIndex;
+            var track = lv.SelectedItem as Tracks;
             RefreshTrackListViewAndId();
             lv.SelectedIndex = selectedIndex;
 
@@ -373,7 +375,8 @@ public partial class Library : INotifyPropertyChanged
                 TracksProperties.AudioFileReader = null;
             }
             btnPlay.btnPlay_Click(sender, e);
-            
+            AlbumImg = track.AlbumCoverPath;
+
             DoubleClickEvent?.Invoke(this, EventArgs.Empty);
             
         }

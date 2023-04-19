@@ -19,8 +19,8 @@ public partial class Player : INotifyPropertyChanged
     {
         try
         {
-            DataContext = this;
-            AlbumImg = "..\\..\\assets\\default.png";
+           /* DataContext = this;
+            AlbumImg = "..\\..\\assets\\default.png";*/
             InitializeComponent();
             /*
              * Przypisanie zdarzeń wywołanych z innych miejsc projektu
@@ -41,7 +41,7 @@ public partial class Player : INotifyPropertyChanged
         }
     }
 
-    public string? AlbumImg
+  /*  public string? AlbumImg
     {
         get => _albumImg;
         set
@@ -49,7 +49,7 @@ public partial class Player : INotifyPropertyChanged
             _albumImg = value;
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("AlbumImg"));
         }
-    }
+    }*/
     /*
      * Ustawienie wszelkich wartości na temat piosenki przy jej zmianie oraz startowej wartości slidera
      */
