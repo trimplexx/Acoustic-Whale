@@ -1,14 +1,17 @@
 ﻿using SM_Audio_Player.Music;
 using SM_Audio_Player.View.UserControls.buttons;
 using System;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
 
 namespace SM_Audio_Player.View.UserControls;
 
-public partial class Player
+public partial class Player : INotifyPropertyChanged
 {
+    public event PropertyChangedEventHandler? PropertyChanged;
+    private string? _albumImg;
     private const bool IsDraggingSlider = false;
     private readonly DispatcherTimer _timer = new();
 
@@ -16,6 +19,8 @@ public partial class Player
     {
         try
         {
+            DataContext = this;
+            AlbumImg = "..\\..\\assets\\default.png";
             InitializeComponent();
             /*
              * Przypisanie zdarzeń wywołanych z innych miejsc projektu
@@ -36,6 +41,15 @@ public partial class Player
         }
     }
 
+    public string? AlbumImg
+    {
+        get => _albumImg;
+        set
+        {
+            _albumImg = value;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("AlbumImg"));
+        }
+    }
     /*
      * Ustawienie wszelkich wartości na temat piosenki przy jej zmianie oraz startowej wartości slidera
      */

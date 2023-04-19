@@ -24,7 +24,7 @@
             <!-- Obraz albumu -->
             <Border BorderThickness="1" BorderBrush="#45a7bc" Margin="5" Width="85" Height="85">
                 <Viewbox Width="83" Height="83">
-                    <Image x:Name="AlbumImg" Source="..\..\assets\default.png"/> <!-- Tutaj chyba Binding -->
+                    <Image x:Name="Album" Source="{Binding AlbumImg}"/> <!-- Tutaj chyba Binding -->
                 </Viewbox>
             </Border>
 
