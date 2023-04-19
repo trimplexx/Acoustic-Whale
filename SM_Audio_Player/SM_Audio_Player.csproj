@@ -8,14 +8,19 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <None Remove="assets\play.svg"/>
+        <None Remove="assets\default.png" />
+        <None Remove="assets\play.svg" />
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="MahApps.Metro" Version="2.4.9"/>
-        <PackageReference Include="NAudio" Version="2.1.0"/>
-        <PackageReference Include="Newtonsoft.Json" Version="13.0.3"/>
-        <PackageReference Include="TagLibSharp" Version="2.3.0"/>
+        <PackageReference Include="MahApps.Metro" Version="2.4.9" />
+        <PackageReference Include="NAudio" Version="2.1.0" />
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+        <PackageReference Include="TagLibSharp" Version="2.3.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Resource Include="assets\default.png" />
     </ItemGroup>
 
 </Project>

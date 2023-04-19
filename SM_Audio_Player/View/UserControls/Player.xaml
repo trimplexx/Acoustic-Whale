@@ -22,7 +22,11 @@
             </Grid.ColumnDefinitions>
 
             <!-- Obraz albumu -->
-            <Border BorderThickness="1" BorderBrush="#45a7bc" Margin="5" Width="85" Height="85" />
+            <Border BorderThickness="1" BorderBrush="#45a7bc" Margin="5" Width="85" Height="85">
+                <Viewbox Width="83" Height="83">
+                    <Image x:Name="AlbumImg" Source="..\..\assets\default.png"/> <!-- Tutaj chyba Binding -->
+                </Viewbox>
+            </Border>
 
             <!-- Informacje o utworze -->
             <Grid Grid.Column="1">
