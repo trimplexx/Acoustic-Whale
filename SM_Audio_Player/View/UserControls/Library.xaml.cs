@@ -10,10 +10,13 @@ using System.Windows.Input;
 using Newtonsoft.Json;
 using SM_Audio_Player.View.UserControls.buttons;
 using File = System.IO.File;
+using System.IO;
+using System.Windows.Media.Imaging;
+using System.ComponentModel;
 
 namespace SM_Audio_Player.View.UserControls;
 
-public partial class Library
+public partial class Library : INotifyPropertyChanged
 {
     public const string JsonPath = @"MusicTrackList.json";
 
@@ -27,11 +30,16 @@ public partial class Library
 
     private bool _sortingtype = true;
     private string? _prevColumnSorted;
+    public event PropertyChangedEventHandler? PropertyChanged;
+    private string? _albumImg;
+
 
     public Library()
     {
         try
         {
+            DataContext = this;
+            AlbumImg = "..\\..\\assets\\default.png";
             InitializeComponent();
             ButtonPlay.TrackEnd += OnTrackSwitch;
             ButtonNext.NextButtonClicked += OnTrackSwitch;
@@ -46,6 +54,16 @@ public partial class Library
         {
             MessageBox.Show($"Library constructor exception: {ex.Message}");
             throw;
+        }
+    }
+
+    public string? AlbumImg
+    {
+        get => _albumImg;
+        set
+        {
+            _albumImg = value;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("AlbumImg"));
         }
     }
 
@@ -215,6 +233,24 @@ public partial class Library
                     var newAuthor = file.Tag.FirstPerformer ?? "Unknown";
                     var newAlbum = file.Tag.Album ?? "Unknown";
                     var duration = (int)file.Properties.Duration.TotalSeconds;
+                    var albumCover = file.Tag.Pictures.FirstOrDefault();
+
+                    var albumCoverPath = "";
+
+                    if (albumCover != null)
+                    {
+                        var albumCoverImage = new BitmapImage();
+                        albumCoverImage.BeginInit();
+                        albumCoverImage.StreamSource = new MemoryStream(albumCover.Data.Data);
+                        albumCoverImage.EndInit();
+
+                        var albumCoverName = $"{Guid.NewGuid()}.jpg";
+                        albumCoverPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, albumCoverName);
+                        using var fileStream = new FileStream(albumCoverPath, FileMode.Create);
+                        var encoder = new JpegBitmapEncoder();
+                        encoder.Frames.Add(BitmapFrame.Create(albumCoverImage));
+                        encoder.Save(fileStream);
+                    }
 
                     var hours = duration / 3600;
                     var minutes = duration % 3600 / 60;
@@ -226,7 +262,7 @@ public partial class Library
                     {
                         var newId = TracksProperties.TracksList.Count + 1;
 
-                        var newTrack = new Tracks(newId, newTitle, newAuthor, newAlbum, newPath, formattedTime);
+                        var newTrack = new Tracks(newId, newTitle, newAuthor, newAlbum, newPath, formattedTime, albumCoverPath);
 
                         TracksProperties.TracksList.Add(newTrack);
                         addedToTheList = true;
@@ -336,9 +372,10 @@ public partial class Library
                 TracksProperties.WaveOut.Dispose();
                 TracksProperties.AudioFileReader = null;
             }
-
             btnPlay.btnPlay_Click(sender, e);
+            
             DoubleClickEvent?.Invoke(this, EventArgs.Empty);
+            
         }
         catch (Exception ex)
         {
