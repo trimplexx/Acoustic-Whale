@@ -51,7 +51,7 @@
             </Button.Template>
         </Button>
         <Slider Style="{DynamicResource SliderStyle1}" Height="22" Width="140" IsSelectionRangeEnabled="True"
-                Margin="5, 5, 5, 3" Minimum="0" Maximum="100" x:Name="sldVolume"
+                Margin="5, 5, 5, 3" Minimum="0" Maximum="100" x:Name="sldVolume" IsMoveToPointEnabled="True"
                 ValueChanged="sliderVolume_ValueChanged" SelectionEnd="{Binding ElementName=sldVolume, Path=Value}" />
     </StackPanel>
 
