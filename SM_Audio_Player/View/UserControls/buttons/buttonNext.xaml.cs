@@ -55,9 +55,11 @@ public partial class ButtonNext
                 else
                 {
                     // Przełączenie na 1 utwór z listy po zakończeniu ostatniego
-                    if (TracksProperties.TracksList != null)
+                    if (TracksProperties.TracksList.Count > null)
+                    {
                         TracksProperties.SelectedTrack = TracksProperties.TracksList.ElementAt(0);
-                    _btnPlay.PlayNewTrack();
+                        _btnPlay.PlayNewTrack();
+                    } 
                     if (TracksProperties.IsLoopOn == 0) TracksProperties.WaveOut?.Pause();
                 }
             }
