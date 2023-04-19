@@ -375,7 +375,7 @@ public partial class Library : INotifyPropertyChanged
                 TracksProperties.AudioFileReader = null;
             }
             btnPlay.btnPlay_Click(sender, e);
-            AlbumImg = track.AlbumCoverPath;
+            TracksProperties.AlbumImg = track.AlbumCoverPath;
 
             DoubleClickEvent?.Invoke(this, EventArgs.Empty);
             
