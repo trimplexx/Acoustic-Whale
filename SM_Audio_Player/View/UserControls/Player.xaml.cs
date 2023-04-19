@@ -63,7 +63,7 @@ public partial class Player : INotifyPropertyChanged
                 author.Text = TracksProperties.SelectedTrack.Author;
                 CD.Text = TracksProperties.SelectedTrack.Album;
                 tbTime.Text = TracksProperties.SelectedTrack.Time;
-                AlbumImg = TracksProperties.SelectedTrack.Album;
+                AlbumImg = TracksProperties.SelectedTrack.AlbumCoverPath;
             }
 
             sldTime.Value = 0;

@@ -49,7 +49,6 @@ public partial class ButtonLoop : INotifyPropertyChanged
         }
     }
 
-
     public string? LoopMouseColor
     {
         get => _loopMouseColor;
