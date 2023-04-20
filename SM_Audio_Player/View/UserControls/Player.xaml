@@ -24,7 +24,7 @@
             <!-- Obraz albumu -->
             <Border BorderThickness="1" BorderBrush="#45a7bc" Margin="5" Width="85" Height="85">
                 <Viewbox Width="83" Height="83">
-                    <Image x:Name="Album" Source="{Binding AlbumImg}"/> <!-- Tutaj chyba Binding -->
+                    <Image x:Name="Album" Source="{Binding AlbumImg}" /> <!-- Tutaj chyba Binding -->
                 </Viewbox>
             </Border>
 
@@ -80,7 +80,8 @@
                 <TextBlock Grid.Column="1" Text="hh:mm:ss" HorizontalAlignment="Right" Foreground="#45a7bc"
                            Margin="10, 0, 10, 5" x:Name="tbTime" />
             </Grid>
-            <Slider Style="{DynamicResource SliderStyle2}" Margin="10, 10, 5, 0" x:Name="sldTime" IsMoveToPointEnabled="True"
+            <Slider Style="{DynamicResource SliderStyle2}" Margin="10, 10, 5, 0" x:Name="sldTime"
+                    IsMoveToPointEnabled="True"
                     IsSelectionRangeEnabled="True" PreviewMouseLeftButtonDown="TimeSlider_PreviewMouseLeftButtonDown"
                     PreviewMouseLeftButtonUp="TimeSlider_PreviewMouseLeftButtonUp" Minimum="0"
                     Maximum="{Binding TracksProperties.SelectedTrack.Duration.TotalSeconds}" Value="0"

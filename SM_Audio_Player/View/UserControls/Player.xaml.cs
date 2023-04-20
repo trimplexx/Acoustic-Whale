@@ -1,19 +1,18 @@
-﻿using SM_Audio_Player.Music;
-using SM_Audio_Player.View.UserControls.buttons;
-using System;
+﻿using System;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
+using SM_Audio_Player.Music;
+using SM_Audio_Player.View.UserControls.buttons;
 
 namespace SM_Audio_Player.View.UserControls;
 
 public partial class Player : INotifyPropertyChanged
 {
-    public event PropertyChangedEventHandler? PropertyChanged;
-    private string? _albumImg;
     private const bool IsDraggingSlider = false;
     private readonly DispatcherTimer _timer = new();
+    private string? _albumImg;
 
     public Player()
     {
@@ -27,8 +26,12 @@ public partial class Player : INotifyPropertyChanged
              */
             ButtonNext.NextButtonClicked += OnTrackSwitch;
             ButtonPrevious.PreviousButtonClicked += OnTrackSwitch;
+            ButtonNext.ResetEverything += ResetValues;
+            ButtonPrevious.ResetEverything += ResetValues;
             ButtonPlay.TrackEnd += OnTrackSwitch;
+            ButtonPlay.ResetEverything += ResetValues;
             Library.DoubleClickEvent += OnTrackSwitch;
+            Library.ResetEverything += ResetValues;
             // Przypisanie metody na tick timera
             _timer.Tick += Timer_Tick;
             // Usatwienie co ile odświeża sie timer
@@ -50,6 +53,21 @@ public partial class Player : INotifyPropertyChanged
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("AlbumImg"));
         }
     }
+
+    public event PropertyChangedEventHandler? PropertyChanged;
+
+    private void ResetValues(object sender, EventArgs e)
+    {
+        _timer.Stop();
+        sldTime.Value = 0;
+        title.Text = "Tytuł";
+        author.Text = "Autor";
+        CD.Text = "Płyta";
+        tbTime.Text = "hh:mm:ss";
+        tbCurrTime.Text = "hh:mm:ss";
+        AlbumImg = null;
+    }
+
     /*
      * Ustawienie wszelkich wartości na temat piosenki przy jej zmianie oraz startowej wartości slidera
      */

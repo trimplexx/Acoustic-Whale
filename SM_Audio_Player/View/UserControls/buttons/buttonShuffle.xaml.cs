@@ -8,7 +8,6 @@ namespace SM_Audio_Player.View.UserControls.buttons;
 
 public partial class ButtonShuffle : INotifyPropertyChanged
 {
-    public event PropertyChangedEventHandler? PropertyChanged;
     private string? _shuffleColor;
     private string? _shuffleIcon;
     private string? _shuffleMouseColor;
@@ -59,6 +58,8 @@ public partial class ButtonShuffle : INotifyPropertyChanged
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ShuffleMouseColor"));
         }
     }
+
+    public event PropertyChangedEventHandler? PropertyChanged;
 
     /*Włącz losowe odtwarzanie utworów*/
     private void btnShuffle_Click(object sender, RoutedEventArgs e)

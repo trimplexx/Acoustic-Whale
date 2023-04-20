@@ -9,11 +9,18 @@ namespace SM_Audio_Player.View.UserControls.buttons;
 
 public partial class ButtonPlay : INotifyPropertyChanged
 {
-    // Zmienna sprawdzająca, czy muzyka już gra.
-    private bool _isPlaying;
+    /*
+     * Eventy służące odświeżaniu listy, aby wyrzucić piosenkę przed jej odtworzeniem, gdy jego ścieżka uległaby zmianie
+     * w trakcie odtwarzania. 
+     */
+    public delegate void RefreshListEventHandler(object sender, EventArgs e);
 
-    // zmienna pomocnicza do przechowywania miejsca pauzy
-    private long _pausedPosition;
+    /*
+    * Akcja odpowiadająca za resetowanie danych w momencie, gdy odświeżona lista będzie zawierać mniej elementów
+    * niż ta wartość, która została zapisana przed jej odświeżeniem (Przykładowo, gdy ktoś zmieni ścieżkę do pliku
+    * w trakcie używania aplikacji mogła by ona wyrzucić wyjątek)
+    */
+    public delegate void ResetEverythingEventHandler(object sender, EventArgs e);
 
     /*
     * Zdarzenie odnoszące się do skończenia się granego utworu samoczynnie, dzięki któremu w innych miejscach
@@ -21,22 +28,60 @@ public partial class ButtonPlay : INotifyPropertyChanged
     */
     public delegate void TrackEndEventHandler(object sender, EventArgs e);
 
-    public static event TrackEndEventHandler? TrackEnd;
-
-    /*
-     * Eventy służące odświeżaniu listy, aby wyrzucić piosenkę przed jej odtworzeniem, gdy jego ścieżka uległaby zmianie
-     * w trakcie odtwarzania. 
-     */
-    public delegate void RefreshListEventHandler(object sender, EventArgs e);
-
-    public static event RefreshListEventHandler? RefreshList;
 
     // Obiekt do losowania liczb do Schufflowania utworów 
     private readonly Random _random = new();
 
+    // Zmienna sprawdzająca, czy muzyka już gra.
+    private bool _isPlaying;
+
     // Ikona buttouPlay
     private string? _playIcon;
+
+    public ButtonPlay()
+    {
+        try
+        {
+            DataContext = this;
+            PlayIcon = Icons.GetPlayIcon();
+            InitializeComponent();
+            /*
+             * Przypisanie reakcji na event wywołany w innych klasach do odpowiednich metod
+             */
+            ButtonNext.NextButtonClicked += NextTrackEvent;
+            TrackEnd += NextTrackEvent;
+            ButtonPrevious.PreviousButtonClicked += PreviousTrackEvent;
+            Library.DoubleClickEvent += OnTrackDoubleClickSwitch;
+            Library.ResetEverything += NextTrackEvent;
+            ResetEverything += NextTrackEvent;
+            ButtonNext.ResetEverything += NextTrackEvent;
+            ButtonPrevious.ResetEverything += NextTrackEvent;
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"ButtonPlay constructor exception: {ex.Message}");
+            throw;
+        }
+    }
+
+    // Zmiana ikony Play.
+    public string? PlayIcon
+    {
+        get => _playIcon;
+        set
+        {
+            _playIcon = value;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("PlayIcon"));
+        }
+    }
+
     public event PropertyChangedEventHandler? PropertyChanged;
+
+    public static event TrackEndEventHandler? TrackEnd;
+
+    public static event RefreshListEventHandler? RefreshList;
+
+    public static event ResetEverythingEventHandler? ResetEverything;
 
     // Funkcja losująca randomowy numer z dostępnego zakresu, używana do odtwarzania Schuffle.
     private int GetRandomNumber()
@@ -64,106 +109,96 @@ public partial class ButtonPlay : INotifyPropertyChanged
         return -1;
     }
 
-    public ButtonPlay()
-    {
-        try
-        {
-            DataContext = this;
-            PlayIcon = Icons.GetPlayIcon();
-            InitializeComponent();
-            /*
-             * Przypisanie reakcji na event wywołany w innych klasach do odpowiednich metod
-             */
-            ButtonNext.NextButtonClicked += NextTrackEvent;
-            ButtonPrevious.PreviousButtonClicked += PreviousTrackEvent;
-            Library.DoubleClickEvent += OnTrackDoubleClickSwitch;
-        }
-        catch (Exception ex)
-        {
-            MessageBox.Show($"ButtonPlay constructor exception: {ex.Message}");
-            throw;
-        }
-    }
-
-    // Zmiana ikony Play.
-    public string? PlayIcon
-    {
-        get => _playIcon;
-        set
-        {
-            _playIcon = value;
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("PlayIcon"));
-        }
-    }
-
     public void btnPlay_Click(object sender, RoutedEventArgs e)
     {
         try
         {
-            RefreshList?.Invoke(this, EventArgs.Empty);
-            if (TracksProperties.TracksList.Count != 0)
+            /*
+             * Walidacja odświeżania listy, zapisuje bieżącą wartość posiadanych utworów na liście, a następnie
+             * wykonane zostanie jej odświeżenie poprzez wywołanie 'RefreshList', następnie porównywana jest wartość
+             * odświeżonej listy oraz zapisanej, w celu sprawdzenia czy ścieżka, któreś z piosenek nie uległa zmianie.
+             * Jeżeli wartość piosenek uległa zmianie, następuje wyczyszczenie wszelkich danych związanych z piosenką
+             * zarówno tych w widoku poprzez wywołanie zdarzenia ResetEverything.
+             */
+            if (TracksProperties.TracksList != null && TracksProperties.TracksList.Count != 0)
             {
-                /*
+                var trackListBeforeRefresh = TracksProperties.TracksList.Count;
+                RefreshList?.Invoke(this, EventArgs.Empty);
+                if (trackListBeforeRefresh != TracksProperties.TracksList.Count)
+                {
+                    if (TracksProperties.WaveOut != null && TracksProperties.AudioFileReader != null)
+                    {
+                        TracksProperties.WaveOut.Pause();
+                        TracksProperties.WaveOut.Dispose();
+                        TracksProperties.AudioFileReader = null;
+                        TracksProperties.SelectedTrack = null;
+                    }
+                    MessageBox.Show($"Ups! Któryś z odtwarzanych utworów zmienił swoją ścieżkę do pliku :(");
+                    ResetEverything?.Invoke(this, EventArgs.Empty);
+                }
+                else
+                {
+                    /*
                 * Brak wybranego tracku powoduje odpalenie pierwszego dostępnego z listy.
                 */
-                if (TracksProperties.SelectedTrack == null)
-                    TracksProperties.SelectedTrack = TracksProperties.TracksList.ElementAt(0);
+                    if (TracksProperties.SelectedTrack == null)
+                        TracksProperties.SelectedTrack = TracksProperties.TracksList.ElementAt(0);
 
-                // Obiekt do sprawdzania, czy poprzedni grany utwór, zgadza się z obecnym wybranym.
-                var checkReader = new AudioFileReader(TracksProperties.SelectedTrack.Path);
+                    // Obiekt do sprawdzania, czy poprzedni grany utwór, zgadza się z obecnym wybranym.
+                    var checkReader = new AudioFileReader(TracksProperties.SelectedTrack.Path);
 
-                if (!_isPlaying)
-                {
-                    // Tworzenie nowego audioFileReadera, gdy ten nie został jeszcze zadeklarowany
-                    if (TracksProperties.AudioFileReader == null)
+                    if (!_isPlaying)
                     {
-                        /*
+                        // Tworzenie nowego audioFileReadera, gdy ten nie został jeszcze zadeklarowany
+                        if (TracksProperties.AudioFileReader == null)
+                        {
+                            /*
                          * W momencie, gdyby uzytkownik włączył pierw funkcje Schuffle, następnie odpalił pierwszy
                          * utwór, resetuje liste, a następnie ustanawia track jako pierwszy.
                          */
-                        TracksProperties.AvailableNumbers =
+                            TracksProperties.AvailableNumbers =
                                 Enumerable.Range(0, TracksProperties.TracksList.Count).ToList();
-                        TracksProperties.AvailableNumbers?.RemoveAt(TracksProperties.SelectedTrack.Id - 1);
-                        TracksProperties.FirstPlayed = TracksProperties.SelectedTrack;
+                            TracksProperties.AvailableNumbers.RemoveAt(TracksProperties.SelectedTrack.Id - 1);
+                            TracksProperties.FirstPlayed = TracksProperties.SelectedTrack;
 
-                        // Tworzenie nowego obiektu waveOut, oraz włączanie go.
-                        TracksProperties.WaveOut = new WaveOutEvent();
-                        TracksProperties.AudioFileReader = new AudioFileReader(TracksProperties.SelectedTrack.Path);
-                        TracksProperties.WaveOut.Init(TracksProperties.AudioFileReader);
-                        TracksProperties.WaveOut.Play();
-                        TracksProperties.FirstPlayed = TracksProperties.SelectedTrack;
-                        TracksProperties.WaveOut.PlaybackStopped += WaveOut_PlaybackStopped;
-                        TrackEnd?.Invoke(this, EventArgs.Empty);
-                    }
-                    // Sprawdzanie czy podany utwór różni się z tym wybranym z listy
-                    else if (TracksProperties.AudioFileReader.FileName != checkReader.FileName)
-                    {
-                        PlayNewTrack();
-                        /*
+                            // Tworzenie nowego obiektu waveOut, oraz włączanie go.
+                            TracksProperties.WaveOut = new WaveOutEvent();
+                            TracksProperties.AudioFileReader = new AudioFileReader(TracksProperties.SelectedTrack.Path);
+                            TracksProperties.WaveOut.Init(TracksProperties.AudioFileReader);
+                            TracksProperties.WaveOut.Play();
+                            _isPlaying = true;
+                            TracksProperties.FirstPlayed = TracksProperties.SelectedTrack;
+                            TracksProperties.WaveOut.PlaybackStopped += WaveOut_PlaybackStopped;
+                            TrackEnd?.Invoke(this, EventArgs.Empty);
+                        }
+                        // Sprawdzanie czy podany utwór różni się z tym wybranym z listy
+                        else if (TracksProperties.AudioFileReader.FileName != checkReader.FileName)
+                        {
+                            PlayNewTrack();
+                            /*
                          * Resetowanie dostępnych numerów dla użycia funkcji schuffle oraz ustanowienie uttworu
                          * pierwszym na liście, do kolejnego losowego odtwarzania.
                          */
-                        TracksProperties.AvailableNumbers =
+                            TracksProperties.AvailableNumbers =
                                 Enumerable.Range(0, TracksProperties.TracksList.Count).ToList();
-                        TracksProperties.AvailableNumbers?.RemoveAt(TracksProperties.SelectedTrack.Id - 1);
-                        TracksProperties.FirstPlayed = TracksProperties.SelectedTrack;
-                    }
-                    else // wznawianie odtwarzania, jeżeli utwór sie nie różni w pożądanym miejscu
-                    {
-                        TracksProperties.WaveOut?.Play();
-                    }
+                            TracksProperties.AvailableNumbers.RemoveAt(TracksProperties.SelectedTrack.Id - 1);
+                            TracksProperties.FirstPlayed = TracksProperties.SelectedTrack;
+                        }
+                        else // wznawianie odtwarzania, jeżeli utwór sie nie różni w pożądanym miejscu
+                        {
+                            TracksProperties.WaveOut?.Play();
+                        }
 
-                    PlayIcon = Icons.GetStopIcon();
-                    _isPlaying = true;
-                }
-                // Jezżeli muzyka jest zapauzowana,zapamięta zostaje pozycja i zmieniona ikona przycisku.
-                else
-                {
-                    if (TracksProperties.AudioFileReader != null)
-                        _pausedPosition = TracksProperties.AudioFileReader.Position;
-                    TracksProperties.WaveOut?.Pause();
-                    PlayIcon = Icons.GetPlayIcon();
-                    _isPlaying = false;
+                        PlayIcon = Icons.GetStopIcon();
+                        _isPlaying = true;
+                    }
+                    // Jezżeli muzyka jest zapauzowana,zapamięta zostaje pozycja i zmieniona ikona przycisku.
+                    else
+                    {
+                        TracksProperties.WaveOut?.Pause();
+                        PlayIcon = Icons.GetPlayIcon();
+                        _isPlaying = false;
+                    }
                 }
             }
         }
@@ -183,6 +218,7 @@ public partial class ButtonPlay : INotifyPropertyChanged
             if (TracksProperties.WaveOut != null)
             {
                 TracksProperties.WaveOut.Pause();
+                _isPlaying = false;
                 TracksProperties.WaveOut.Dispose();
                 TracksProperties.AudioFileReader?.Dispose();
             }
@@ -192,6 +228,7 @@ public partial class ButtonPlay : INotifyPropertyChanged
             TracksProperties.AudioFileReader = new AudioFileReader(TracksProperties.SelectedTrack?.Path);
             TracksProperties.WaveOut.Init(TracksProperties.AudioFileReader);
             TracksProperties.WaveOut.Play();
+            _isPlaying = true;
             TracksProperties.WaveOut.PlaybackStopped += WaveOut_PlaybackStopped;
         }
         catch (Exception ex)
@@ -221,11 +258,19 @@ public partial class ButtonPlay : INotifyPropertyChanged
 
                 // Jeżeli schuffle i loop występują razem to nie pauzuje muzyki na pierwszym utworze
                 if (TracksProperties.IsLoopOn == 1)
+                {
                     TracksProperties.WaveOut.Play();
+                    _isPlaying = true;
+                }
+
                 else
+                {
                     TracksProperties.WaveOut.Pause();
+                    _isPlaying = false;
+                }
 
                 TracksProperties.WaveOut.PlaybackStopped += WaveOut_PlaybackStopped;
+
                 // Reset listy dostępnych numerów utworów
                 if (TracksProperties.TracksList != null)
                     TracksProperties.AvailableNumbers = Enumerable.Range(0, TracksProperties.TracksList.Count).ToList();
@@ -239,6 +284,15 @@ public partial class ButtonPlay : INotifyPropertyChanged
             }
             else
             {
+                var isSchuffleFunWithNextButtonFirst = false;
+                if (TracksProperties.AvailableNumbers == null && TracksProperties.TracksList != null)
+                {
+                    TracksProperties.AvailableNumbers =
+                        Enumerable.Range(0, TracksProperties.TracksList.Count).ToList();
+                    isSchuffleFunWithNextButtonFirst = true;
+                }
+
+
                 /*
                  * Funckja getRandomNumber wylosuje dowolny dostępny numer utworu oraz zapamięta poprzedni w
                  * liście PrevTrack, aby użytkownik mógł wrócić nielosowo do poprzedniego utworu.
@@ -246,6 +300,9 @@ public partial class ButtonPlay : INotifyPropertyChanged
                 var randomTrack = GetRandomNumber();
                 TracksProperties.PrevTrack.Add(TracksProperties.SelectedTrack);
                 TracksProperties.SelectedTrack = TracksProperties.TracksList?.ElementAt(randomTrack);
+                if (isSchuffleFunWithNextButtonFirst)
+                    TracksProperties.FirstPlayed = TracksProperties.SelectedTrack;
+
                 PlayNewTrack();
             }
         }
@@ -283,19 +340,9 @@ public partial class ButtonPlay : INotifyPropertyChanged
                     {
                         SchuffleFun();
                         if (TracksProperties.IsLoopOn == 1)
-                        {
                             if (TracksProperties.SelectedTrack == TracksProperties.FirstPlayed)
                                 if (TracksProperties.WaveOut != null)
                                     TracksProperties.WaveOut.Play();
-                        }
-                        else
-                        {
-                            if (TracksProperties.SelectedTrack == TracksProperties.FirstPlayed)
-                            {
-                                PlayIcon = Icons.GetPlayIcon();
-                                _isPlaying = false;
-                            }
-                        }
                     }
                     else
                     {
@@ -305,18 +352,7 @@ public partial class ButtonPlay : INotifyPropertyChanged
                             TracksProperties.SelectedTrack = TracksProperties.TracksList?.ElementAt(0);
                             PlayNewTrack();
                             // Sprawdzenie czy jest loop, jeżeli nie to zatrzymaj muzykę i zmień ikone
-                            if (TracksProperties.IsLoopOn == 0)
-                            {
-                                TracksProperties.WaveOut?.Pause();
-                                PlayIcon = Icons.GetPlayIcon();
-                                _isPlaying = false;
-                            }
-                            else
-                            {
-                                // Nie zatrzymuj muzyki oraz zmień ikone z powrotem na grającą
-                                PlayIcon = Icons.GetStopIcon();
-                                _isPlaying = true;
-                            }
+                            if (TracksProperties.IsLoopOn == 0) TracksProperties.WaveOut?.Pause();
                         }
                         else
                         {
@@ -364,22 +400,13 @@ public partial class ButtonPlay : INotifyPropertyChanged
     {
         try
         {
-            PlayIcon = Icons.GetStopIcon();
-            _isPlaying = true;
-
-            // Sprawdzenie, czy bez użycia loopa pierwszy element z listy został włącozny.
-            if (TracksProperties.IsLoopOn == 0 && !TracksProperties.IsSchuffleOn &&
-                TracksProperties.SelectedTrack == TracksProperties.TracksList?.ElementAt(0))
+            if (TracksProperties.WaveOut != null && TracksProperties.WaveOut.PlaybackState == PlaybackState.Playing)
             {
-                PlayIcon = Icons.GetPlayIcon();
-                _isPlaying = false;
+                PlayIcon = Icons.GetStopIcon();
+                _isPlaying = true;
             }
-
-            // Sprawdzenie czy ostatni track schuffli nie został zagrany, aby na pierwszym się zatrzymać
-            if (TracksProperties.IsSchuffleOn && TracksProperties.IsLoopOn != 1 &&
-                TracksProperties.SelectedTrack == TracksProperties.FirstPlayed)
+            else
             {
-                TracksProperties.WaveOut?.Pause();
                 PlayIcon = Icons.GetPlayIcon();
                 _isPlaying = false;
             }

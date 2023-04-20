@@ -7,7 +7,6 @@ namespace SM_Audio_Player.View.UserControls.buttons;
 public partial class ButtonMaximize : INotifyPropertyChanged
 {
     private string? _maximizeIcon;
-    public event PropertyChangedEventHandler? PropertyChanged;
 
     public ButtonMaximize()
     {
@@ -34,6 +33,8 @@ public partial class ButtonMaximize : INotifyPropertyChanged
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MaximizeIcon"));
         }
     }
+
+    public event PropertyChangedEventHandler? PropertyChanged;
 
     /* Maxymalizacja okno playera */
     private void btnMaximize_Click(object sender, RoutedEventArgs e)

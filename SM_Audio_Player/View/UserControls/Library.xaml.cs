@@ -1,37 +1,39 @@
-﻿using Microsoft.Win32;
-using SM_Audio_Player.Music;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
-using Newtonsoft.Json;
-using SM_Audio_Player.View.UserControls.buttons;
-using File = System.IO.File;
-using System.IO;
 using System.Windows.Media.Imaging;
-using System.ComponentModel;
-using System.CodeDom;
+using Microsoft.Win32;
+using Newtonsoft.Json;
+using SM_Audio_Player.Music;
+using SM_Audio_Player.View.UserControls.buttons;
 
 namespace SM_Audio_Player.View.UserControls;
 
 public partial class Library
 {
-    public const string JsonPath = @"MusicTrackList.json";
-
     /*
     * Zdarzenie odnoszące się do double clicka w wybrany utwór, dzięki któremu w innych miejscach kodu wyniknie reakcja.
     * Utworzone zostało aby aktualizować poszczególne dane innych klas. 
     */
     public delegate void LibraryEventHandler(object sender, EventArgs e);
 
-    public static event LibraryEventHandler? DoubleClickEvent;
+    /*
+    * Akcja odpowiadająca za resetowanie danych w momencie, gdy odświeżona lista będzie zawierać mniej elementów
+    * niż ta wartość, która została zapisana przed jej odświeżeniem (Przykładowo, gdy ktoś zmieni ścieżkę do pliku
+    * w trakcie używania aplikacji mogła by ona wyrzucić wyjątek)
+    */
+    public delegate void ResetEverythingEventHandler(object sender, EventArgs e);
+
+    public const string JsonPath = @"MusicTrackList.json";
+    private string? _prevColumnSorted;
 
     private bool _sortingtype = true;
-    private string? _prevColumnSorted;
-    
+
     public Library()
     {
         try
@@ -52,6 +54,10 @@ public partial class Library
             throw;
         }
     }
+
+    public static event LibraryEventHandler? DoubleClickEvent;
+
+    public static event ResetEverythingEventHandler? ResetEverything;
 
 
     /*
@@ -116,15 +122,11 @@ public partial class Library
         try
         {
             if (ascending)
-            {
                 TracksProperties.TracksList = TracksProperties.TracksList?
                     .OrderBy(track => track.GetType().GetProperty(property)?.GetValue(track)).ToList();
-            }
             else
-            {
                 TracksProperties.TracksList = TracksProperties.TracksList?
                     .OrderByDescending(track => track.GetType().GetProperty(property)?.GetValue(track)).ToList();
-            }
 
             // Zapisanie posortowanej listy do JSON
             var newJsonData = JsonConvert.SerializeObject(TracksProperties.TracksList);
@@ -176,10 +178,8 @@ public partial class Library
                 RefreshTrackListViewAndId();
                 if (TracksProperties.TracksList != null && TracksProperties.SelectedTrack != null)
                     foreach (var track in TracksProperties.TracksList)
-                    {
                         if (TracksProperties.SelectedTrack.Title == track.Title)
                             lv.SelectedIndex = track.Id - 1;
-                    }      
             }
         }
         catch (Exception ex)
@@ -204,13 +204,13 @@ public partial class Library
             {
                 foreach (var filePath in openFileDialog.FileNames)
                 {
-                    var title = System.IO.Path.GetFileNameWithoutExtension(filePath);
+                    var title = Path.GetFileNameWithoutExtension(filePath);
                     var newPath = filePath;
 
                     if (TracksProperties.TracksList != null &&
                         TracksProperties.TracksList.Any(track => track.Path == newPath))
                     {
-                        var duplicateTrack = System.IO.Path.GetFileNameWithoutExtension(newPath);
+                        var duplicateTrack = Path.GetFileNameWithoutExtension(newPath);
                         var result = MessageBox.Show(
                             $"The track '{duplicateTrack}' is already in the list. Do you want to add it again?",
                             "Duplicate Music",
@@ -250,9 +250,9 @@ public partial class Library
 
                     if (TracksProperties.TracksList != null)
                     {
-
                         var newId = TracksProperties.TracksList.Count + 1;
-                        var newTrack = new Tracks(newId, newTitle, newAuthor, newAlbum, newPath, formattedTime, albumCoverPath);
+                        var newTrack = new Tracks(newId, newTitle, newAuthor, newAlbum, newPath, formattedTime,
+                            albumCoverPath);
                         TracksProperties.TracksList.Add(newTrack);
                         addedToTheList = true;
                     }
@@ -262,7 +262,13 @@ public partial class Library
                     RefreshTrackListViewAndId();
                 }
 
-                if (addedToTheList) MessageBox.Show($"Successfully added to the list.", "Add Music");
+                if (addedToTheList) MessageBox.Show("Successfully added to the list.", "Add Music");
+            }
+
+            if (lv.SelectedIndex != -1)
+            {
+                var elementId = lv.SelectedIndex;
+                TracksProperties.SelectedTrack = TracksProperties.TracksList?.ElementAt(elementId);
             }
         }
         catch (Exception ex)
@@ -291,7 +297,7 @@ public partial class Library
                     selectedIndices.Sort((a, b) => b.CompareTo(a));
 
                     // Sortuj indeksy w kolejności malejącej, aby uniknąć problemów z usuwaniem wielu elementów
-                    foreach (var index in selectedIndices) TracksProperties.TracksList.RemoveAt(index);
+                    foreach (var index in selectedIndices) TracksProperties.TracksList?.RemoveAt(index);
 
                     var newJsonData = JsonConvert.SerializeObject(TracksProperties.TracksList);
                     File.WriteAllText(JsonPath, newJsonData);
@@ -304,6 +310,12 @@ public partial class Library
                         lv.SelectedIndex = selectedIndex;
                     }
                 }
+            }
+
+            if (lv.SelectedIndex != -1)
+            {
+                var elementId = lv.SelectedIndex;
+                TracksProperties.SelectedTrack = TracksProperties.TracksList?.ElementAt(elementId);
             }
         }
         catch (Exception ex)
@@ -348,22 +360,48 @@ public partial class Library
     {
         try
         {
-            var selectedIndex = lv.SelectedIndex;
-            var track = lv.SelectedItem as Tracks;
-            RefreshTrackListViewAndId();
-            lv.SelectedIndex = selectedIndex;
-
-            var btnPlay = new ButtonPlay();
-            if (TracksProperties.IsSchuffleOn && TracksProperties.WaveOut != null &&
-                TracksProperties.AudioFileReader != null)
+            /*
+            * Walidacja odświeżania listy, zapisuje bieżącą wartość posiadanych utworów na liście, a następnie
+            * wykonane zostanie jej odświeżenie poprzez wywołanie 'RefreshList', następnie porównywana jest wartość
+            * odświeżonej listy oraz zapisanej, w celu sprawdzenia czy ścieżka, któreś z piosenek nie uległa zmianie.
+            * Jeżeli wartość piosenek uległa zmianie, następuje wyczyszczenie wszelkich danych związanych z piosenką
+            * zarówno tych w widoku poprzez wywołanie zdarzenia ResetEverything.
+            */
+            if (TracksProperties.TracksList != null)
             {
-                TracksProperties.WaveOut.Stop();
-                TracksProperties.WaveOut.Dispose();
-                TracksProperties.AudioFileReader = null;
-            }
+                var trackListBeforeRefresh = TracksProperties.TracksList.Count;
+                RefreshTrackList(sender, e);
+                if (trackListBeforeRefresh != TracksProperties.TracksList.Count)
+                {
+                    if (TracksProperties.WaveOut != null && TracksProperties.AudioFileReader != null)
+                    {
+                        TracksProperties.WaveOut.Pause();
+                        TracksProperties.WaveOut.Dispose();
+                        TracksProperties.AudioFileReader = null;
+                        TracksProperties.SelectedTrack = null;
+                    }
+                    MessageBox.Show($"Ups! Któryś z odtwarzanych utworów zmienił swoją ścieżkę do pliku :(");
+                    ResetEverything?.Invoke(this, EventArgs.Empty);
+                }
+                else
+                {
+                    var selectedIndex = lv.SelectedIndex;
+                    RefreshTrackListViewAndId();
+                    lv.SelectedIndex = selectedIndex;
 
-            btnPlay.btnPlay_Click(sender, e);
-            DoubleClickEvent?.Invoke(this, EventArgs.Empty);
+                    var btnPlay = new ButtonPlay();
+                    if (TracksProperties.IsSchuffleOn && TracksProperties.WaveOut != null &&
+                        TracksProperties.AudioFileReader != null)
+                    {
+                        TracksProperties.WaveOut.Stop();
+                        TracksProperties.WaveOut.Dispose();
+                        TracksProperties.AudioFileReader = null;
+                    }
+
+                    btnPlay.btnPlay_Click(sender, e);
+                    DoubleClickEvent?.Invoke(this, EventArgs.Empty);
+                }
+            }
         }
         catch (Exception ex)
         {

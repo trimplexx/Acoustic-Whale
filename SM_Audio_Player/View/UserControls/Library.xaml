@@ -17,7 +17,8 @@
                   SelectionChanged="Lv_OnSelectionChanged" FontSize="16" AlternationCount="2">
 
             <ListView.View>
-                <GridView AllowsColumnReorder="False" ColumnHeaderContainerStyle="{StaticResource GridViewColumnHeaderStyle1}">
+                <GridView AllowsColumnReorder="False"
+                          ColumnHeaderContainerStyle="{StaticResource GridViewColumnHeaderStyle1}">
                     <GridViewColumn Header="Id" Width="30" DisplayMemberBinding="{Binding Id}" />
                     <GridViewColumn Header="Tytuł" Width="300" DisplayMemberBinding="{Binding Title}" />
                     <GridViewColumn Header="Autor" Width="100" DisplayMemberBinding="{Binding Author}" />
@@ -41,9 +42,10 @@
                                         BorderBrush="{TemplateBinding BorderBrush}"
                                         BorderThickness="{TemplateBinding BorderThickness}"
                                         SnapsToDevicePixels="true">
-                                    <GridViewRowPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                                                          SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                                    <GridViewRowPresenter
+                                        HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                        VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                        SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
                                 </Border>
                             </ControlTemplate>
                         </Setter.Value>

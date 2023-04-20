@@ -7,9 +7,8 @@ namespace SM_Audio_Player.View.UserControls.buttons;
 
 public partial class ButtonLoop : INotifyPropertyChanged
 {
-    public event PropertyChangedEventHandler? PropertyChanged;
-    private string? _loopIcon;
     private string? _loopColor;
+    private string? _loopIcon;
     private string? _loopMouseColor;
 
     public ButtonLoop()
@@ -58,6 +57,8 @@ public partial class ButtonLoop : INotifyPropertyChanged
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("LoopMouseColor"));
         }
     }
+
+    public event PropertyChangedEventHandler? PropertyChanged;
 
     /*Powtarzaj aktualnie włączony utwór*/
     private void btnLoop_Click(object sender, RoutedEventArgs e)

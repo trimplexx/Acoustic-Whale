@@ -1,22 +1,19 @@
-﻿using Newtonsoft.Json;
-using SM_Audio_Player.Music;
-using System;
+﻿using System;
 using System.ComponentModel;
 using System.IO;
 using System.Windows;
+using Newtonsoft.Json;
+using SM_Audio_Player.Music;
 
 namespace SM_Audio_Player.View.UserControls.buttons;
 
 public partial class ButtonVolume : INotifyPropertyChanged
 {
+    private const string JsonPath = @"MusicVolumeJSON.json";
+    private double _currentVolumeValue;
     private bool _isMuted;
     private double _savedVolumeValue;
-    private double _currentVolumeValue;
     private string? _volumeIcon;
-
-
-    private const string JsonPath = @"MusicVolumeJSON.json";
-    public event PropertyChangedEventHandler? PropertyChanged;
 
     public ButtonVolume()
     {
@@ -53,6 +50,8 @@ public partial class ButtonVolume : INotifyPropertyChanged
         }
     }
 
+    public event PropertyChangedEventHandler? PropertyChanged;
+
     /*Metoda sprawdzająca aktualną wartość slidera i na jej podstawie ustawiająca ikonkę*/
     private string? ValueIconChange(double volumeValue)
     {
@@ -63,17 +62,20 @@ public partial class ButtonVolume : INotifyPropertyChanged
                 VolumeIcon = Icons.GetVolumeIconZero();
                 return Icons.GetVolumeIconZero();
             }
-            else if (volumeValue > 0 && volumeValue <= 40)
+
+            if (volumeValue > 0 && volumeValue <= 40)
             {
                 VolumeIcon = Icons.GetVolumeIconLow();
                 return Icons.GetVolumeIconLow();
             }
-            else if (volumeValue > 40 && volumeValue <= 75)
+
+            if (volumeValue > 40 && volumeValue <= 75)
             {
                 VolumeIcon = Icons.GetVolumeIconHalf();
                 return Icons.GetVolumeIconHalf();
             }
-            else if (volumeValue > 75)
+
+            if (volumeValue > 75)
             {
                 VolumeIcon = Icons.GetVolumeIconMax();
                 return Icons.GetVolumeIconMax();

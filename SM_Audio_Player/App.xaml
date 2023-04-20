@@ -311,7 +311,9 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type GridViewColumnHeader}">
                         <Border BorderThickness="0,0,0,1" BorderBrush="#45a7bc" Background="Transparent">
-                            <TextBlock x:Name="ContentHeader" Text="{TemplateBinding Content}" Width="{TemplateBinding Width}" TextAlignment="Center" FontSize="16" Padding="0, 0, 0, 3"/>
+                            <TextBlock x:Name="ContentHeader" Text="{TemplateBinding Content}"
+                                       Width="{TemplateBinding Width}" TextAlignment="Center" FontSize="16"
+                                       Padding="0, 0, 0, 3" />
                         </Border>
                     </ControlTemplate>
                 </Setter.Value>
