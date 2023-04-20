@@ -46,17 +46,8 @@ public partial class Equalizer
      */
     private void OnSliderValueChange(object sender, MouseButtonEventArgs mouseButtonEventArgs)
     {
-        if (TracksProperties.WaveOut != null && TracksProperties.AudioFileReader != null && TracksProperties.WaveOut.PlaybackState == PlaybackState.Playing)
-        {
-            if (Equalizer_box.IsChecked == true)
-            {
-                TracksProperties.WaveOut?.Stop();
-                _equalizer = new EqualizerSampleProvider(TracksProperties.AudioFileReader);
-                _equalizer?.UpdateEqualizer(sld1.Value, sld2.Value, sld3.Value, sld4.Value, sld5.Value, sld6.Value);
-                TracksProperties.WaveOut.Init(_equalizer);
-                TracksProperties.WaveOut?.Play();
-            }
-        }
+        _equalizer?.UpdateEqualizer(sld1.Value, sld2.Value, sld3.Value, sld4.Value, sld5.Value, sld6.Value);
+
     }
 
     /*
