@@ -26,12 +26,12 @@
                 <ColumnDefinition />
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
-            <Slider Grid.Column="0" Orientation="Vertical" HorizontalAlignment="Center" Margin="0,30,0,30" />
-            <Slider Grid.Column="1" Orientation="Vertical" HorizontalAlignment="Center" Margin="0,30,0,30" />
-            <Slider Grid.Column="2" Orientation="Vertical" HorizontalAlignment="Center" Margin="0,30,0,30" />
-            <Slider Grid.Column="3" Orientation="Vertical" HorizontalAlignment="Center" Margin="0,30,0,30" />
-            <Slider Grid.Column="4" Orientation="Vertical" HorizontalAlignment="Center" Margin="0,30,0,30" />
-            <Slider Grid.Column="5" Orientation="Vertical" HorizontalAlignment="Center" Margin="0,30,0,30" />
+            <Slider  x:Name="sld1" Grid.Column="0" Orientation="Vertical" HorizontalAlignment="Center" Margin="0,30,0,30" PreviewMouseLeftButtonUp="OnSliderValueChange"/>
+            <Slider  x:Name="sld2" Grid.Column="1" Orientation="Vertical" HorizontalAlignment="Center" Margin="0,30,0,30" PreviewMouseLeftButtonUp="OnSliderValueChange"/>
+            <Slider  x:Name="sld3" Grid.Column="2" Orientation="Vertical" HorizontalAlignment="Center" Margin="0,30,0,30" PreviewMouseLeftButtonUp="OnSliderValueChange"/>
+            <Slider  x:Name="sld4" Grid.Column="3" Orientation="Vertical" HorizontalAlignment="Center" Margin="0,30,0,30" PreviewMouseLeftButtonUp="OnSliderValueChange"/>
+            <Slider  x:Name="sld5" Grid.Column="4" Orientation="Vertical" HorizontalAlignment="Center" Margin="0,30,0,30" PreviewMouseLeftButtonUp="OnSliderValueChange"/>
+            <Slider  x:Name="sld6" Grid.Column="5" Orientation="Vertical" HorizontalAlignment="Center" Margin="0,30,0,30" PreviewMouseLeftButtonUp="OnSliderValueChange"/>
         </Grid>
 
         <Border Grid.RowSpan="3" BorderThickness="0,0,3,0" BorderBrush="#45a7bc" Margin="0,5,0,5" />
@@ -53,9 +53,9 @@
             </StackPanel>
         </Grid>
 
-        <CheckBox Name="Equalizer_box" Grid.Row="2" Background="Transparent" Foreground="#45a7bc" FontSize="12"
+        <CheckBox x:Name="Equalizer_box" Grid.Row="2" Background="Transparent" Foreground="#45a7bc" FontSize="12"
                   Margin="2" VerticalAlignment="Center" HorizontalAlignment="Center" BorderBrush="#45a7bc"
-                  BorderThickness="1.5">
+                  BorderThickness="1.5" Click="OnOffEqualizer">
             <CheckBox.LayoutTransform>
                 <ScaleTransform ScaleX="1.7" ScaleY="1.7" />
             </CheckBox.LayoutTransform>

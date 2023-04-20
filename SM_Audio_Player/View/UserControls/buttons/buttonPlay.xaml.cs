@@ -27,6 +27,7 @@ public partial class ButtonPlay : INotifyPropertyChanged
     * kodu wyniknie reakcja. Utworzone zostało aby aktualizować poszczególne dane innych klas. 
     */
     public delegate void TrackEndEventHandler(object sender, EventArgs e);
+    public delegate void ButtonPlayEventToEqualizer(object sender, EventArgs e);
 
 
     // Obiekt do losowania liczb do Schufflowania utworów 
@@ -82,6 +83,7 @@ public partial class ButtonPlay : INotifyPropertyChanged
     public static event RefreshListEventHandler? RefreshList;
 
     public static event ResetEverythingEventHandler? ResetEverything;
+    public static event ButtonPlayEventToEqualizer? ButtonPlayEvent;
 
     // Funkcja losująca randomowy numer z dostępnego zakresu, używana do odtwarzania Schuffle.
     private int GetRandomNumber()
@@ -200,6 +202,7 @@ public partial class ButtonPlay : INotifyPropertyChanged
                         _isPlaying = false;
                     }
                 }
+                ButtonPlayEvent?.Invoke(this, EventArgs.Empty);
             }
         }
         catch (Exception ex)
