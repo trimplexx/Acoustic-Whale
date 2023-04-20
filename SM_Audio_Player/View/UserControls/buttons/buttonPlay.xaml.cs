@@ -188,14 +188,11 @@ public partial class ButtonPlay : INotifyPropertyChanged
             }
 
             // Utworzenie nowego obiektu waveOut, w celu otworzenia utworu
-            if (TracksProperties.TracksList.Count > null)
-            {
-                TracksProperties.WaveOut = new WaveOutEvent();
-                TracksProperties.AudioFileReader = new AudioFileReader(TracksProperties.SelectedTrack?.Path);
-                TracksProperties.WaveOut.Init(TracksProperties.AudioFileReader);
-                TracksProperties.WaveOut.Play();
-                TracksProperties.WaveOut.PlaybackStopped += WaveOut_PlaybackStopped;
-            }
+            TracksProperties.WaveOut = new WaveOutEvent();
+            TracksProperties.AudioFileReader = new AudioFileReader(TracksProperties.SelectedTrack?.Path);
+            TracksProperties.WaveOut.Init(TracksProperties.AudioFileReader);
+            TracksProperties.WaveOut.Play();
+            TracksProperties.WaveOut.PlaybackStopped += WaveOut_PlaybackStopped;
         }
         catch (Exception ex)
         {
@@ -272,7 +269,7 @@ public partial class ButtonPlay : INotifyPropertyChanged
              * kótra przewyższa TotalTime, więc przełączony zostanie dopierdo w tym momencie na kolejny utwór.
              */
             var ts = new TimeSpan(0, 0, 0, 0, 20);
-            if (TracksProperties.AudioFileReader != null&& TracksProperties.TracksList.Count >0)
+            if (TracksProperties.AudioFileReader != null)
             {
                 ts += TracksProperties.AudioFileReader.CurrentTime;
                 if (ts > TracksProperties.AudioFileReader.TotalTime)
@@ -367,27 +364,24 @@ public partial class ButtonPlay : INotifyPropertyChanged
     {
         try
         {
-            if(TracksProperties.TracksList.Count > 0)
+            PlayIcon = Icons.GetStopIcon();
+            _isPlaying = true;
+
+            // Sprawdzenie, czy bez użycia loopa pierwszy element z listy został włącozny.
+            if (TracksProperties.IsLoopOn == 0 && !TracksProperties.IsSchuffleOn &&
+                TracksProperties.SelectedTrack == TracksProperties.TracksList?.ElementAt(0))
             {
-                PlayIcon = Icons.GetStopIcon();
-                _isPlaying = true;
+                PlayIcon = Icons.GetPlayIcon();
+                _isPlaying = false;
+            }
 
-                // Sprawdzenie, czy bez użycia loopa pierwszy element z listy został włącozny.
-                if (TracksProperties.IsLoopOn == 0 && !TracksProperties.IsSchuffleOn &&
-                    TracksProperties.SelectedTrack == TracksProperties.TracksList?.ElementAt(0))
-                {
-                    PlayIcon = Icons.GetPlayIcon();
-                    _isPlaying = false;
-                }
-
-                // Sprawdzenie czy ostatni track schuffli nie został zagrany, aby na pierwszym się zatrzymać
-                if (TracksProperties.IsSchuffleOn && TracksProperties.IsLoopOn != 1 &&
-                    TracksProperties.SelectedTrack == TracksProperties.FirstPlayed)
-                {
-                    TracksProperties.WaveOut?.Pause();
-                    PlayIcon = Icons.GetPlayIcon();
-                    _isPlaying = false;
-                }
+            // Sprawdzenie czy ostatni track schuffli nie został zagrany, aby na pierwszym się zatrzymać
+            if (TracksProperties.IsSchuffleOn && TracksProperties.IsLoopOn != 1 &&
+                TracksProperties.SelectedTrack == TracksProperties.FirstPlayed)
+            {
+                TracksProperties.WaveOut?.Pause();
+                PlayIcon = Icons.GetPlayIcon();
+                _isPlaying = false;
             }
         }
         catch (Exception ex)
