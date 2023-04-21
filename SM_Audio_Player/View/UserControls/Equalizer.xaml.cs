@@ -80,6 +80,30 @@ public partial class Equalizer
             
         }
     }
+    private void OnOffEffects(object sender, RoutedEventArgs e)
+    {
+
+    }
+    private void OnOffFade(object sender, RoutedEventArgs e)
+    {
+
+    }
+    private void OnOffDelay(object sender, RoutedEventArgs e)
+    {
+
+    }
+    private void OnOffChoir(object sender, RoutedEventArgs e)
+    {
+
+    }
+    private void OnOffDistortion(object sender, RoutedEventArgs e)
+    {
+
+    }
+    private void OnOffNightcore(object sender, RoutedEventArgs e)
+    {
+
+    }
 }
 
 
