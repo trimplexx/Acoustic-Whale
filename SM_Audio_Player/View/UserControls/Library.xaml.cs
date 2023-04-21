@@ -8,6 +8,7 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using Microsoft.Win32;
+using NAudio.Wave;
 using Newtonsoft.Json;
 using SM_Audio_Player.Music;
 using SM_Audio_Player.View.UserControls.buttons;
@@ -42,6 +43,7 @@ public partial class Library
             ButtonPlay.TrackEnd += OnTrackSwitch;
             ButtonNext.NextButtonClicked += OnTrackSwitch;
             ButtonPrevious.PreviousButtonClicked += OnTrackSwitch;
+            Equalizer.FadeInEvent += OnTrackSwitch;
 
             ButtonPlay.RefreshList += RefreshTrackList;
             ButtonNext.RefreshList += RefreshTrackList;
@@ -369,6 +371,17 @@ public partial class Library
             */
             if (TracksProperties.TracksList != null)
             {
+                if (TracksProperties.SecWaveOut != null && TracksProperties.SecWaveOut.PlaybackState == PlaybackState.Playing)
+                {
+                    TracksProperties.AudioFileReader = TracksProperties.SecAudioFileReader;
+                    TracksProperties.WaveOut?.Stop();
+                    TracksProperties.WaveOut?.Init(TracksProperties.AudioFileReader);
+                    
+                    TracksProperties.SecWaveOut.Stop();
+                    TracksProperties.SecWaveOut.Dispose();
+                    TracksProperties.SecAudioFileReader = null;
+                }
+                
                 var trackListBeforeRefresh = TracksProperties.TracksList.Count;
                 RefreshTrackList(sender, e);
                 if (trackListBeforeRefresh != TracksProperties.TracksList.Count)

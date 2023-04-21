@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Windows;
+using NAudio.Wave;
 using SM_Audio_Player.Music;
 
 namespace SM_Audio_Player.View.UserControls.buttons;
@@ -48,6 +49,17 @@ public partial class ButtonNext
             // Sprawdź czy jest dostępny jakikolwiek numer na liście
             if (TracksProperties.TracksList != null && TracksProperties.TracksList.Count > 0)
             {
+                if (TracksProperties.SecWaveOut != null && TracksProperties.SecWaveOut.PlaybackState == PlaybackState.Playing)
+                {
+                    TracksProperties.AudioFileReader = TracksProperties.SecAudioFileReader;
+                    TracksProperties.WaveOut?.Stop();
+                    TracksProperties.WaveOut?.Init(TracksProperties.AudioFileReader);
+                    
+                    TracksProperties.SecWaveOut.Stop();
+                    TracksProperties.SecWaveOut.Dispose();
+                    TracksProperties.SecAudioFileReader = null;
+                }
+                
                 /*
                  * Walidacja odświeżania listy, zapisuje bieżącą wartość posiadanych utworów na liście, a następnie
                  * wykonane zostanie jej odświeżenie poprzez wywołanie 'RefreshList', następnie porównywana jest wartość

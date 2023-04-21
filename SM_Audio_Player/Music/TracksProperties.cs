@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Windows.Threading;
 using NAudio.Wave;
 
 namespace SM_Audio_Player.Music;
@@ -10,10 +11,13 @@ public static class TracksProperties
 {
     // Lista z utworami
     public static List<Tracks>? TracksList = new();
-
+    
+    public static DispatcherTimer _timer = new();
+    
     // Flagi przycisków Loop oraz Schuffle
     public static int IsLoopOn = 0;
     public static bool IsSchuffleOn = false;
+    public static bool IsFadeOn = false;
 
     // Lista poprzednich utworów do przycisku schuffle
     public static List<Tracks?> PrevTrack = new();
@@ -24,6 +28,8 @@ public static class TracksProperties
     // Trwający aktualnie utwór
     public static AudioFileReader? AudioFileReader { get; set; }
     public static WaveOutEvent? WaveOut { get; set; }
+    public static AudioFileReader? SecAudioFileReader { get; set; }
+    public static WaveOutEvent? SecWaveOut { get; set; }
 
     // lista dostępnych numerów do wylosowania po użyciu schuffle
     public static List<int>? AvailableNumbers { get; set; }

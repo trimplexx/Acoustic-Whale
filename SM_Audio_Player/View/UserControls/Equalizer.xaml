@@ -41,16 +41,6 @@
                 <RowDefinition Height="7*" />
                 <RowDefinition Height="3*" />
             </Grid.RowDefinitions>
-            <StackPanel Grid.Row="1" VerticalAlignment="Center">
-                <StackPanel VerticalAlignment="Center" Margin="0,10,0,10">
-                    <TextBlock Text="Fade In" Foreground="#45a7bc" HorizontalAlignment="Center" FontSize="18" />
-                    <Slider Style="{DynamicResource SliderStyle2}" VerticalAlignment="Center" Margin="10,0,10,0" />
-                </StackPanel>
-                <StackPanel VerticalAlignment="Center" Margin="0,10,0,10">
-                    <TextBlock Text="Fade Out" Foreground="#45a7bc" HorizontalAlignment="Center" FontSize="18" />
-                    <Slider Style="{DynamicResource SliderStyle2}" VerticalAlignment="Center" Margin="10,0,10,0" />
-                </StackPanel>
-            </StackPanel>
         </Grid>
 
         <CheckBox x:Name="Equalizer_box" Grid.Row="2" Background="Transparent" Foreground="#45a7bc" FontSize="12"
@@ -62,7 +52,7 @@
             Equalizer
         </CheckBox>
         <CheckBox Name="Fade_box" Grid.Row="2" Grid.Column="2" Background="Transparent" Foreground="#45a7bc"
-                  FontSize="12" Margin="2" VerticalAlignment="Center" HorizontalAlignment="Center"
+                  FontSize="12" Margin="2" VerticalAlignment="Center" HorizontalAlignment="Center" Click="Fade_CheckBoxClick"
                   BorderBrush="#45a7bc" BorderThickness="1.5">
             <CheckBox.LayoutTransform>
                 <ScaleTransform ScaleX="1.7" ScaleY="1.7" />
