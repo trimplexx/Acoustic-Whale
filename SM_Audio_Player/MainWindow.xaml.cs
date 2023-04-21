@@ -9,6 +9,7 @@ public partial class MainWindow
     public MainWindow()
     {
         InitializeComponent();
+        this.MaxHeight = SystemParameters.MaximizedPrimaryScreenHeight;
     }
 
     /*Reakcja okna na użycie LMB na pasek menu*/

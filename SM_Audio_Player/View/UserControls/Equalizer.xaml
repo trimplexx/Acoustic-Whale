@@ -5,20 +5,34 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d"
              d:DesignHeight="570" d:DesignWidth="1000">
+    <UserControl.Resources>
+        <Style TargetType="CheckBox">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="#45a7bc"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Margin" Value="10"/>
+            <Setter Property="BorderBrush" Value="#45a7bc"/>
+            <Setter Property="BorderThickness" Value="1.5"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+        </Style>
+    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition />
-            <RowDefinition Height="60" />
+            <RowDefinition/>
+            <RowDefinition Height="60"/>
         </Grid.RowDefinitions>
 
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="5*" />
-            <ColumnDefinition Width="5*" />
+            <ColumnDefinition Width="50*"/>
+            <ColumnDefinition Width="200"/>
+            <ColumnDefinition Width="30*"/>
         </Grid.ColumnDefinitions>
 
 
         <Grid>
             <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
                 <ColumnDefinition />
                 <ColumnDefinition />
                 <ColumnDefinition />
@@ -32,33 +46,59 @@
             <Slider  x:Name="sld4" Grid.Column="3" Orientation="Vertical" HorizontalAlignment="Center" Margin="0,30,0,30" PreviewMouseLeftButtonUp="OnSliderValueChange" Minimum="-15" Maximum="15" Value="0"/>
             <Slider  x:Name="sld5" Grid.Column="4" Orientation="Vertical" HorizontalAlignment="Center" Margin="0,30,0,30" PreviewMouseLeftButtonUp="OnSliderValueChange" Minimum="-15" Maximum="15" Value="0"/>
             <Slider  x:Name="sld6" Grid.Column="5" Orientation="Vertical" HorizontalAlignment="Center" Margin="0,30,0,30" PreviewMouseLeftButtonUp="OnSliderValueChange" Minimum="-15" Maximum="15" Value="0"/>
+            <Slider  x:Name="sld7" Grid.Column="6" Orientation="Vertical" HorizontalAlignment="Center" Margin="0,30,0,30" PreviewMouseLeftButtonUp="OnSliderValueChange" Minimum="-15" Maximum="15" Value="0"/>
+            <Slider  x:Name="sld8" Grid.Column="7" Orientation="Vertical" HorizontalAlignment="Center" Margin="0,30,0,30" PreviewMouseLeftButtonUp="OnSliderValueChange" Minimum="-15" Maximum="15" Value="0"/>
         </Grid>
 
         <Border Grid.RowSpan="3" BorderThickness="0,0,3,0" BorderBrush="#45a7bc" Margin="0,5,0,5" />
+        <Border Grid.RowSpan="3" Grid.Column="1" BorderThickness="0,0,3,0" BorderBrush="#45a7bc" Margin="0,5,0,5" />
 
-        <Grid Grid.Column="1">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="7*" />
-                <RowDefinition Height="3*" />
-            </Grid.RowDefinitions>
-        </Grid>
+        <StackPanel Grid.Column="1" Margin="10">
+            <CheckBox Name="Fade_box" Click="OnOffFade">
+                <CheckBox.LayoutTransform>
+                    <ScaleTransform ScaleX="1.7" ScaleY="1.7" />
+                </CheckBox.LayoutTransform>
+                Fade In/Out
+            </CheckBox>
+            <CheckBox Name="Delay_Box" Click="OnOffDelay">
+                <CheckBox.LayoutTransform>
+                    <ScaleTransform ScaleX="1.7" ScaleY="1.7" />
+                </CheckBox.LayoutTransform>
+                Delay
+            </CheckBox>
+            <CheckBox Name="Choir_Box" Click="OnOffChoir">
+                <CheckBox.LayoutTransform>
+                    <ScaleTransform ScaleX="1.7" ScaleY="1.7" />
+                </CheckBox.LayoutTransform>
+                Choir
+            </CheckBox>
+            <CheckBox Name="Distortion_Box" Click="OnOffDistortion">
+                <CheckBox.LayoutTransform>
+                    <ScaleTransform ScaleX="1.7" ScaleY="1.7" />
+                </CheckBox.LayoutTransform>
+                Distortion
+            </CheckBox>
+            <CheckBox Name="Nightcore_Box" Click="OnOffNightcore">
+                <CheckBox.LayoutTransform>
+                    <ScaleTransform ScaleX="1.7" ScaleY="1.7" />
+                </CheckBox.LayoutTransform>
+                Nightcore
+            </CheckBox>
+        </StackPanel>
+        
 
-        <CheckBox x:Name="Equalizer_box" Grid.Row="2" Background="Transparent" Foreground="#45a7bc" FontSize="12"
-                  Margin="2" VerticalAlignment="Center" HorizontalAlignment="Center" BorderBrush="#45a7bc"
-                  BorderThickness="1.5" Click="OnOffEqualizer">
+        <CheckBox x:Name="Equalizer_box" Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Center" Click="OnOffEqualizer">
             <CheckBox.LayoutTransform>
                 <ScaleTransform ScaleX="1.7" ScaleY="1.7" />
             </CheckBox.LayoutTransform>
             Equalizer
         </CheckBox>
-        <CheckBox Name="Fade_box" Grid.Row="2" Grid.Column="2" Background="Transparent" Foreground="#45a7bc"
-                  FontSize="12" Margin="2" VerticalAlignment="Center" HorizontalAlignment="Center" Click="Fade_CheckBoxClick"
-                  BorderBrush="#45a7bc" BorderThickness="1.5">
+        <CheckBox x:Name="Effects_Box" Grid.Column="1" Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center" Click="OnOffEffects">
             <CheckBox.LayoutTransform>
                 <ScaleTransform ScaleX="1.7" ScaleY="1.7" />
             </CheckBox.LayoutTransform>
-            Fade In/Out
+            Efekty
         </CheckBox>
-
+        
     </Grid>
 </UserControl>
