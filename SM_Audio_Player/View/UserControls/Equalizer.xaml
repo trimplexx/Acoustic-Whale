@@ -26,12 +26,12 @@
                 <ColumnDefinition />
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
-            <Slider  x:Name="sld1" Grid.Column="0" Orientation="Vertical" HorizontalAlignment="Center" Margin="0,30,0,30" PreviewMouseLeftButtonUp="OnSliderValueChange"/>
-            <Slider  x:Name="sld2" Grid.Column="1" Orientation="Vertical" HorizontalAlignment="Center" Margin="0,30,0,30" PreviewMouseLeftButtonUp="OnSliderValueChange"/>
-            <Slider  x:Name="sld3" Grid.Column="2" Orientation="Vertical" HorizontalAlignment="Center" Margin="0,30,0,30" PreviewMouseLeftButtonUp="OnSliderValueChange"/>
-            <Slider  x:Name="sld4" Grid.Column="3" Orientation="Vertical" HorizontalAlignment="Center" Margin="0,30,0,30" PreviewMouseLeftButtonUp="OnSliderValueChange"/>
-            <Slider  x:Name="sld5" Grid.Column="4" Orientation="Vertical" HorizontalAlignment="Center" Margin="0,30,0,30" PreviewMouseLeftButtonUp="OnSliderValueChange"/>
-            <Slider  x:Name="sld6" Grid.Column="5" Orientation="Vertical" HorizontalAlignment="Center" Margin="0,30,0,30" PreviewMouseLeftButtonUp="OnSliderValueChange"/>
+            <Slider  x:Name="sld1" Grid.Column="0" Orientation="Vertical" HorizontalAlignment="Center" Margin="0,30,0,30" PreviewMouseLeftButtonUp="OnSliderValueChange" Minimum="-15" Maximum="15" Value="0"/>
+            <Slider  x:Name="sld2" Grid.Column="1" Orientation="Vertical" HorizontalAlignment="Center" Margin="0,30,0,30" PreviewMouseLeftButtonUp="OnSliderValueChange" Minimum="-15" Maximum="15" Value="0"/>
+            <Slider  x:Name="sld3" Grid.Column="2" Orientation="Vertical" HorizontalAlignment="Center" Margin="0,30,0,30" PreviewMouseLeftButtonUp="OnSliderValueChange" Minimum="-15" Maximum="15" Value="0"/>
+            <Slider  x:Name="sld4" Grid.Column="3" Orientation="Vertical" HorizontalAlignment="Center" Margin="0,30,0,30" PreviewMouseLeftButtonUp="OnSliderValueChange" Minimum="-15" Maximum="15" Value="0"/>
+            <Slider  x:Name="sld5" Grid.Column="4" Orientation="Vertical" HorizontalAlignment="Center" Margin="0,30,0,30" PreviewMouseLeftButtonUp="OnSliderValueChange" Minimum="-15" Maximum="15" Value="0"/>
+            <Slider  x:Name="sld6" Grid.Column="5" Orientation="Vertical" HorizontalAlignment="Center" Margin="0,30,0,30" PreviewMouseLeftButtonUp="OnSliderValueChange" Minimum="-15" Maximum="15" Value="0"/>
         </Grid>
 
         <Border Grid.RowSpan="3" BorderThickness="0,0,3,0" BorderBrush="#45a7bc" Margin="0,5,0,5" />

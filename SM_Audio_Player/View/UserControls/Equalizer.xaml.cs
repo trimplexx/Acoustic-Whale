@@ -46,8 +46,10 @@ public partial class Equalizer
      */
     private void OnSliderValueChange(object sender, MouseButtonEventArgs mouseButtonEventArgs)
     {
-        _equalizer?.UpdateEqualizer(sld1.Value, sld2.Value, sld3.Value, sld4.Value, sld5.Value, sld6.Value);
-
+        if (Equalizer_box.IsChecked == true)
+        {
+            _equalizer?.UpdateEqualizer(sld1.Value, sld2.Value, sld3.Value, sld4.Value, sld5.Value, sld6.Value);
+        }
     }
 
     /*
