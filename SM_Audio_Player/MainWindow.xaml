@@ -3,27 +3,30 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        Background="#333333"
+        Background="Transparent"
         xmlns:UC="clr-namespace:SM_Audio_Player.View.UserControls"
         xmlns:BTN="clr-namespace:SM_Audio_Player.View.UserControls.buttons"
+        xmlns:LOGO="clr-namespace:SM_Audio_Player.assets"
         mc:Ignorable="d" WindowStyle="None"
-        Title="Nazwa Projektu" Height="800" Width="1000"
+        Title="Acoustic Whale" Height="800" Width="1000"
         MinHeight="600" MinWidth="800"
-        WindowStartupLocation="CenterScreen">
+        WindowStartupLocation="CenterScreen" AllowsTransparency="True">
 
     <!-- Ukrycie domyślnego paska menu od windowsa -->
     <WindowChrome.WindowChrome>
         <WindowChrome GlassFrameThickness="0" CornerRadius="0" CaptionHeight="0" />
     </WindowChrome.WindowChrome>
 
-    <Grid>
+    <Grid Background="#333333" Margin="6, 6, 6, 6">
         <Grid.RowDefinitions>
             <RowDefinition Height="30" />
             <RowDefinition Height="30*" />
             <RowDefinition Height="40" />
             <RowDefinition Height="70*" />
         </Grid.RowDefinitions>
-        <Rectangle Fill="#222222" MouseMove="Window_MouseDown" />
+        <Rectangle Fill="#222222" MouseMove="Window_MouseDown"/>
+        <LOGO:LOGO Height="30" Width="30" HorizontalAlignment="Left" Margin="10, 0, 0, 0" MouseMove="Window_MouseDown" />
+        <TextBlock Text="Acoustic Whale" FontSize="18" Foreground="#45a7bc" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="45, 0, 0, 0" MouseMove="Window_MouseDown" />
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0, 3, 10, 0"
                     MouseMove="Window_MouseDown">
             <BTN:ButtonMinimize Height="25" Width="25" Margin="0, 0, 10, 0" />
@@ -39,6 +42,6 @@
         </StackPanel>
         <UC:Library x:Name="Lib" Grid.Row="3" Margin="15, 0, 15, 0" Visibility="Visible" />
         <UC:Equalizer x:Name="Eq" Grid.Row="3" Margin="15, 0, 15, 0" Visibility="Hidden" />
-
     </Grid>
+    
 </Window>

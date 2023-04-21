@@ -5,11 +5,15 @@
         <TargetFramework>net6.0-windows</TargetFramework>
         <Nullable>enable</Nullable>
         <UseWPF>true</UseWPF>
+        <ApplicationIcon>assets\Acoustic-whale.ico</ApplicationIcon>
     </PropertyGroup>
 
     <ItemGroup>
-        <None Remove="assets\default.png" />
-        <None Remove="assets\play.svg" />
+      <None Remove="assets\AcousticWhale.png" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Include="assets\Acoustic-whale.ico" />
     </ItemGroup>
 
     <ItemGroup>
@@ -19,11 +23,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Folder Include="assets" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <Resource Include="Music\default.png" />
+        <Resource Include="assets\default.png" />
     </ItemGroup>
 
 </Project>
