@@ -59,21 +59,25 @@ public partial class Equalizer
     {
         if (TracksProperties.WaveOut != null && TracksProperties.AudioFileReader != null && TracksProperties.WaveOut.PlaybackState == PlaybackState.Playing)
         {
-            if (Equalizer_box.IsChecked == true)
+            if (_equalizer == null)
             {
                 TracksProperties.WaveOut?.Stop();
                 _equalizer = new EqualizerSampleProvider(TracksProperties.AudioFileReader);
                 _equalizer.UpdateEqualizer(sld1.Value, sld2.Value, sld3.Value, sld4.Value, sld5.Value, sld6.Value);
                 TracksProperties.WaveOut.Init(_equalizer);
+                TracksProperties.WaveOut?.Play();
+            }
+            
+            if (Equalizer_box.IsChecked == true)
+            {
+                _equalizer?.UpdateEqualizer(sld1.Value, sld2.Value, sld3.Value, sld4.Value, sld5.Value, sld6.Value);
             }
             else
             {
-                TracksProperties.WaveOut?.Stop();
-                _equalizer = new EqualizerSampleProvider(TracksProperties.AudioFileReader);
-                TracksProperties.WaveOut.Init(_equalizer);
+                _equalizer?.UpdateEqualizer(0, 0, 0,0,0,0);
             }
 
-            TracksProperties.WaveOut?.Play();
+            
         }
     }
 }
