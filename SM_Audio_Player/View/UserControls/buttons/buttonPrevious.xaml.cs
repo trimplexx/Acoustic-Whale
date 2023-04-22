@@ -54,7 +54,6 @@ public partial class ButtonPrevious
                     TracksProperties.AudioFileReader = TracksProperties.SecAudioFileReader;
                     TracksProperties.WaveOut?.Stop();
                     TracksProperties.WaveOut?.Init(TracksProperties.AudioFileReader);
-                    
                     TracksProperties.SecWaveOut.Stop();
                     TracksProperties.SecWaveOut.Dispose();
                     TracksProperties.SecAudioFileReader = null;
@@ -94,8 +93,10 @@ public partial class ButtonPrevious
                         // Sprawdzanie, czy lista nie jest pusta, jeżeli tak to odtworzy obecny utwór.
                         if (TracksProperties.PrevTrack.Count == 0)
                         {
+                            TracksProperties.AvailableNumbers = Enumerable.Range(0, TracksProperties.TracksList.Count).ToList();
+                            Random random = new Random();
                             TracksProperties.AvailableNumbers =
-                                Enumerable.Range(0, TracksProperties.TracksList.Count).ToList();
+                                TracksProperties.AvailableNumbers.OrderBy(x => random.Next()).ToList();
                             _btnPlay.PlayNewTrack();
                         }
                         // Jeżeli lista posiada poprzedni utwór, zostanie on wpisany jako obecny oraz zostanie odtworzony
@@ -108,8 +109,8 @@ public partial class ButtonPrevious
                             if (TracksProperties.SelectedTrack != TracksProperties.FirstPlayed)
                                 if (TracksProperties.SelectedTrack != null)
                                     TracksProperties.AvailableNumbers?.Add(TracksProperties.SelectedTrack.Id - 1);
-                            TracksProperties.SelectedTrack =
-                                TracksProperties.PrevTrack.ElementAt(TracksProperties.PrevTrack.Count - 1);
+                            
+                            TracksProperties.SelectedTrack = TracksProperties.PrevTrack.ElementAt(TracksProperties.PrevTrack.Count - 1);
                             TracksProperties.PrevTrack.RemoveAt(TracksProperties.PrevTrack.Count - 1);
                             _btnPlay.PlayNewTrack();
                         }

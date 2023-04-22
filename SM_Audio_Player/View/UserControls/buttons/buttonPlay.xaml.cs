@@ -104,11 +104,13 @@ public partial class ButtonPlay : INotifyPropertyChanged
             {
                 if (TracksProperties.SecWaveOut != null && TracksProperties.SecWaveOut.PlaybackState == PlaybackState.Playing)
                 {
+                    if (TracksProperties.SelectedTrack?.Path == TracksProperties.SecAudioFileReader?.FileName)
+                    {
+                        TracksProperties.AudioFileReader = TracksProperties.SecAudioFileReader;
+                    }
                     TracksProperties._timer.Stop();
-                    TracksProperties.AudioFileReader = TracksProperties.SecAudioFileReader;
                     TracksProperties.WaveOut?.Stop();
                     TracksProperties.WaveOut?.Init(TracksProperties.AudioFileReader);
-                    
                     TracksProperties.SecWaveOut.Stop();
                     TracksProperties.SecWaveOut.Dispose();
                     TracksProperties.SecAudioFileReader = null;

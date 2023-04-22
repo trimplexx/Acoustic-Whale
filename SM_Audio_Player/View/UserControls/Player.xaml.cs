@@ -83,6 +83,8 @@ public partial class Player : INotifyPropertyChanged
      * Ustawienie wszelkich wartości na temat piosenki przy jej zmianie oraz startowej wartości slidera
      */
     private TimeSpan result;
+    private TimeSpan audioTime;
+    private TimeSpan secAudioTime;
     private int id;
     private void OnTrackSwitch(object sender, EventArgs e)
     {
@@ -93,11 +95,26 @@ public partial class Player : INotifyPropertyChanged
                 title.Text = TracksProperties.SelectedTrack.Title;
                 author.Text = TracksProperties.SelectedTrack.Author;
                 CD.Text = TracksProperties.SelectedTrack.Album;
+                
                 if (TracksProperties.IsFadeOn)
                 {
-                    TimeSpan totalTime = TimeSpan.Parse(TracksProperties.SelectedTrack.Time);
-                    result = totalTime - TimeSpan.FromSeconds(10);
-                    TracksProperties.SelectedTrack.Time = result.ToString(@"hh\:mm\:ss");
+                    if (TracksProperties.IsLoopOn != 2)
+                    {
+                        TimeSpan totalTime = TimeSpan.Parse(TracksProperties.SelectedTrack.Time);
+                        if (TracksProperties.AudioFileReader != null)
+                        {
+                            audioTime = TracksProperties.AudioFileReader.TotalTime - TimeSpan.FromSeconds(10);
+                            if (TracksProperties.SecAudioFileReader != null)
+                            {
+                                secAudioTime = TracksProperties.SecAudioFileReader.TotalTime - TimeSpan.FromSeconds(10);
+                            }
+                        }
+                        result = totalTime - TimeSpan.FromSeconds(10);
+                        if (result.ToString(@"hh\:mm\:ss") != audioTime.ToString(@"hh\:mm\:ss") && result.ToString(@"hh\:mm\:ss") != secAudioTime.ToString(@"hh\:mm\:ss"))
+                            result = totalTime + TimeSpan.FromSeconds(10);
+
+                        TracksProperties.SelectedTrack.Time = result.ToString(@"hh\:mm\:ss");
+                    }
                 }
                 else
                 {
@@ -135,9 +152,34 @@ public partial class Player : INotifyPropertyChanged
 
             if (TracksProperties.AudioFileReader != null)
             {
-                var totalSecondsFirst = TracksProperties.AudioFileReader.TotalTime - TimeSpan.FromSeconds(10);
-            
-                if (TracksProperties.SelectedTrack?.Time == TracksProperties.AudioFileReader.TotalTime.ToString(@"hh\:mm\:ss") || result.ToString() == totalSecondsFirst.ToString(@"hh\:mm\:ss"))
+                if (TracksProperties.AudioFileReader?.FileName == TracksProperties.SecAudioFileReader?.FileName
+                    && TracksProperties.SelectedTrack?.Path == TracksProperties.AudioFileReader?.FileName)
+                {
+                    var currentPosition = TracksProperties.AudioFileReader.CurrentTime.TotalSeconds;
+                    var currentPositionSec = TracksProperties.SecAudioFileReader.CurrentTime.TotalSeconds;
+
+                    if (currentPosition > currentPositionSec)
+                    {
+                        var progress = currentPosition / totalSeconds;
+                        tbCurrTime.Text = TimeSpan.FromSeconds(currentPosition).ToString(@"hh\:mm\:ss");
+                        sldTime.Value = progress * sldTime.Maximum;
+                        if (currentPosition > totalSeconds)
+                        {
+                            FirstToSec?.Invoke(this, EventArgs.Empty);
+                        }
+                    }
+                    else
+                    {
+                        var progressSec = currentPositionSec / totalSeconds;
+                        tbCurrTime.Text = TimeSpan.FromSeconds(currentPositionSec).ToString(@"hh\:mm\:ss");
+                        sldTime.Value = progressSec * sldTime.Maximum;
+                        if (currentPositionSec > totalSeconds)
+                        {
+                            SecToFirst?.Invoke(this, EventArgs.Empty);
+                        }
+                    }
+                }
+                else if (TracksProperties.SelectedTrack?.Path== TracksProperties.AudioFileReader?.FileName)
                 {
                     var currentPosition = TracksProperties.AudioFileReader.CurrentTime.TotalSeconds;
                     var progress = currentPosition / totalSeconds;
@@ -202,11 +244,22 @@ public partial class Player : INotifyPropertyChanged
                 var progress = sldTime.Value / sldTime.Maximum;
                 var newPosition = totalSeconds * progress;
                 
-                var totalSecondsFirst = TracksProperties.AudioFileReader.TotalTime - TimeSpan.FromSeconds(10);
+                if (TracksProperties.AudioFileReader?.FileName == TracksProperties.SecAudioFileReader?.FileName
+                    && TracksProperties.SelectedTrack?.Path == TracksProperties.AudioFileReader?.FileName)
+                {
+                    var currentPosition = TracksProperties.AudioFileReader?.CurrentTime.TotalSeconds;
+                    var currentPositionSec = TracksProperties.SecAudioFileReader?.CurrentTime.TotalSeconds;
 
-                if (TracksProperties.SelectedTrack?.Time ==
-                    TracksProperties.AudioFileReader.TotalTime.ToString(@"hh\:mm\:ss") ||
-                    result.ToString() == totalSecondsFirst.ToString(@"hh\:mm\:ss"))
+                    if (currentPosition > currentPositionSec)
+                    {
+                        TracksProperties.SecAudioFileReader.CurrentTime = TimeSpan.FromSeconds(newPosition);
+                    }
+                    else
+                    {
+                        TracksProperties.AudioFileReader.CurrentTime = TimeSpan.FromSeconds(newPosition);
+                    }
+                }
+                else if (TracksProperties.SelectedTrack?.Path == TracksProperties.AudioFileReader.FileName)
                 {
                     TracksProperties.AudioFileReader.CurrentTime = TimeSpan.FromSeconds(newPosition);
                 }
