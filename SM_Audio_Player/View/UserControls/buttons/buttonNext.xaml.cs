@@ -26,6 +26,7 @@ public partial class ButtonNext
      * w trakcie używania aplikacji mogła by ona wyrzucić wyjątek)
      */
     public delegate void ResetEverythingEventHandler(object sender, EventArgs e);
+    public delegate void SelectedTrackNullEventHandler(object sender, EventArgs e);
 
     private readonly ButtonPlay _btnPlay = new();
     
@@ -40,14 +41,19 @@ public partial class ButtonNext
     public static event RefreshListEventHandler? RefreshList;
 
     public static event ResetEverythingEventHandler? ResetEverything;
-
+    public static event SelectedTrackNullEventHandler? NextSelectedNull;
     /*Włącz następny utwór*/
     private void btnNext_Click(object sender, RoutedEventArgs e)
     {
         try
         {
+            if (TracksProperties.SelectedTrack == null)
+            {
+                _btnPlay.btnPlay_Click(sender, e);
+                NextSelectedNull?.Invoke(this, EventArgs.Empty);
+            }
             // Sprawdź czy jest dostępny jakikolwiek numer na liście
-            if (TracksProperties.TracksList != null && TracksProperties.TracksList.Count > 0)
+            else if (TracksProperties.TracksList != null && TracksProperties.TracksList.Count > 0)
             {
                 if (TracksProperties.SecWaveOut != null && TracksProperties.SecWaveOut.PlaybackState == PlaybackState.Playing)
                 {

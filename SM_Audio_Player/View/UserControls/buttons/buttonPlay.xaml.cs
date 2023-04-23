@@ -162,7 +162,7 @@ public partial class ButtonPlay : INotifyPropertyChanged
                             TracksProperties.WaveOut = new WaveOutEvent();
                             TracksProperties.WaveOut.PlaybackStopped += WaveOut_PlaybackStopped;
                             TracksProperties.AudioFileReader = new AudioFileReader(TracksProperties.SelectedTrack.Path);
-                            //TrackEnd?.Invoke(this, EventArgs.Empty);
+                            TrackEnd?.Invoke(this, EventArgs.Empty);
                         }
                         // Sprawdzanie czy podany utwór różni się z tym wybranym z listy
                         else if (TracksProperties.AudioFileReader.FileName != checkReader.FileName)

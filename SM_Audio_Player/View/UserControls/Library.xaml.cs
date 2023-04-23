@@ -401,16 +401,7 @@ public partial class Library
                     var selectedIndex = lv.SelectedIndex;
                     RefreshTrackListViewAndId();
                     lv.SelectedIndex = selectedIndex;
-
                     var btnPlay = new ButtonPlay();
-                    if (TracksProperties.IsSchuffleOn && TracksProperties.WaveOut != null &&
-                        TracksProperties.AudioFileReader != null)
-                    {
-                        TracksProperties.WaveOut.Stop();
-                        TracksProperties.WaveOut.Dispose();
-                        TracksProperties.AudioFileReader = null;
-                    }
-
                     btnPlay.btnPlay_Click(sender, e);
                     DoubleClickEvent?.Invoke(this, EventArgs.Empty);
                 }

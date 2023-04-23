@@ -25,13 +25,14 @@ public partial class Equalizer
     public Equalizer()
     {
         InitializeComponent();
-        ButtonNext.NextButtonClicked += SetEqualizerValueToTrack;
-        ButtonPlay.TrackEnd += SetEqualizerValueToTrack;
-        ButtonPrevious.PreviousButtonClicked += SetEqualizerValueToTrack;
-        Library.DoubleClickEvent += SetEqualizerValueToTrack;
+        ButtonNext.NextButtonClicked += NextPrevEvent;
+        ButtonPlay.TrackEnd += NextPrevEvent;
+        ButtonPrevious.PreviousButtonClicked += NextPrevEvent;
+        Library.DoubleClickEvent += ButtonDoubleClickEvent;
         Player.FirstToSec += FirstToSecChange;
         Player.SecToFirst += SecToFirstChange;
-        ButtonPlay.ButtonPlayEvent += SetEqualizerValueToTrack;
+        ButtonPlay.ButtonPlayEvent += ButtonDoubleClickEvent;
+        ButtonNext.NextSelectedNull += ButtonDoubleClickEvent;
     }
 
     
@@ -39,12 +40,32 @@ public partial class Equalizer
      * Ustawienie wartości bieżących suwaków, w momencie gdy jest zaznaczona opcja equalizera w odpowiedzi na zmiane
      * piosenki.
      */
-    private void SetEqualizerValueToTrack(object sender, EventArgs e)
+    private void ButtonDoubleClickEvent(object sender, EventArgs e)
     {
-        CreateEqualizers();
+        try
+        {
+            if (TracksProperties.AudioFileReader != null)
+                firstWaveEqualizer = new EqualizerSampleProvider(TracksProperties.AudioFileReader);
+            if(Equalizer_box.IsChecked == true)
+                firstWaveEqualizer?.UpdateEqualizer(sld1.Value, sld2.Value, sld3.Value, sld4.Value, sld5.Value, sld6.Value, sld7.Value, sld8.Value);
+            else 
+                firstWaveEqualizer?.UpdateEqualizer(0,0,0,0,0,0,0,0);
+
+            firstWaveFade = new FadeInOutSampleProvider(firstWaveEqualizer);
+            
+            TracksProperties.WaveOut?.Stop();
+            TracksProperties.WaveOut.Init(firstWaveFade);
+            TracksProperties.WaveOut?.Play();
+            FadeOffOn?.Invoke(this, EventArgs.Empty);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"CreateEqualizers: {ex.Message}");
+            throw;
+        }
     }
 
-    private void CreateEqualizers()
+    private void NextPrevEvent(object sender, EventArgs e)
     {
         try
         {
@@ -57,11 +78,19 @@ public partial class Equalizer
 
             firstWaveFade = new FadeInOutSampleProvider(firstWaveEqualizer);
 
-            TracksProperties.WaveOut?.Stop();
-            TracksProperties.WaveOut.Init(firstWaveFade);
-            TracksProperties.WaveOut?.Play();
-            FadeInEvent?.Invoke(this, EventArgs.Empty);
+            if (TracksProperties.WaveOut?.PlaybackState == PlaybackState.Playing)
+            {
+                TracksProperties.WaveOut?.Stop();
+                TracksProperties.WaveOut.Init(firstWaveFade);
+                TracksProperties.WaveOut?.Play();
+            }
+            else
+            {
+                TracksProperties.WaveOut?.Stop();
+                TracksProperties.WaveOut.Init(firstWaveFade);
+            }
 
+            FadeOffOn?.Invoke(this, EventArgs.Empty);
         }
         catch (Exception ex)
         {
@@ -69,6 +98,8 @@ public partial class Equalizer
             throw;
         }
     }
+
+    
 
     private void ChangeEqualizerValues()
     {
@@ -135,7 +166,7 @@ public partial class Equalizer
                 firstWaveEqualizer = new EqualizerSampleProvider(TracksProperties.AudioFileReader);
             ChangeEqualizerValues();
                 
-            firstWaveFade= new FadeInOutSampleProvider(firstWaveEqualizer);
+            firstWaveFade= new FadeInOutSampleProvider(firstWaveEqualizer, true);
                 
             TracksProperties.WaveOut?.Stop();
 
@@ -391,16 +422,34 @@ public partial class Equalizer
             else
             {
                 TracksProperties.IsFadeOn = false;
+                bool isPlaying = false;
+
+                if (TracksProperties.WaveOut?.PlaybackState == PlaybackState.Playing)
+                    isPlaying = true;
+                else if (TracksProperties.SecWaveOut?.PlaybackState == PlaybackState.Playing)
+                    isPlaying = true;
                 
                 if(TracksProperties.SecAudioFileReader != null)
                     TracksProperties.AudioFileReader = TracksProperties.SecAudioFileReader;
                 
                 TracksProperties._timer.Stop();
                 TracksProperties.SecWaveOut?.Stop();
-                TracksProperties.WaveOut?.Stop();
-                
-                if(TracksProperties.AudioFileReader != null)
-                    CreateEqualizers();
+
+                if (TracksProperties.AudioFileReader != null)
+                {
+                    firstWaveEqualizer = new EqualizerSampleProvider(TracksProperties.AudioFileReader);
+                    if(Equalizer_box.IsChecked == true)
+                        firstWaveEqualizer?.UpdateEqualizer(sld1.Value, sld2.Value, sld3.Value, sld4.Value, sld5.Value, sld6.Value, sld7.Value, sld8.Value);
+                    else 
+                        firstWaveEqualizer?.UpdateEqualizer(0,0,0,0,0,0,0,0);
+
+                    firstWaveFade = new FadeInOutSampleProvider(firstWaveEqualizer);
+                    TracksProperties.WaveOut?.Stop();
+                    TracksProperties.WaveOut.Init(firstWaveFade);
+                    
+                    if(isPlaying)
+                        TracksProperties.WaveOut?.Play();
+                }
             }
             FadeOffOn?.Invoke(this, EventArgs.Empty);
         }
