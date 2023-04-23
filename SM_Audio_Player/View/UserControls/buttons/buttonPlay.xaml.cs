@@ -58,7 +58,7 @@ public partial class ButtonPlay : INotifyPropertyChanged
             ResetEverything += NextTrackEvent;
             ButtonNext.ResetEverything += NextTrackEvent;
             ButtonPrevious.ResetEverything += NextTrackEvent;
-            Equalizer.FadeOffOn += NextTrackEvent;
+            //Equalizer.FadeOffOn += NextTrackEvent;
             Equalizer.FadeInEvent += NextTrackEvent;
         }
         catch (Exception ex)
@@ -199,7 +199,8 @@ public partial class ButtonPlay : INotifyPropertyChanged
                         _isPlaying = false;
                     }
                 }
-                ButtonPlayEvent?.Invoke(this, EventArgs.Empty);
+                if(_isPlaying == true)
+                    ButtonPlayEvent?.Invoke(this, EventArgs.Empty);
             }
         }
         catch (Exception ex)
@@ -430,6 +431,7 @@ public partial class ButtonPlay : INotifyPropertyChanged
                 PlayIcon = Icons.GetPlayIcon();
                 _isPlaying = false;
             }
+
         }
         catch (Exception ex)
         {
