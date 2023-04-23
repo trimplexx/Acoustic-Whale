@@ -49,26 +49,19 @@ public partial class Equalizer
         try
         {
             if (TracksProperties.AudioFileReader != null)
-            {
                 firstWaveEqualizer = new EqualizerSampleProvider(TracksProperties.AudioFileReader);
-                if(Equalizer_box.IsChecked == true)
-                    firstWaveEqualizer?.UpdateEqualizer(sld1.Value, sld2.Value, sld3.Value, sld4.Value, sld5.Value, sld6.Value, sld7.Value, sld8.Value);
-                else 
-                    firstWaveEqualizer?.UpdateEqualizer(0,0,0,0,0,0,0,0);
+            if(Equalizer_box.IsChecked == true)
+                firstWaveEqualizer?.UpdateEqualizer(sld1.Value, sld2.Value, sld3.Value, sld4.Value, sld5.Value, sld6.Value, sld7.Value, sld8.Value);
+            else 
+                firstWaveEqualizer?.UpdateEqualizer(0,0,0,0,0,0,0,0);
 
-                firstWaveFade = new FadeInOutSampleProvider(firstWaveEqualizer);
-                if (TracksProperties.WaveOut?.PlaybackState == PlaybackState.Playing)
-                {
-                    TracksProperties.WaveOut?.Stop();
-                    TracksProperties.WaveOut.Init(firstWaveFade);
-                    TracksProperties.WaveOut?.Play();
-                }
-                else
-                {
-                    TracksProperties.WaveOut?.Stop();
-                    TracksProperties.WaveOut.Init(firstWaveFade);
-                }
-            }
+            firstWaveFade = new FadeInOutSampleProvider(firstWaveEqualizer);
+
+            TracksProperties.WaveOut?.Stop();
+            TracksProperties.WaveOut.Init(firstWaveFade);
+            TracksProperties.WaveOut?.Play();
+            FadeInEvent?.Invoke(this, EventArgs.Empty);
+
         }
         catch (Exception ex)
         {
@@ -211,8 +204,8 @@ public partial class Equalizer
                         {
                             TracksProperties.SecWaveOut?.Stop();
                             TracksProperties.WaveOut?.Stop();
-                            TracksProperties.AudioFileReader?.Dispose();
-                            TracksProperties.SecAudioFileReader?.Dispose();
+                            TracksProperties.SecAudioFileReader = null;
+                            TracksProperties.AudioFileReader = null;
                             TracksProperties._timer.Stop();
                         }
                     }
@@ -246,8 +239,8 @@ public partial class Equalizer
                         {
                             TracksProperties.SecWaveOut?.Stop();
                             TracksProperties.WaveOut?.Stop();
-                            TracksProperties.AudioFileReader?.Dispose();
-                            TracksProperties.SecAudioFileReader?.Dispose();
+                            TracksProperties.SecAudioFileReader = null;
+                            TracksProperties.AudioFileReader = null;
                             TracksProperties._timer.Stop();
                         }
                     }
@@ -325,8 +318,8 @@ public partial class Equalizer
                      {
                          TracksProperties.SecWaveOut?.Stop();
                          TracksProperties.WaveOut?.Stop();
-                         TracksProperties.AudioFileReader?.Dispose();
-                         TracksProperties.SecAudioFileReader?.Dispose();
+                         TracksProperties.SecAudioFileReader = null;
+                         TracksProperties.AudioFileReader = null;
                          TracksProperties._timer.Stop();
                      }
                  }
@@ -356,11 +349,11 @@ public partial class Equalizer
                      }
                      else
                      {
+                         TracksProperties._timer.Stop();
                          TracksProperties.SecWaveOut?.Stop();
                          TracksProperties.WaveOut?.Stop();
-                         TracksProperties.AudioFileReader?.Dispose();
-                         TracksProperties.SecAudioFileReader?.Dispose();
-                         TracksProperties._timer.Stop();
+                         TracksProperties.SecAudioFileReader = null;
+                         TracksProperties.AudioFileReader = null;
                      }
                  }
                  else
@@ -388,22 +381,36 @@ public partial class Equalizer
     
     private void Fade_CheckBoxClick(object sender, RoutedEventArgs e)
     {
-        if (Fade_box.IsChecked == true)
-            TracksProperties.IsFadeOn = true;
-        else
+        try
         {
-            TracksProperties.IsFadeOn = false;
-
-            if (TracksProperties.SecWaveOut != null)
+            if (Fade_box.IsChecked == true)
             {
-                TracksProperties._timer.Stop();
-                TracksProperties.SecWaveOut.Stop();
-                TracksProperties.AudioFileReader = TracksProperties.SecAudioFileReader;
-                CreateEqualizers();
+                TracksProperties.IsFadeOn = true;
             }
+                
+            else
+            {
+                TracksProperties.IsFadeOn = false;
+                
+                if(TracksProperties.SecAudioFileReader != null)
+                    TracksProperties.AudioFileReader = TracksProperties.SecAudioFileReader;
+                
+                TracksProperties._timer.Stop();
+                TracksProperties.SecWaveOut?.Stop();
+                TracksProperties.WaveOut?.Stop();
+                
+                if(TracksProperties.AudioFileReader != null)
+                    CreateEqualizers();
+            }
+            FadeOffOn?.Invoke(this, EventArgs.Empty);
         }
-        FadeOffOn?.Invoke(this, EventArgs.Empty);
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Fade_CheckBoxClick: {ex.Message}");
+            throw;
+        }
     }
+    
     private void OnOffEffects(object sender, RoutedEventArgs e)
     {
 

@@ -58,8 +58,8 @@ public partial class ButtonPlay : INotifyPropertyChanged
             ResetEverything += NextTrackEvent;
             ButtonNext.ResetEverything += NextTrackEvent;
             ButtonPrevious.ResetEverything += NextTrackEvent;
-            //Equalizer.FadeOffOn += NextTrackEvent;
             Equalizer.FadeInEvent += NextTrackEvent;
+            Equalizer.FadeOffOn += NextTrackEvent;
         }
         catch (Exception ex)
         {
@@ -160,13 +160,9 @@ public partial class ButtonPlay : INotifyPropertyChanged
 
                             // Tworzenie nowego obiektu waveOut, oraz włączanie go.
                             TracksProperties.WaveOut = new WaveOutEvent();
-                            TracksProperties.AudioFileReader = new AudioFileReader(TracksProperties.SelectedTrack.Path);
-                            TracksProperties.WaveOut.Init(TracksProperties.AudioFileReader);
-                            TracksProperties.WaveOut.Play();
-                            _isPlaying = true;
-                            TracksProperties.FirstPlayed = TracksProperties.SelectedTrack;
                             TracksProperties.WaveOut.PlaybackStopped += WaveOut_PlaybackStopped;
-                            TrackEnd?.Invoke(this, EventArgs.Empty);
+                            TracksProperties.AudioFileReader = new AudioFileReader(TracksProperties.SelectedTrack.Path);
+                            //TrackEnd?.Invoke(this, EventArgs.Empty);
                         }
                         // Sprawdzanie czy podany utwór różni się z tym wybranym z listy
                         else if (TracksProperties.AudioFileReader.FileName != checkReader.FileName)
@@ -199,8 +195,11 @@ public partial class ButtonPlay : INotifyPropertyChanged
                         _isPlaying = false;
                     }
                 }
-                if(_isPlaying == true)
+
+                if (PlayIcon == Icons.GetStopIcon())
+                {
                     ButtonPlayEvent?.Invoke(this, EventArgs.Empty);
+                }
             }
         }
         catch (Exception ex)
@@ -421,7 +420,13 @@ public partial class ButtonPlay : INotifyPropertyChanged
     {
         try
         {
-            if (TracksProperties.WaveOut != null && TracksProperties.WaveOut.PlaybackState == PlaybackState.Playing)
+            if (TracksProperties.WaveOut?.PlaybackState == PlaybackState.Paused &&
+                TracksProperties.SecWaveOut?.PlaybackState == PlaybackState.Paused)
+            {
+                PlayIcon = Icons.GetPlayIcon();
+                _isPlaying = false;
+            }
+            if (TracksProperties.WaveOut?.PlaybackState == PlaybackState.Playing)
             {
                 PlayIcon = Icons.GetStopIcon();
                 _isPlaying = true;
@@ -431,7 +436,6 @@ public partial class ButtonPlay : INotifyPropertyChanged
                 PlayIcon = Icons.GetPlayIcon();
                 _isPlaying = false;
             }
-
         }
         catch (Exception ex)
         {
