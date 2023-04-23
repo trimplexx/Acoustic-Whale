@@ -121,7 +121,7 @@ public partial class Equalizer
     
     private void InitializeFirstWave()
     {
-        _fadeOut = new FadeInOutSampleProvider(TracksProperties.AudioFileReader);
+        _fadeOut = new FadeInOutSampleProvider(TracksProperties.AudioFileReader );
         _fadeOut?.BeginFadeIn(11000);
         TracksProperties.WaveOut = new WaveOutEvent();
         TracksProperties.WaveOut.Init(TracksProperties.AudioFileReader);
@@ -163,10 +163,9 @@ public partial class Equalizer
                      // Wyczyszczenie listy poprzednich utworów
                      TracksProperties.PrevTrack.Clear();
                      
-                     TracksProperties.SecAudioFileReader = new AudioFileReader(TracksProperties.SelectedTrack?.Path);
-
                      if (TracksProperties.IsLoopOn == 1)
                      {
+                         TracksProperties.SecAudioFileReader = new AudioFileReader(TracksProperties.SelectedTrack?.Path);
                          if (TracksProperties.SelectedTrack == TracksProperties.FirstPlayed)
                              if (TracksProperties.WaveOut != null)
                                  InitializeSecWave();
@@ -177,6 +176,7 @@ public partial class Equalizer
                          TracksProperties.WaveOut?.Stop();
                          TracksProperties.AudioFileReader?.Dispose();
                          TracksProperties.SecAudioFileReader?.Dispose();
+                         TracksProperties._timer.Stop();
                      }
                  }
                  else
@@ -209,6 +209,7 @@ public partial class Equalizer
                          TracksProperties.WaveOut?.Stop();
                          TracksProperties.AudioFileReader?.Dispose();
                          TracksProperties.SecAudioFileReader?.Dispose();
+                         TracksProperties._timer.Stop();
                      }
                  }
                  else
@@ -261,10 +262,11 @@ public partial class Equalizer
                      // Wyczyszczenie listy poprzednich utworów
                      TracksProperties.PrevTrack.Clear();
                      
-                     TracksProperties.AudioFileReader = new AudioFileReader(TracksProperties.SelectedTrack?.Path);
+                     
 
                      if (TracksProperties.IsLoopOn == 1)
                      {
+                         TracksProperties.AudioFileReader = new AudioFileReader(TracksProperties.SelectedTrack?.Path);
                          if (TracksProperties.SelectedTrack == TracksProperties.FirstPlayed)
                              if (TracksProperties.WaveOut != null)
                                  InitializeFirstWave();
@@ -273,8 +275,9 @@ public partial class Equalizer
                      {
                          TracksProperties.SecWaveOut?.Stop();
                          TracksProperties.WaveOut?.Stop();
-                         TracksProperties.AudioFileReader.Dispose();
+                         TracksProperties.AudioFileReader?.Dispose();
                          TracksProperties.SecAudioFileReader?.Dispose();
+                         TracksProperties._timer.Stop();
                      }
                  }
                  else
@@ -307,6 +310,7 @@ public partial class Equalizer
                          TracksProperties.WaveOut?.Stop();
                          TracksProperties.AudioFileReader?.Dispose();
                          TracksProperties.SecAudioFileReader?.Dispose();
+                         TracksProperties._timer.Stop();
                      }
                  }
                  else
