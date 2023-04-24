@@ -7,25 +7,25 @@
              d:DesignHeight="570" d:DesignWidth="1000">
     <UserControl.Resources>
         <Style TargetType="CheckBox">
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="Foreground" Value="#45a7bc"/>
-            <Setter Property="FontSize" Value="12"/>
-            <Setter Property="Margin" Value="10"/>
-            <Setter Property="BorderBrush" Value="#45a7bc"/>
-            <Setter Property="BorderThickness" Value="1.5"/>
-            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Foreground" Value="#45a7bc" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="Margin" Value="10" />
+            <Setter Property="BorderBrush" Value="#45a7bc" />
+            <Setter Property="BorderThickness" Value="1.5" />
+            <Setter Property="HorizontalAlignment" Value="Left" />
         </Style>
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition/>
-            <RowDefinition Height="60"/>
+            <RowDefinition />
+            <RowDefinition Height="60" />
         </Grid.RowDefinitions>
 
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="50*"/>
-            <ColumnDefinition Width="200"/>
-            <ColumnDefinition Width="30*"/>
+            <ColumnDefinition Width="50*" />
+            <ColumnDefinition Width="200" />
+            <ColumnDefinition Width="30*" />
         </Grid.ColumnDefinitions>
 
 
@@ -40,21 +40,45 @@
                 <ColumnDefinition />
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
-            <Slider Style="{DynamicResource SliderStyle2}" x:Name="sld1" Grid.Column="0" Orientation="Vertical" HorizontalAlignment="Center" Margin="0,30,0,30" PreviewMouseLeftButtonUp="OnSliderValueChange" Minimum="-15" Maximum="15" Value="0" IsMoveToPointEnabled="True" IsSelectionRangeEnabled="True" SelectionStart="-15" SelectionEnd="{Binding ElementName=sld1,Path=Value}"/>
-            <Slider Style="{DynamicResource SliderStyle2}" x:Name="sld2" Grid.Column="1" Orientation="Vertical" HorizontalAlignment="Center" Margin="0,30,0,30" PreviewMouseLeftButtonUp="OnSliderValueChange" Minimum="-15" Maximum="15" Value="0" IsMoveToPointEnabled="True" IsSelectionRangeEnabled="True" SelectionStart="-15" SelectionEnd="{Binding ElementName=sld2,Path=Value}"/>
-            <Slider Style="{DynamicResource SliderStyle2}" x:Name="sld3" Grid.Column="2" Orientation="Vertical" HorizontalAlignment="Center" Margin="0,30,0,30" PreviewMouseLeftButtonUp="OnSliderValueChange" Minimum="-15" Maximum="15" Value="0" IsMoveToPointEnabled="True" IsSelectionRangeEnabled="True" SelectionStart="-15" SelectionEnd="{Binding ElementName=sld3,Path=Value}"/>
-            <Slider Style="{DynamicResource SliderStyle2}" x:Name="sld4" Grid.Column="3" Orientation="Vertical" HorizontalAlignment="Center" Margin="0,30,0,30" PreviewMouseLeftButtonUp="OnSliderValueChange" Minimum="-15" Maximum="15" Value="0" IsMoveToPointEnabled="True" IsSelectionRangeEnabled="True" SelectionStart="-15" SelectionEnd="{Binding ElementName=sld4,Path=Value}"/>
-            <Slider Style="{DynamicResource SliderStyle2}" x:Name="sld5" Grid.Column="4" Orientation="Vertical" HorizontalAlignment="Center" Margin="0,30,0,30" PreviewMouseLeftButtonUp="OnSliderValueChange" Minimum="-15" Maximum="15" Value="0" IsMoveToPointEnabled="True" IsSelectionRangeEnabled="True" SelectionStart="-15" SelectionEnd="{Binding ElementName=sld5,Path=Value}"/>
-            <Slider Style="{DynamicResource SliderStyle2}" x:Name="sld6" Grid.Column="5" Orientation="Vertical" HorizontalAlignment="Center" Margin="0,30,0,30" PreviewMouseLeftButtonUp="OnSliderValueChange" Minimum="-15" Maximum="15" Value="0" IsMoveToPointEnabled="True" IsSelectionRangeEnabled="True" SelectionStart="-15" SelectionEnd="{Binding ElementName=sld6,Path=Value}"/>
-            <Slider Style="{DynamicResource SliderStyle2}" x:Name="sld7" Grid.Column="6" Orientation="Vertical" HorizontalAlignment="Center" Margin="0,30,0,30" PreviewMouseLeftButtonUp="OnSliderValueChange" Minimum="-15" Maximum="15" Value="0" IsMoveToPointEnabled="True" IsSelectionRangeEnabled="True" SelectionStart="-15" SelectionEnd="{Binding ElementName=sld7,Path=Value}"/>
-            <Slider Style="{DynamicResource SliderStyle2}" x:Name="sld8" Grid.Column="7" Orientation="Vertical" HorizontalAlignment="Center" Margin="0,30,0,30" PreviewMouseLeftButtonUp="OnSliderValueChange" Minimum="-15" Maximum="15" Value="0" IsMoveToPointEnabled="True" IsSelectionRangeEnabled="True" SelectionStart="-15" SelectionEnd="{Binding ElementName=sld8,Path=Value}"/>
+            <Slider Style="{DynamicResource SliderStyle2}" x:Name="sld1" Grid.Column="0" Orientation="Vertical"
+                    HorizontalAlignment="Center" Margin="0,30,0,30" PreviewMouseLeftButtonUp="OnSliderValueChange"
+                    Minimum="-15" Maximum="15" Value="0" IsMoveToPointEnabled="True" IsSelectionRangeEnabled="True"
+                    SelectionStart="-15" SelectionEnd="{Binding ElementName=sld1,Path=Value}" />
+            <Slider Style="{DynamicResource SliderStyle2}" x:Name="sld2" Grid.Column="1" Orientation="Vertical"
+                    HorizontalAlignment="Center" Margin="0,30,0,30" PreviewMouseLeftButtonUp="OnSliderValueChange"
+                    Minimum="-15" Maximum="15" Value="0" IsMoveToPointEnabled="True" IsSelectionRangeEnabled="True"
+                    SelectionStart="-15" SelectionEnd="{Binding ElementName=sld2,Path=Value}" />
+            <Slider Style="{DynamicResource SliderStyle2}" x:Name="sld3" Grid.Column="2" Orientation="Vertical"
+                    HorizontalAlignment="Center" Margin="0,30,0,30" PreviewMouseLeftButtonUp="OnSliderValueChange"
+                    Minimum="-15" Maximum="15" Value="0" IsMoveToPointEnabled="True" IsSelectionRangeEnabled="True"
+                    SelectionStart="-15" SelectionEnd="{Binding ElementName=sld3,Path=Value}" />
+            <Slider Style="{DynamicResource SliderStyle2}" x:Name="sld4" Grid.Column="3" Orientation="Vertical"
+                    HorizontalAlignment="Center" Margin="0,30,0,30" PreviewMouseLeftButtonUp="OnSliderValueChange"
+                    Minimum="-15" Maximum="15" Value="0" IsMoveToPointEnabled="True" IsSelectionRangeEnabled="True"
+                    SelectionStart="-15" SelectionEnd="{Binding ElementName=sld4,Path=Value}" />
+            <Slider Style="{DynamicResource SliderStyle2}" x:Name="sld5" Grid.Column="4" Orientation="Vertical"
+                    HorizontalAlignment="Center" Margin="0,30,0,30" PreviewMouseLeftButtonUp="OnSliderValueChange"
+                    Minimum="-15" Maximum="15" Value="0" IsMoveToPointEnabled="True" IsSelectionRangeEnabled="True"
+                    SelectionStart="-15" SelectionEnd="{Binding ElementName=sld5,Path=Value}" />
+            <Slider Style="{DynamicResource SliderStyle2}" x:Name="sld6" Grid.Column="5" Orientation="Vertical"
+                    HorizontalAlignment="Center" Margin="0,30,0,30" PreviewMouseLeftButtonUp="OnSliderValueChange"
+                    Minimum="-15" Maximum="15" Value="0" IsMoveToPointEnabled="True" IsSelectionRangeEnabled="True"
+                    SelectionStart="-15" SelectionEnd="{Binding ElementName=sld6,Path=Value}" />
+            <Slider Style="{DynamicResource SliderStyle2}" x:Name="sld7" Grid.Column="6" Orientation="Vertical"
+                    HorizontalAlignment="Center" Margin="0,30,0,30" PreviewMouseLeftButtonUp="OnSliderValueChange"
+                    Minimum="-15" Maximum="15" Value="0" IsMoveToPointEnabled="True" IsSelectionRangeEnabled="True"
+                    SelectionStart="-15" SelectionEnd="{Binding ElementName=sld7,Path=Value}" />
+            <Slider Style="{DynamicResource SliderStyle2}" x:Name="sld8" Grid.Column="7" Orientation="Vertical"
+                    HorizontalAlignment="Center" Margin="0,30,0,30" PreviewMouseLeftButtonUp="OnSliderValueChange"
+                    Minimum="-15" Maximum="15" Value="0" IsMoveToPointEnabled="True" IsSelectionRangeEnabled="True"
+                    SelectionStart="-15" SelectionEnd="{Binding ElementName=sld8,Path=Value}" />
         </Grid>
 
         <Border Grid.RowSpan="3" BorderThickness="0,0,3,0" BorderBrush="#45a7bc" Margin="0,5,0,5" />
         <Border Grid.RowSpan="3" Grid.Column="1" BorderThickness="0,0,3,0" BorderBrush="#45a7bc" Margin="0,5,0,5" />
 
         <StackPanel Grid.Column="1" Margin="10">
-            <CheckBox Name="Fade_box" Click="Fade_CheckBoxClick" >
+            <CheckBox Name="Fade_box" Click="Fade_CheckBoxClick">
                 <CheckBox.LayoutTransform>
                     <ScaleTransform ScaleX="1.7" ScaleY="1.7" />
                 </CheckBox.LayoutTransform>
@@ -85,20 +109,22 @@
                 Nightcore
             </CheckBox>
         </StackPanel>
-        
 
-        <CheckBox x:Name="Equalizer_box" Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Center" Click="OnOffEqualizer">
+
+        <CheckBox x:Name="Equalizer_box" Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Center"
+                  Click="OnOffEqualizer">
             <CheckBox.LayoutTransform>
                 <ScaleTransform ScaleX="1.7" ScaleY="1.7" />
             </CheckBox.LayoutTransform>
             Equalizer
         </CheckBox>
-        <CheckBox x:Name="Effects_Box" Grid.Column="1" Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center" Click="OnOffEffects">
+        <CheckBox x:Name="Effects_Box" Grid.Column="1" Grid.Row="1" VerticalAlignment="Center"
+                  HorizontalAlignment="Center" Click="OnOffEffects">
             <CheckBox.LayoutTransform>
                 <ScaleTransform ScaleX="1.7" ScaleY="1.7" />
             </CheckBox.LayoutTransform>
             Efekty
         </CheckBox>
-        
+
     </Grid>
 </UserControl>

@@ -11,9 +11,9 @@ public static class TracksProperties
 {
     // Lista z utworami
     public static List<Tracks>? TracksList = new();
-    
+
     public static DispatcherTimer _timer = new();
-    
+
     // Flagi przycisków Loop oraz Schuffle
     public static int IsLoopOn = 0;
     public static bool IsSchuffleOn = false;

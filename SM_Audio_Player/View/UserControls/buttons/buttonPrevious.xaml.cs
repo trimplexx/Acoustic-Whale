@@ -47,7 +47,6 @@ public partial class ButtonPrevious
         try
         {
             if (TracksProperties.SelectedTrack != null)
-            {
                 // Sprawdź czy jest dostępny jakikolwiek numer na liście
                 if (TracksProperties.TracksList != null && TracksProperties.TracksList.Count > 0)
                 {
@@ -82,7 +81,7 @@ public partial class ButtonPrevious
                             TracksProperties.SelectedTrack = null;
                         }
 
-                        MessageBox.Show($"Ups! Któryś z odtwarzanych utworów zmienił swoją ścieżkę do pliku :(");
+                        MessageBox.Show("Ups! Któryś z odtwarzanych utworów zmienił swoją ścieżkę do pliku :(");
                         ResetEverything?.Invoke(this, EventArgs.Empty);
                     }
                     /*
@@ -99,7 +98,7 @@ public partial class ButtonPrevious
                             {
                                 TracksProperties.AvailableNumbers =
                                     Enumerable.Range(0, TracksProperties.TracksList.Count).ToList();
-                                Random random = new Random();
+                                var random = new Random();
                                 TracksProperties.AvailableNumbers =
                                     TracksProperties.AvailableNumbers.OrderBy(x => random.Next()).ToList();
                                 _btnPlay.PlayNewTrack();
@@ -141,7 +140,6 @@ public partial class ButtonPrevious
                         PreviousButtonClicked?.Invoke(this, EventArgs.Empty);
                     }
                 }
-            }
         }
         catch (Exception ex)
         {

@@ -26,10 +26,11 @@ public partial class ButtonNext
      * w trakcie używania aplikacji mogła by ona wyrzucić wyjątek)
      */
     public delegate void ResetEverythingEventHandler(object sender, EventArgs e);
+
     public delegate void SelectedTrackNullEventHandler(object sender, EventArgs e);
 
     private readonly ButtonPlay _btnPlay = new();
-    
+
 
     public ButtonNext()
     {
@@ -41,7 +42,9 @@ public partial class ButtonNext
     public static event RefreshListEventHandler? RefreshList;
 
     public static event ResetEverythingEventHandler? ResetEverything;
+
     public static event SelectedTrackNullEventHandler? NextSelectedNull;
+
     /*Włącz następny utwór*/
     private void btnNext_Click(object sender, RoutedEventArgs e)
     {
@@ -55,17 +58,18 @@ public partial class ButtonNext
             // Sprawdź czy jest dostępny jakikolwiek numer na liście
             else if (TracksProperties.TracksList != null && TracksProperties.TracksList.Count > 0)
             {
-                if (TracksProperties.SecWaveOut != null && TracksProperties.SecWaveOut.PlaybackState == PlaybackState.Playing)
+                if (TracksProperties.SecWaveOut != null &&
+                    TracksProperties.SecWaveOut.PlaybackState == PlaybackState.Playing)
                 {
                     TracksProperties.AudioFileReader = TracksProperties.SecAudioFileReader;
                     TracksProperties.WaveOut?.Stop();
                     TracksProperties.WaveOut?.Init(TracksProperties.AudioFileReader);
-                    
+
                     TracksProperties.SecWaveOut.Stop();
                     TracksProperties.SecWaveOut.Dispose();
                     TracksProperties.SecAudioFileReader = null;
                 }
-                
+
                 /*
                  * Walidacja odświeżania listy, zapisuje bieżącą wartość posiadanych utworów na liście, a następnie
                  * wykonane zostanie jej odświeżenie poprzez wywołanie 'RefreshList', następnie porównywana jest wartość
@@ -84,7 +88,8 @@ public partial class ButtonNext
                         TracksProperties.AudioFileReader = null;
                         TracksProperties.SelectedTrack = null;
                     }
-                    MessageBox.Show($"Ups! Któryś z odtwarzanych utworów zmienił swoją ścieżkę do pliku :(");
+
+                    MessageBox.Show("Ups! Któryś z odtwarzanych utworów zmienił swoją ścieżkę do pliku :(");
                     ResetEverything?.Invoke(this, EventArgs.Empty);
                 }
                 else

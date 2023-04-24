@@ -125,20 +125,19 @@ public partial class ButtonVolume : INotifyPropertyChanged
             /*Pobieranie aktualnej wartości slidera*/
             _currentVolumeValue = e.NewValue;
             ValueIconChange(_currentVolumeValue);
-            
+
             var sliderValue = _currentVolumeValue / 100.0; // Skalowanie wartości na zakres od 0 do 1
             var newVolume = sliderValue; // Obliczamy nową wartość głośności
-                
+
             if (TracksProperties.AudioFileReader != null)
                 TracksProperties.AudioFileReader.Volume = (float)newVolume; // Aktualizujemy głośność pliku audio
 
             if (TracksProperties.SecAudioFileReader != null)
                 TracksProperties.SecAudioFileReader.Volume = (float)newVolume;
-            
+
             // Zapis do pliku JSON w celu ponownego odpalenia aplikacji z zapisaną wartością głośności
             var output = JsonConvert.SerializeObject(_currentVolumeValue, Formatting.Indented);
             File.WriteAllText(JsonPath, output);
-            
         }
         catch (Exception ex)
         {
@@ -173,7 +172,7 @@ public partial class ButtonVolume : INotifyPropertyChanged
             ValueIconChange(_currentVolumeValue);
             var sliderValue = _currentVolumeValue / 100.0; // Skalowanie wartości na zakres od 0 do 1
             var newVolume = sliderValue; // Obliczamy nową wartość głośności
-            
+
             if (TracksProperties.AudioFileReader != null)
                 TracksProperties.AudioFileReader.Volume = (float)newVolume; // Aktualizujemy głośność pliku audio
 

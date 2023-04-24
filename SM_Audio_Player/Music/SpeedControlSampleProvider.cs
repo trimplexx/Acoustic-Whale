@@ -4,40 +4,32 @@ namespace SM_Audio_Player.Music;
 
 public class SpeedControlSampleProvider : ISampleProvider
 {
-    private ISampleProvider sourceProvider;
-    private float speed;
+    private readonly ISampleProvider sourceProvider;
 
     public SpeedControlSampleProvider(ISampleProvider sourceProvider)
     {
         this.sourceProvider = sourceProvider;
-        this.speed = 1.0f;
+        Speed = 1.0f;
     }
 
-    public float Speed
-    {
-        get { return speed; }
-        set { speed = value; }
-    }
+    public float Speed { get; set; }
 
     public int Read(float[] buffer, int offset, int count)
     {
-        int sourceSamplesRequired = (int)(count * speed);
-        float[] sourceBuffer = new float[sourceSamplesRequired];
-        int sourceSamplesRead = sourceProvider.Read(sourceBuffer, 0, sourceSamplesRequired);
-        int samplesRead = (int)(sourceSamplesRead / speed);
+        var sourceSamplesRequired = (int)(count * Speed);
+        var sourceBuffer = new float[sourceSamplesRequired];
+        var sourceSamplesRead = sourceProvider.Read(sourceBuffer, 0, sourceSamplesRequired);
+        var samplesRead = (int)(sourceSamplesRead / Speed);
 
         // simple resampling - just repeat or skip samples
-        for (int n = 0; n < samplesRead; n++)
+        for (var n = 0; n < samplesRead; n++)
         {
-            int sourceIndex = (int)(n * speed);
+            var sourceIndex = (int)(n * Speed);
             buffer[offset + n] = sourceBuffer[sourceIndex];
         }
 
         return samplesRead;
     }
 
-    public WaveFormat WaveFormat
-    {
-        get { return sourceProvider.WaveFormat; }
-    }
+    public WaveFormat WaveFormat => sourceProvider.WaveFormat;
 }

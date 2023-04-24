@@ -24,9 +24,10 @@
             <RowDefinition Height="40" />
             <RowDefinition Height="70*" />
         </Grid.RowDefinitions>
-        <Rectangle Fill="#222222" MouseMove="Window_MouseDown"/>
+        <Rectangle Fill="#222222" MouseMove="Window_MouseDown" />
         <LOGO:LOGO Height="30" Width="30" HorizontalAlignment="Left" Margin="10, 0, 0, 0" MouseMove="Window_MouseDown" />
-        <TextBlock Text="Acoustic Whale" FontSize="18" Foreground="#45a7bc" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="45, 0, 0, 0" MouseMove="Window_MouseDown" />
+        <TextBlock Text="Acoustic Whale" FontSize="18" Foreground="#45a7bc" HorizontalAlignment="Left"
+                   VerticalAlignment="Center" Margin="45, 0, 0, 0" MouseMove="Window_MouseDown" />
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0, 3, 10, 0"
                     MouseMove="Window_MouseDown">
             <BTN:ButtonMinimize Height="25" Width="25" Margin="0, 0, 10, 0" />
@@ -43,5 +44,5 @@
         <UC:Library x:Name="Lib" Grid.Row="3" Margin="15, 0, 15, 0" Visibility="Visible" />
         <UC:Equalizer x:Name="Eq" Grid.Row="3" Margin="15, 0, 15, 0" Visibility="Hidden" />
     </Grid>
-    
+
 </Window>

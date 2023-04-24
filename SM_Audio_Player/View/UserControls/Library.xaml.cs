@@ -43,6 +43,7 @@ public partial class Library
             ButtonPlay.TrackEnd += OnTrackSwitch;
             ButtonNext.NextButtonClicked += OnTrackSwitch;
             ButtonPrevious.PreviousButtonClicked += OnTrackSwitch;
+            ButtonPlay.ButtonPlayEvent += OnTrackSwitch;
             Equalizer.FadeInEvent += OnTrackSwitch;
 
             ButtonPlay.RefreshList += RefreshTrackList;
@@ -371,17 +372,17 @@ public partial class Library
             */
             if (TracksProperties.TracksList != null)
             {
-                if (TracksProperties.SecWaveOut != null && TracksProperties.SecWaveOut.PlaybackState == PlaybackState.Playing)
+                if (TracksProperties.SecWaveOut != null &&
+                    TracksProperties.SecWaveOut.PlaybackState == PlaybackState.Playing)
                 {
                     TracksProperties.AudioFileReader = TracksProperties.SecAudioFileReader;
                     TracksProperties.WaveOut?.Stop();
                     TracksProperties.WaveOut?.Init(TracksProperties.AudioFileReader);
-                    
                     TracksProperties.SecWaveOut.Stop();
                     TracksProperties.SecWaveOut.Dispose();
                     TracksProperties.SecAudioFileReader = null;
                 }
-                
+
                 var trackListBeforeRefresh = TracksProperties.TracksList.Count;
                 RefreshTrackList(sender, e);
                 if (trackListBeforeRefresh != TracksProperties.TracksList.Count)
@@ -393,7 +394,8 @@ public partial class Library
                         TracksProperties.AudioFileReader = null;
                         TracksProperties.SelectedTrack = null;
                     }
-                    MessageBox.Show($"Ups! Któryś z odtwarzanych utworów zmienił swoją ścieżkę do pliku :(");
+
+                    MessageBox.Show("Ups! Któryś z odtwarzanych utworów zmienił swoją ścieżkę do pliku :(");
                     ResetEverything?.Invoke(this, EventArgs.Empty);
                 }
                 else
@@ -401,8 +403,9 @@ public partial class Library
                     var selectedIndex = lv.SelectedIndex;
                     RefreshTrackListViewAndId();
                     lv.SelectedIndex = selectedIndex;
+                    TracksProperties.SelectedTrack = TracksProperties.TracksList.ElementAt(selectedIndex);
                     var btnPlay = new ButtonPlay();
-                    btnPlay.btnPlay_Click(sender, e);
+                    btnPlay.PlayNewTrack();
                     DoubleClickEvent?.Invoke(this, EventArgs.Empty);
                 }
             }

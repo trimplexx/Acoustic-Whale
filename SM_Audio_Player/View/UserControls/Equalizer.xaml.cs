@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
-using NAudio.Dsp;
 using NAudio.Wave;
 using NAudio.Wave.SampleProviders;
 using SM_Audio_Player.Music;
@@ -12,16 +11,15 @@ namespace SM_Audio_Player.View.UserControls;
 
 public partial class Equalizer
 {
-    private EqualizerSampleProvider? firstWaveEqualizer;
-    private EqualizerSampleProvider? secWaveEqualizer;
-    private FadeInOutSampleProvider? firstWaveFade;
-    private FadeInOutSampleProvider? secWaveFade;
-
     public delegate void FadeInEventHandler(object sender, EventArgs e);
-    public static event FadeInEventHandler? FadeInEvent;
+
     public delegate void FadeOffOnEventHandler(object sender, EventArgs e);
-    public static event FadeOffOnEventHandler? FadeOffOn;
-    
+
+    private EqualizerSampleProvider? _firstWaveEqualizer;
+    private FadeInOutSampleProvider? _firstWaveFade;
+    private EqualizerSampleProvider? _secWaveEqualizer;
+    private FadeInOutSampleProvider? _secWaveFade;
+
     public Equalizer()
     {
         InitializeComponent();
@@ -35,7 +33,10 @@ public partial class Equalizer
         ButtonNext.NextSelectedNull += ButtonDoubleClickEvent;
     }
 
-    
+    public static event FadeInEventHandler? FadeInEvent;
+    public static event FadeOffOnEventHandler? FadeOffOn;
+
+
     /*
      * Ustawienie wartości bieżących suwaków, w momencie gdy jest zaznaczona opcja equalizera w odpowiedzi na zmiane
      * piosenki.
@@ -45,19 +46,19 @@ public partial class Equalizer
         try
         {
             if (TracksProperties.AudioFileReader != null)
-                firstWaveEqualizer = new EqualizerSampleProvider(TracksProperties.AudioFileReader);
-            if(Equalizer_box.IsChecked == true)
-                firstWaveEqualizer?.UpdateEqualizer(sld1.Value, sld2.Value, sld3.Value, sld4.Value, sld5.Value, sld6.Value, sld7.Value, sld8.Value);
-            else 
-                firstWaveEqualizer?.UpdateEqualizer(0,0,0,0,0,0,0,0);
+                _firstWaveEqualizer = new EqualizerSampleProvider(TracksProperties.AudioFileReader);
+            if (Equalizer_box.IsChecked == true)
+                _firstWaveEqualizer?.UpdateEqualizer(sld1.Value, sld2.Value, sld3.Value, sld4.Value, sld5.Value,
+                    sld6.Value, sld7.Value, sld8.Value);
+            else
+                _firstWaveEqualizer?.UpdateEqualizer(0, 0, 0, 0, 0, 0, 0, 0);
 
-            firstWaveFade = new FadeInOutSampleProvider(firstWaveEqualizer);
-            
+            _firstWaveFade = new FadeInOutSampleProvider(_firstWaveEqualizer);
+
             TracksProperties.WaveOut?.Stop();
-            TracksProperties.WaveOut.Init(firstWaveFade);
+            TracksProperties.WaveOut.Init(_firstWaveFade);
             TracksProperties.WaveOut?.Play();
-            
-            
+
             FadeOffOn?.Invoke(this, EventArgs.Empty);
         }
         catch (Exception ex)
@@ -72,28 +73,31 @@ public partial class Equalizer
         try
         {
             if (TracksProperties.AudioFileReader != null)
-                firstWaveEqualizer = new EqualizerSampleProvider(TracksProperties.AudioFileReader);
-            if(Equalizer_box.IsChecked == true)
-                firstWaveEqualizer?.UpdateEqualizer(sld1.Value, sld2.Value, sld3.Value, sld4.Value, sld5.Value, sld6.Value, sld7.Value, sld8.Value);
-            else 
-                firstWaveEqualizer?.UpdateEqualizer(0,0,0,0,0,0,0,0);
+                _firstWaveEqualizer = new EqualizerSampleProvider(TracksProperties.AudioFileReader);
+            if (Equalizer_box.IsChecked == true)
+                _firstWaveEqualizer?.UpdateEqualizer(sld1.Value, sld2.Value, sld3.Value, sld4.Value, sld5.Value,
+                    sld6.Value, sld7.Value, sld8.Value);
+            else
+                _firstWaveEqualizer?.UpdateEqualizer(0, 0, 0, 0, 0, 0, 0, 0);
 
-            firstWaveFade = new FadeInOutSampleProvider(firstWaveEqualizer);
+            _firstWaveFade = new FadeInOutSampleProvider(_firstWaveEqualizer);
 
-            if(TracksProperties.SelectedTrack == TracksProperties.TracksList?.ElementAt(0) && !TracksProperties.IsSchuffleOn && TracksProperties.IsLoopOn != 1)
+            if (TracksProperties.SelectedTrack == TracksProperties.TracksList?.ElementAt(0) &&
+                !TracksProperties.IsSchuffleOn && TracksProperties.IsLoopOn != 1)
             {
                 TracksProperties.WaveOut?.Stop();
-                TracksProperties.WaveOut.Init(firstWaveFade);
+                TracksProperties.WaveOut.Init(_firstWaveFade);
             }
-            else if(TracksProperties.SelectedTrack?.Path == TracksProperties.FirstPlayed?.Path && TracksProperties.IsSchuffleOn && TracksProperties.IsLoopOn != 1)
+            else if (TracksProperties.SelectedTrack?.Path == TracksProperties.FirstPlayed?.Path &&
+                     TracksProperties.IsSchuffleOn && TracksProperties.IsLoopOn != 1)
             {
                 TracksProperties.WaveOut?.Stop();
-                TracksProperties.WaveOut.Init(firstWaveFade);
+                TracksProperties.WaveOut.Init(_firstWaveFade);
             }
             else
             {
                 TracksProperties.WaveOut?.Stop();
-                TracksProperties.WaveOut.Init(firstWaveFade);
+                TracksProperties.WaveOut.Init(_firstWaveFade);
                 TracksProperties.WaveOut?.Play();
             }
 
@@ -106,21 +110,23 @@ public partial class Equalizer
         }
     }
 
-    
 
     private void ChangeEqualizerValues()
     {
         if (Equalizer_box.IsChecked == true)
         {
-            firstWaveEqualizer?.UpdateEqualizer(sld1.Value, sld2.Value, sld3.Value, sld4.Value, sld5.Value, sld6.Value, sld7.Value, sld8.Value);
-            secWaveEqualizer?.UpdateEqualizer(sld1.Value, sld2.Value, sld3.Value, sld4.Value, sld5.Value, sld6.Value, sld7.Value, sld8.Value);
+            _firstWaveEqualizer?.UpdateEqualizer(sld1.Value, sld2.Value, sld3.Value, sld4.Value, sld5.Value, sld6.Value,
+                sld7.Value, sld8.Value);
+            _secWaveEqualizer?.UpdateEqualizer(sld1.Value, sld2.Value, sld3.Value, sld4.Value, sld5.Value, sld6.Value,
+                sld7.Value, sld8.Value);
         }
         else
         {
-            firstWaveEqualizer?.UpdateEqualizer(0,0,0,0,0,0,0,0);
-            secWaveEqualizer?.UpdateEqualizer(0,0,0,0,0,0,0,0);
+            _firstWaveEqualizer?.UpdateEqualizer(0, 0, 0, 0, 0, 0, 0, 0);
+            _secWaveEqualizer?.UpdateEqualizer(0, 0, 0, 0, 0, 0, 0, 0);
         }
     }
+
     /*
      * Zmiana wartości pasm w momencie puszczenia klawiszu myszki na sliderze.
      */
@@ -142,19 +148,19 @@ public partial class Equalizer
         try
         {
             if (TracksProperties.SecAudioFileReader != null)
-                secWaveEqualizer = new EqualizerSampleProvider(TracksProperties.SecAudioFileReader);
+                _secWaveEqualizer = new EqualizerSampleProvider(TracksProperties.SecAudioFileReader);
             ChangeEqualizerValues();
-            
-            secWaveFade = new FadeInOutSampleProvider(secWaveEqualizer);
-                
+
+            _secWaveFade = new FadeInOutSampleProvider(_secWaveEqualizer);
+
             TracksProperties.SecWaveOut?.Stop();
-                
+
             if (TracksProperties.SecWaveOut == null)
                 TracksProperties.SecWaveOut = new WaveOutEvent();
-                
-            TracksProperties.SecWaveOut.Init(secWaveFade);
-            
-            secWaveFade?.BeginFadeIn(6000);
+
+            TracksProperties.SecWaveOut.Init(_secWaveFade);
+
+            _secWaveFade?.BeginFadeIn(6000);
             TracksProperties.SecWaveOut?.Play();
         }
         catch (Exception ex)
@@ -162,24 +168,23 @@ public partial class Equalizer
             MessageBox.Show($"InitializeSecWave: {ex.Message}");
             throw;
         }
-        
     }
-    
+
     private void InitializeFirstWave()
     {
         try
         {
             if (TracksProperties.AudioFileReader != null)
-                firstWaveEqualizer = new EqualizerSampleProvider(TracksProperties.AudioFileReader);
+                _firstWaveEqualizer = new EqualizerSampleProvider(TracksProperties.AudioFileReader);
             ChangeEqualizerValues();
-                
-            firstWaveFade= new FadeInOutSampleProvider(firstWaveEqualizer, true);
-                
+
+            _firstWaveFade = new FadeInOutSampleProvider(_firstWaveEqualizer, true);
+
             TracksProperties.WaveOut?.Stop();
 
-            TracksProperties.WaveOut.Init(firstWaveFade);
-            
-            firstWaveFade?.BeginFadeIn(6000);
+            TracksProperties.WaveOut.Init(_firstWaveFade);
+
+            _firstWaveFade?.BeginFadeIn(6000);
             TracksProperties.WaveOut?.Play();
         }
         catch (Exception ex)
@@ -188,21 +193,21 @@ public partial class Equalizer
             throw;
         }
     }
-    
+
     private void FirstToSecChange(object sender, EventArgs e)
     {
         try
         {
             if (Fade_box.IsChecked == true)
             {
-                firstWaveFade?.BeginFadeOut(7000);
+                _firstWaveFade?.BeginFadeOut(7000);
 
                 if (TracksProperties.IsLoopOn == 2)
                 {
-                    TracksProperties.SecAudioFileReader = new AudioFileReader(TracksProperties.TracksList
+                    TracksProperties.SecAudioFileReader = new AudioFileReader(TracksProperties.TracksList?
                         .ElementAt(TracksProperties.SelectedTrack.Id - 1).Path);
                     TracksProperties.SelectedTrack =
-                        TracksProperties.TracksList.ElementAt(TracksProperties.SelectedTrack.Id - 1);
+                        TracksProperties.TracksList?.ElementAt(TracksProperties.SelectedTrack.Id - 1);
                     InitializeSecWave();
                 }
                 // Sprawdzenie czy jest włączona opcja schuffle, ponieważ ona zmienia następny track
@@ -211,14 +216,14 @@ public partial class Equalizer
                     if (TracksProperties.AvailableNumbers?.Count == 0)
                     {
                         TracksProperties.SelectedTrack =
-                            TracksProperties.TracksList.ElementAt(TracksProperties.FirstPlayed.Id - 1);
+                            TracksProperties.TracksList?.ElementAt(TracksProperties.FirstPlayed.Id - 1);
 
                         // Reset listy dostępnych numerów utworów
                         if (TracksProperties.TracksList != null)
                         {
                             TracksProperties.AvailableNumbers =
                                 Enumerable.Range(0, TracksProperties.TracksList.Count).ToList();
-                            Random random = new Random();
+                            var random = new Random();
                             TracksProperties.AvailableNumbers =
                                 TracksProperties.AvailableNumbers.OrderBy(x => random.Next()).ToList();
                         }
@@ -250,11 +255,11 @@ public partial class Equalizer
                     else
                     {
                         TracksProperties.SecAudioFileReader =
-                            new AudioFileReader(TracksProperties.TracksList
+                            new AudioFileReader(TracksProperties.TracksList?
                                 .ElementAt(TracksProperties.AvailableNumbers.ElementAt(0)).Path);
                         TracksProperties.PrevTrack.Add(TracksProperties.SelectedTrack);
                         TracksProperties.SelectedTrack =
-                            TracksProperties.TracksList.ElementAt(TracksProperties.AvailableNumbers.ElementAt(0));
+                            TracksProperties.TracksList?.ElementAt(TracksProperties.AvailableNumbers.ElementAt(0));
                         TracksProperties.AvailableNumbers.RemoveAt(0);
                         InitializeSecWave();
                     }
@@ -270,7 +275,7 @@ public partial class Equalizer
                         if (TracksProperties.IsLoopOn == 1)
                         {
                             TracksProperties.SecAudioFileReader =
-                                new AudioFileReader(TracksProperties.TracksList.ElementAt(0).Path);
+                                new AudioFileReader(TracksProperties.TracksList?.ElementAt(0).Path);
                             InitializeSecWave();
                         }
                         else
@@ -311,103 +316,113 @@ public partial class Equalizer
     {
         try
         {
-        if (Fade_box.IsChecked == true)
-        {
-            secWaveFade?.BeginFadeOut(7000);
-
-            if (TracksProperties.IsLoopOn == 2)
+            if (Fade_box.IsChecked == true)
             {
-                TracksProperties.AudioFileReader = new AudioFileReader(TracksProperties.TracksList.ElementAt(TracksProperties.SelectedTrack.Id-1).Path);
-                TracksProperties.SelectedTrack = TracksProperties.TracksList.ElementAt(TracksProperties.SelectedTrack.Id-1);
-                InitializeFirstWave();
-            }
+                _secWaveFade?.BeginFadeOut(7000);
+
+                if (TracksProperties.IsLoopOn == 2)
+                {
+                    TracksProperties.AudioFileReader = new AudioFileReader(TracksProperties.TracksList
+                        ?.ElementAt(TracksProperties.SelectedTrack.Id - 1).Path);
+                    TracksProperties.SelectedTrack =
+                        TracksProperties.TracksList?.ElementAt(TracksProperties.SelectedTrack.Id - 1);
+                    InitializeFirstWave();
+                }
                 // Sprawdzenie czy jest włączona opcja schuffle, ponieważ ona zmienia następny track
-            else if (TracksProperties.IsSchuffleOn)
-            {
-                 if (TracksProperties.AvailableNumbers?.Count == 0)
-                 {
-                     TracksProperties.SelectedTrack = TracksProperties.TracksList.ElementAt(TracksProperties.FirstPlayed.Id-1);
-                     
-                     // Reset listy dostępnych numerów utworów
-                     if (TracksProperties.TracksList != null)
-                     {
-                         TracksProperties.AvailableNumbers = Enumerable.Range(0, TracksProperties.TracksList.Count).ToList();
-                         Random random = new Random();
-                         TracksProperties.AvailableNumbers =
-                             TracksProperties.AvailableNumbers.OrderBy(x => random.Next()).ToList();
-                     }
-                     // Usunięcie numeru odtwarzanego utworu z listy, aby ten się nie powtórzył w momencie losowania
-                     if (TracksProperties.SelectedTrack != null)
-                         TracksProperties.AvailableNumbers.Remove(TracksProperties.SelectedTrack.Id - 1);
-                     
-                     // Wyczyszczenie listy poprzednich utworów
-                     TracksProperties.PrevTrack.Clear();
-                     
-                     
+                else if (TracksProperties.IsSchuffleOn)
+                {
+                    if (TracksProperties.AvailableNumbers?.Count == 0)
+                    {
+                        TracksProperties.SelectedTrack =
+                            TracksProperties.TracksList?.ElementAt(TracksProperties.FirstPlayed.Id - 1);
 
-                     if (TracksProperties.IsLoopOn == 1)
-                     {
-                         TracksProperties.AudioFileReader = new AudioFileReader(TracksProperties.SelectedTrack?.Path);
-                         if (TracksProperties.SelectedTrack == TracksProperties.FirstPlayed)
-                             if (TracksProperties.WaveOut != null)
-                                 InitializeFirstWave();
-                     }
-                     else
-                     {
-                         TracksProperties.SecWaveOut?.Stop();
-                         TracksProperties.WaveOut?.Stop();
-                         TracksProperties.SecAudioFileReader = null;
-                         TracksProperties.AudioFileReader = null;
-                         TracksProperties._timer.Stop();
-                     }
-                 }
-                 else
-                 {
-                     TracksProperties.AudioFileReader = 
-                         new AudioFileReader(TracksProperties.TracksList.ElementAt(TracksProperties.AvailableNumbers.ElementAt(0)).Path);
-                     TracksProperties.PrevTrack.Add(TracksProperties.SelectedTrack);
-                     TracksProperties.SelectedTrack = TracksProperties.TracksList.ElementAt(TracksProperties.AvailableNumbers.ElementAt(0));
-                     InitializeFirstWave();
-                     TracksProperties.AvailableNumbers.RemoveAt(0);
-                 }
-             }
-             else
-             {
-                 if (TracksProperties.SelectedTrack?.Id == TracksProperties.TracksList?.Count)
-                 {
-                     // Przełączenie na 1 utwór z listy po zakończeniu ostatniego
-                     TracksProperties.SelectedTrack = TracksProperties.TracksList?.ElementAt(0);
-                   
-                     // Sprawdzenie czy jest loop, jeżeli tak to zatrzymaj muzykę i zmień ikone
-                     if (TracksProperties.IsLoopOn == 1)
-                     {
-                         TracksProperties.AudioFileReader = 
-                             new AudioFileReader(TracksProperties.TracksList.ElementAt(0).Path);
-                         InitializeFirstWave();
-                     }
-                     else
-                     {
-                         TracksProperties._timer.Stop();
-                         TracksProperties.SecWaveOut?.Stop();
-                         TracksProperties.WaveOut?.Stop();
-                         TracksProperties.SecAudioFileReader = null;
-                         TracksProperties.AudioFileReader = null;
-                     }
-                 }
-                 else
-                 {
-                     // Jeżeli track nie był ostatnim na liście odtwórz nastepny 
-                     if (TracksProperties.SelectedTrack != null)
-                     {
-                         TracksProperties.AudioFileReader = 
-                             new AudioFileReader(TracksProperties.TracksList?.ElementAt(TracksProperties.SelectedTrack.Id).Path);
-                         TracksProperties.SelectedTrack = TracksProperties.TracksList?.ElementAt(TracksProperties.SelectedTrack.Id);
-                         InitializeFirstWave();
-                     }
-                 }
-             }
-            FadeInEvent?.Invoke(this, EventArgs.Empty);
-        }
+                        // Reset listy dostępnych numerów utworów
+                        if (TracksProperties.TracksList != null)
+                        {
+                            TracksProperties.AvailableNumbers =
+                                Enumerable.Range(0, TracksProperties.TracksList.Count).ToList();
+                            var random = new Random();
+                            TracksProperties.AvailableNumbers =
+                                TracksProperties.AvailableNumbers.OrderBy(x => random.Next()).ToList();
+                        }
+
+                        // Usunięcie numeru odtwarzanego utworu z listy, aby ten się nie powtórzył w momencie losowania
+                        if (TracksProperties.SelectedTrack != null)
+                            TracksProperties.AvailableNumbers.Remove(TracksProperties.SelectedTrack.Id - 1);
+
+                        // Wyczyszczenie listy poprzednich utworów
+                        TracksProperties.PrevTrack.Clear();
+
+
+                        if (TracksProperties.IsLoopOn == 1)
+                        {
+                            TracksProperties.AudioFileReader =
+                                new AudioFileReader(TracksProperties.SelectedTrack?.Path);
+                            if (TracksProperties.SelectedTrack == TracksProperties.FirstPlayed)
+                                if (TracksProperties.WaveOut != null)
+                                    InitializeFirstWave();
+                        }
+                        else
+                        {
+                            TracksProperties.SecWaveOut?.Stop();
+                            TracksProperties.WaveOut?.Stop();
+                            TracksProperties.SecAudioFileReader = null;
+                            TracksProperties.AudioFileReader = null;
+                            TracksProperties._timer.Stop();
+                        }
+                    }
+                    else
+                    {
+                        TracksProperties.AudioFileReader =
+                            new AudioFileReader(TracksProperties.TracksList
+                                ?.ElementAt(TracksProperties.AvailableNumbers.ElementAt(0)).Path);
+                        TracksProperties.PrevTrack.Add(TracksProperties.SelectedTrack);
+                        TracksProperties.SelectedTrack =
+                            TracksProperties.TracksList?.ElementAt(TracksProperties.AvailableNumbers.ElementAt(0));
+                        InitializeFirstWave();
+                        TracksProperties.AvailableNumbers?.RemoveAt(0);
+                    }
+                }
+                else
+                {
+                    if (TracksProperties.SelectedTrack?.Id == TracksProperties.TracksList?.Count)
+                    {
+                        // Przełączenie na 1 utwór z listy po zakończeniu ostatniego
+                        TracksProperties.SelectedTrack = TracksProperties.TracksList?.ElementAt(0);
+
+                        // Sprawdzenie czy jest loop, jeżeli tak to zatrzymaj muzykę i zmień ikone
+                        if (TracksProperties.IsLoopOn == 1)
+                        {
+                            TracksProperties.AudioFileReader =
+                                new AudioFileReader(TracksProperties.TracksList?.ElementAt(0).Path);
+                            InitializeFirstWave();
+                        }
+                        else
+                        {
+                            TracksProperties._timer.Stop();
+                            TracksProperties.SecWaveOut?.Stop();
+                            TracksProperties.WaveOut?.Stop();
+                            TracksProperties.SecAudioFileReader = null;
+                            TracksProperties.AudioFileReader = null;
+                        }
+                    }
+                    else
+                    {
+                        // Jeżeli track nie był ostatnim na liście odtwórz nastepny 
+                        if (TracksProperties.SelectedTrack != null)
+                        {
+                            TracksProperties.AudioFileReader =
+                                new AudioFileReader(TracksProperties.TracksList
+                                    ?.ElementAt(TracksProperties.SelectedTrack.Id).Path);
+                            TracksProperties.SelectedTrack =
+                                TracksProperties.TracksList?.ElementAt(TracksProperties.SelectedTrack.Id);
+                            InitializeFirstWave();
+                        }
+                    }
+                }
+
+                FadeInEvent?.Invoke(this, EventArgs.Empty);
+            }
         }
         catch (Exception ex)
         {
@@ -416,7 +431,7 @@ public partial class Equalizer
         }
     }
 
-    
+
     private void Fade_CheckBoxClick(object sender, RoutedEventArgs e)
     {
         try
@@ -425,41 +440,43 @@ public partial class Equalizer
             {
                 TracksProperties.IsFadeOn = true;
             }
-                
+
             else
             {
                 TracksProperties.IsFadeOn = false;
-                bool isPlaying = false;
+                var isPlaying = false;
 
                 if (TracksProperties.WaveOut?.PlaybackState == PlaybackState.Playing)
                     isPlaying = true;
                 else if (TracksProperties.SecWaveOut?.PlaybackState == PlaybackState.Playing)
                     isPlaying = true;
-                
-                if(TracksProperties.SecAudioFileReader != null)
+
+                if (TracksProperties.SecAudioFileReader != null && TracksProperties.SelectedTrack?.Path == TracksProperties.SecAudioFileReader.FileName)
                     TracksProperties.AudioFileReader = TracksProperties.SecAudioFileReader;
 
                 TracksProperties.SecAudioFileReader = null;
-                
+
                 TracksProperties._timer.Stop();
                 TracksProperties.SecWaveOut?.Stop();
 
                 if (TracksProperties.AudioFileReader != null)
                 {
-                    firstWaveEqualizer = new EqualizerSampleProvider(TracksProperties.AudioFileReader);
-                    if(Equalizer_box.IsChecked == true)
-                        firstWaveEqualizer?.UpdateEqualizer(sld1.Value, sld2.Value, sld3.Value, sld4.Value, sld5.Value, sld6.Value, sld7.Value, sld8.Value);
-                    else 
-                        firstWaveEqualizer?.UpdateEqualizer(0,0,0,0,0,0,0,0);
+                    _firstWaveEqualizer = new EqualizerSampleProvider(TracksProperties.AudioFileReader);
+                    if (Equalizer_box.IsChecked == true)
+                        _firstWaveEqualizer?.UpdateEqualizer(sld1.Value, sld2.Value, sld3.Value, sld4.Value, sld5.Value,
+                            sld6.Value, sld7.Value, sld8.Value);
+                    else
+                        _firstWaveEqualizer?.UpdateEqualizer(0, 0, 0, 0, 0, 0, 0, 0);
 
-                    firstWaveFade = new FadeInOutSampleProvider(firstWaveEqualizer);
+                    _firstWaveFade = new FadeInOutSampleProvider(_firstWaveEqualizer);
                     TracksProperties.WaveOut?.Stop();
-                    TracksProperties.WaveOut.Init(firstWaveFade);
-                    
-                    if(isPlaying)
+                    TracksProperties.WaveOut.Init(_firstWaveFade);
+
+                    if (isPlaying)
                         TracksProperties.WaveOut?.Play();
                 }
             }
+
             FadeOffOn?.Invoke(this, EventArgs.Empty);
         }
         catch (Exception ex)
@@ -468,32 +485,32 @@ public partial class Equalizer
             throw;
         }
     }
-    
+
     private void OnOffEffects(object sender, RoutedEventArgs e)
     {
-
     }
+
     private void OnOffDelay(object sender, RoutedEventArgs e)
     {
-
     }
+
     private void OnOffChoir(object sender, RoutedEventArgs e)
     {
-
     }
+
     private void OnOffDistortion(object sender, RoutedEventArgs e)
     {
-
     }
+
     private void OnOffNightcore(object sender, RoutedEventArgs e)
     {
         if (Nightcore_Box.IsChecked == true)
         {
-            secWaveEqualizer?.UpdateEqualizer(3.5,2.5,3,3.5,2.5,3,2,1);
-            firstWaveEqualizer?.UpdateEqualizer(3.5,2.5,3,3.5,2.5,3,2,1);
-            if (secWaveFade != null)
+            _secWaveEqualizer?.UpdateEqualizer(3.5, 2.5, 3, 3.5, 2.5, 3, 2, 1);
+            _firstWaveEqualizer?.UpdateEqualizer(3.5, 2.5, 3, 3.5, 2.5, 3, 2, 1);
+            if (_secWaveFade != null)
             {
-                var secSpeedControl = new SpeedControlSampleProvider(secWaveFade) { Speed = 1.5f };
+                var secSpeedControl = new SpeedControlSampleProvider(_secWaveFade) { Speed = 1.5f };
                 if (TracksProperties.SecWaveOut?.PlaybackState == PlaybackState.Playing)
                 {
                     TracksProperties.SecWaveOut?.Stop();
@@ -502,10 +519,10 @@ public partial class Equalizer
                 }
             }
 
-            if (firstWaveFade != null)
+            if (_firstWaveFade != null)
             {
-                var speedControl = new SpeedControlSampleProvider(firstWaveFade) { Speed = 1.5f };
-                if(TracksProperties.WaveOut?.PlaybackState == PlaybackState.Playing)
+                var speedControl = new SpeedControlSampleProvider(_firstWaveFade) { Speed = 1.5f };
+                if (TracksProperties.WaveOut?.PlaybackState == PlaybackState.Playing)
                 {
                     TracksProperties.WaveOut?.Stop();
                     TracksProperties.WaveOut.Init(speedControl);
@@ -523,24 +540,20 @@ public partial class Equalizer
             if (TracksProperties.SecWaveOut?.PlaybackState == PlaybackState.Playing)
             {
                 TracksProperties.SecWaveOut?.Stop();
-                TracksProperties.SecWaveOut.Init(secWaveEqualizer);
+                TracksProperties.SecWaveOut.Init(_secWaveEqualizer);
                 TracksProperties.SecWaveOut?.Play();
             }
-            else if(TracksProperties.WaveOut?.PlaybackState == PlaybackState.Playing)
+            else if (TracksProperties.WaveOut?.PlaybackState == PlaybackState.Playing)
             {
                 TracksProperties.WaveOut?.Stop();
-                TracksProperties.WaveOut.Init(firstWaveFade);
+                TracksProperties.WaveOut.Init(_firstWaveFade);
                 TracksProperties.WaveOut?.Play();
             }
             else
             {
                 TracksProperties.WaveOut?.Stop();
-                TracksProperties.WaveOut.Init(firstWaveFade);
+                TracksProperties.WaveOut.Init(_firstWaveFade);
             }
         }
     }
-    
 }
-
-
-

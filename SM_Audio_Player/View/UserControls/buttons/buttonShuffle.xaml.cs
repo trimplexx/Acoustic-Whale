@@ -73,11 +73,11 @@ public partial class ButtonShuffle : INotifyPropertyChanged
                 if (TracksProperties.TracksList != null)
                 {
                     TracksProperties.AvailableNumbers = Enumerable.Range(0, TracksProperties.TracksList.Count).ToList();
-                    Random random = new Random();
+                    var random = new Random();
                     TracksProperties.AvailableNumbers =
                         TracksProperties.AvailableNumbers.OrderBy(x => random.Next()).ToList();
                 }
-                    
+
                 TracksProperties.PrevTrack.Clear();
                 ShuffleIcon = Icons.GetShuffleIconOff();
                 ShuffleColor = "#037994";
@@ -93,11 +93,13 @@ public partial class ButtonShuffle : INotifyPropertyChanged
                     TracksProperties.FirstPlayed = TracksProperties.SelectedTrack;
                     if (TracksProperties.TracksList != null)
                     {
-                        TracksProperties.AvailableNumbers = Enumerable.Range(0, TracksProperties.TracksList.Count).ToList();
-                        Random random = new Random();
+                        TracksProperties.AvailableNumbers =
+                            Enumerable.Range(0, TracksProperties.TracksList.Count).ToList();
+                        var random = new Random();
                         TracksProperties.AvailableNumbers =
                             TracksProperties.AvailableNumbers.OrderBy(x => random.Next()).ToList();
                     }
+
                     TracksProperties.AvailableNumbers?.Remove(TracksProperties.SelectedTrack.Id - 1);
                 }
 

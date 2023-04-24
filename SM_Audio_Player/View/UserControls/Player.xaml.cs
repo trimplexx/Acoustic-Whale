@@ -1,10 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Linq;
 using System.Windows;
-using System.Windows.Controls.Primitives;
 using System.Windows.Input;
-using System.Windows.Threading;
 using NAudio.Wave;
 using SM_Audio_Player.Music;
 using SM_Audio_Player.View.UserControls.buttons;
@@ -13,15 +10,14 @@ namespace SM_Audio_Player.View.UserControls;
 
 public partial class Player : INotifyPropertyChanged
 {
+    public delegate void FirstToSecEventHandler(object sender, EventArgs e);
+
+    public delegate void SecToFirstEventHandler(object sender, EventArgs e);
+
     private const bool IsDraggingSlider = false;
-    
+
     private string? _albumImg;
     private TimeSpan result;
-    public delegate void FirstToSecEventHandler(object sender, EventArgs e);
-    public static event FirstToSecEventHandler? FirstToSec;
-    
-    public delegate void SecToFirstEventHandler(object sender, EventArgs e);
-    public static event SecToFirstEventHandler? SecToFirst;
 
     public Player()
     {
@@ -41,8 +37,8 @@ public partial class Player : INotifyPropertyChanged
             ButtonPlay.ResetEverything += ResetValues;
             Library.DoubleClickEvent += OnTrackSwitch;
             Library.ResetEverything += ResetValues;
-            
-            Equalizer.FadeInEvent +=OnTrackSwitch;
+
+            Equalizer.FadeInEvent += OnTrackSwitch;
             Equalizer.FadeOffOn += OnTrackSwitch;
 
             // Przypisanie metody na tick timera
@@ -68,6 +64,8 @@ public partial class Player : INotifyPropertyChanged
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;
+    public static event FirstToSecEventHandler? FirstToSec;
+    public static event SecToFirstEventHandler? SecToFirst;
 
     private void ResetValues(object sender, EventArgs e)
     {
@@ -95,7 +93,7 @@ public partial class Player : INotifyPropertyChanged
                 author.Text = TracksProperties.SelectedTrack.Author;
                 CD.Text = TracksProperties.SelectedTrack.Album;
                 AlbumImg = TracksProperties.SelectedTrack.AlbumCoverPath;
-                
+
                 if (TracksProperties.IsFadeOn)
                 {
                     if (TracksProperties.IsLoopOn == 2)
@@ -111,16 +109,14 @@ public partial class Player : INotifyPropertyChanged
                         if (TracksProperties.TracksList != null)
                         {
                             if (TracksProperties.SelectedTrack.Path == TracksProperties.AudioFileReader?.FileName)
-                            {
                                 result = TracksProperties.AudioFileReader.TotalTime - TimeSpan.FromSeconds(7);
-                            }
-                            else if(TracksProperties.SelectedTrack.Path == TracksProperties.SecAudioFileReader?.FileName)
-                            {
+                            else if (TracksProperties.SelectedTrack.Path ==
+                                     TracksProperties.SecAudioFileReader?.FileName)
                                 result = TracksProperties.SecAudioFileReader.TotalTime - TimeSpan.FromSeconds(7);
-                            }
                             TracksProperties.SelectedTrack.Time = result.ToString(@"hh\:mm\:ss");
                         }
                     }
+
                     TracksProperties.SelectedTrack.Time = result.ToString(@"hh\:mm\:ss");
                 }
                 else
@@ -132,8 +128,10 @@ public partial class Player : INotifyPropertyChanged
                             TracksProperties.AudioFileReader.TotalTime.ToString(@"hh\:mm\:ss");
                     }
                 }
+
                 tbTime.Text = TracksProperties.SelectedTrack.Time;
             }
+
             TracksProperties._timer.Start();
         }
         catch (Exception ex)
@@ -152,10 +150,7 @@ public partial class Player : INotifyPropertyChanged
             var progress = currentPosition / totalSeconds;
             tbCurrTime.Text = TimeSpan.FromSeconds(currentPosition).ToString(@"hh\:mm\:ss");
             sldTime.Value = progress * sldTime.Maximum;
-            if (currentPosition > totalSeconds)
-            {
-                FirstToSec?.Invoke(this, EventArgs.Empty);
-            }
+            if (currentPosition > totalSeconds) FirstToSec?.Invoke(this, EventArgs.Empty);
         }
     }
 
@@ -165,16 +160,14 @@ public partial class Player : INotifyPropertyChanged
         if (TracksProperties.SecAudioFileReader != null)
         {
             var currentPositionSec = TracksProperties.SecAudioFileReader.CurrentTime.TotalSeconds;
-        
+
             var progressSec = currentPositionSec / totalSeconds;
             tbCurrTime.Text = TimeSpan.FromSeconds(currentPositionSec).ToString(@"hh\:mm\:ss");
             sldTime.Value = progressSec * sldTime.Maximum;
-            if (currentPositionSec > totalSeconds)
-            {
-                SecToFirst?.Invoke(this, EventArgs.Empty);
-            }
+            if (currentPositionSec > totalSeconds) SecToFirst?.Invoke(this, EventArgs.Empty);
         }
     }
+
     /*
      * Metoda wywoływana na tick zegara w celu odświeżenia slidera o wartości sekundowe oraz licznika pokazującego
      * bieżący czas utworu
@@ -195,14 +188,9 @@ public partial class Player : INotifyPropertyChanged
                         && TracksProperties.SecWaveOut?.PlaybackState == PlaybackState.Playing)
                     {
                         if (currentPosition > currentPositionSec)
-                        {
                             TakeSecWave();
-                        }
                         else
-                        {
                             TakeFirstWave();
-                            
-                        }
                     }
                     else if (TracksProperties.WaveOut?.PlaybackState == PlaybackState.Playing)
                     {
@@ -213,19 +201,13 @@ public partial class Player : INotifyPropertyChanged
                         TakeSecWave();
                     }
                 }
-                else if (TracksProperties.SelectedTrack?.Path== TracksProperties.AudioFileReader?.FileName)
+                else if (TracksProperties.SelectedTrack?.Path == TracksProperties.AudioFileReader?.FileName)
                 {
-                    if (TracksProperties.AudioFileReader != null)
-                    {
-                        TakeFirstWave();
-                    }
+                    if (TracksProperties.AudioFileReader != null) TakeFirstWave();
                 }
                 else
                 {
-                    if (TracksProperties.SecAudioFileReader != null)
-                    {
-                        TakeSecWave();
-                    }
+                    if (TracksProperties.SecAudioFileReader != null) TakeSecWave();
                 }
             }
         }
@@ -263,10 +245,10 @@ public partial class Player : INotifyPropertyChanged
             var totalSeconds = result.TotalSeconds;
             var progress = sldTime.Value / sldTime.Maximum;
             var newPosition = totalSeconds * progress;
-            
+
             if (TracksProperties.AudioFileReader != null)
             {
-                 if (TracksProperties.AudioFileReader.FileName == TracksProperties.SecAudioFileReader?.FileName
+                if (TracksProperties.AudioFileReader.FileName == TracksProperties.SecAudioFileReader?.FileName
                     && TracksProperties.SelectedTrack?.Path == TracksProperties.AudioFileReader.FileName)
                 {
                     var currentPosition = TracksProperties.AudioFileReader.CurrentTime.TotalSeconds;
@@ -276,13 +258,9 @@ public partial class Player : INotifyPropertyChanged
                         && TracksProperties.SecWaveOut?.PlaybackState == PlaybackState.Playing)
                     {
                         if (currentPosition > currentPositionSec)
-                        {
                             TracksProperties.SecAudioFileReader.CurrentTime = TimeSpan.FromSeconds(newPosition);
-                        }
                         else
-                        {
                             TracksProperties.AudioFileReader.CurrentTime = TimeSpan.FromSeconds(newPosition);
-                        }
                     }
                     else if (TracksProperties.WaveOut?.PlaybackState == PlaybackState.Playing)
                     {
@@ -293,7 +271,7 @@ public partial class Player : INotifyPropertyChanged
                         TracksProperties.SecAudioFileReader.CurrentTime = TimeSpan.FromSeconds(newPosition);
                     }
                 }
-                 else if (TracksProperties.SelectedTrack?.Path == TracksProperties.AudioFileReader.FileName)
+                else if (TracksProperties.SelectedTrack?.Path == TracksProperties.AudioFileReader.FileName)
                 {
                     TracksProperties.AudioFileReader.CurrentTime = TimeSpan.FromSeconds(newPosition);
                 }
@@ -302,8 +280,8 @@ public partial class Player : INotifyPropertyChanged
                     if (TracksProperties.SecAudioFileReader != null)
                         TracksProperties.SecAudioFileReader.CurrentTime = TimeSpan.FromSeconds(newPosition);
                 }
-                
             }
+
             TracksProperties._timer.Start();
         }
         catch (Exception ex)
