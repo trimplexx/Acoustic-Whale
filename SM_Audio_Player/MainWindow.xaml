@@ -14,10 +14,10 @@
 
     <!-- Ukrycie domyślnego paska menu od windowsa -->
     <WindowChrome.WindowChrome>
-        <WindowChrome GlassFrameThickness="0" CornerRadius="0" CaptionHeight="0" />
+        <WindowChrome GlassFrameThickness="0" CornerRadius="0" CaptionHeight="0"/>
     </WindowChrome.WindowChrome>
 
-    <Grid Background="#333333" Margin="6, 6, 6, 6">
+    <Grid x:Name="world" Background="#333333">
         <Grid.RowDefinitions>
             <RowDefinition Height="30" />
             <RowDefinition Height="30*" />
