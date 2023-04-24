@@ -24,7 +24,8 @@
             <!-- Obraz albumu -->
             <Border BorderThickness="1" BorderBrush="#45a7bc" Margin="5" Width="85" Height="85">
                 <Viewbox Width="83" Height="83">
-                    <Image x:Name="Album" Source="{Binding AlbumImg}" /> <!-- Tutaj chyba Binding -->
+                    <Image x:Name="Album" Source="{Binding AlbumImg}" />
+                    <!-- Tutaj chyba Binding -->
                 </Viewbox>
             </Border>
 
@@ -75,10 +76,10 @@
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Text="hh:mm:ss" TextAlignment="Left" Foreground="#45a7bc"
+                <TextBlock Grid.Column="0" Text="0:00" TextAlignment="Left" Foreground="#45a7bc"
                            Margin="10, 5, 5, 5" x:Name="tbCurrTime" />
-                <TextBlock Grid.Column="1" Text="hh:mm:ss" HorizontalAlignment="Right" Foreground="#45a7bc"
-                           Margin="10, 0, 10, 5" x:Name="tbTime" />
+                <TextBlock Grid.Column="1" Text="0:00" HorizontalAlignment="Right" Foreground="#45a7bc"
+                           Margin="0,0,10,5" x:Name="tbTime" Height="21" VerticalAlignment="Bottom" />
             </Grid>
             <Slider Style="{DynamicResource SliderStyle1}" Margin="10, 10, 5, 0" x:Name="sldTime"
                     IsMoveToPointEnabled="True"

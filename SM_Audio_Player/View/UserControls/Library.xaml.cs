@@ -256,12 +256,21 @@ public partial class Library
                         encoder.Save(fileStream);
                     }
 
-                    // Konwersja czasu trwania utworu na format hh:mm:ss
-                    var hours = duration / 3600;
-                    var minutes = duration % 3600 / 60;
-                    var seconds = duration % 60;
-
-                    var formattedTime = string.Format("{0:D2}:{1:D2}:{2:D2}", hours, minutes, seconds);
+                    // Konwersja czasu trwania utworu na format hh:mm:ss lub mm:ss, w zależności od długości utworu
+                    var formattedTime = "";
+                    if (duration >= 3600)
+                    {
+                        var hours = duration / 3600;
+                        var minutes = duration % 3600 / 60;
+                        var seconds = duration % 60;
+                        formattedTime = string.Format("{0:D2}:{1:D2}:{2:D2}", hours, minutes, seconds);
+                    }
+                    else
+                    {
+                        var minutes = duration / 60;
+                        var seconds = duration % 60;
+                        formattedTime = string.Format("{0:D2}:{1:D2}", minutes, seconds);
+                    }
 
                     // Dodanie utworu do listy utworów
                     if (TracksProperties.TracksList != null)

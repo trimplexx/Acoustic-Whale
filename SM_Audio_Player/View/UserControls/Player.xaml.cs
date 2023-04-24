@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls.Primitives;
@@ -73,11 +74,11 @@ public partial class Player : INotifyPropertyChanged
     {
         TracksProperties._timer.Stop();
         sldTime.Value = 0;
-        title.Text = "Tytuł";
-        author.Text = "Autor";
-        CD.Text = "Płyta";
-        tbTime.Text = "hh:mm:ss";
-        tbCurrTime.Text = "hh:mm:ss";
+        title.Text = "Title";
+        author.Text = "Author";
+        CD.Text = "Album";
+        tbTime.Text = "0:00";
+        tbCurrTime.Text = "0:00";
         AlbumImg = null;
     }
 
@@ -118,10 +119,10 @@ public partial class Player : INotifyPropertyChanged
                             {
                                 result = TracksProperties.SecAudioFileReader.TotalTime - TimeSpan.FromSeconds(7);
                             }
-                            TracksProperties.SelectedTrack.Time = result.ToString(@"hh\:mm\:ss");
+                            TracksProperties.SelectedTrack.Time = result.TotalHours >= 1 ? result.ToString(@"hh\:mm\:ss") : result.ToString(@"mm\:ss");
                         }
                     }
-                    TracksProperties.SelectedTrack.Time = result.ToString(@"hh\:mm\:ss");
+                    TracksProperties.SelectedTrack.Time = result.TotalHours >= 1 ? result.ToString(@"hh\:mm\:ss") : result.ToString(@"mm\:ss");
                 }
                 else
                 {
@@ -129,7 +130,7 @@ public partial class Player : INotifyPropertyChanged
                     {
                         result = TracksProperties.AudioFileReader.TotalTime;
                         TracksProperties.SelectedTrack.Time =
-                            TracksProperties.AudioFileReader.TotalTime.ToString(@"hh\:mm\:ss");
+                            TracksProperties.SelectedTrack.Time = result.TotalHours >= 1 ? result.ToString(@"hh\:mm\:ss") : result.ToString(@"mm\:ss");
                     }
                 }
                 tbTime.Text = TracksProperties.SelectedTrack.Time;
@@ -150,7 +151,7 @@ public partial class Player : INotifyPropertyChanged
         {
             var currentPosition = TracksProperties.AudioFileReader.CurrentTime.TotalSeconds;
             var progress = currentPosition / totalSeconds;
-            tbCurrTime.Text = TimeSpan.FromSeconds(currentPosition).ToString(@"hh\:mm\:ss");
+            tbCurrTime.Text = currentPosition >= 3600 ? TimeSpan.FromSeconds(currentPosition).ToString(@"hh\:mm\:ss", CultureInfo.InvariantCulture) : TimeSpan.FromSeconds(currentPosition).ToString(@"mm\:ss", CultureInfo.InvariantCulture);
             sldTime.Value = progress * sldTime.Maximum;
             if (currentPosition > totalSeconds)
             {
@@ -167,7 +168,7 @@ public partial class Player : INotifyPropertyChanged
             var currentPositionSec = TracksProperties.SecAudioFileReader.CurrentTime.TotalSeconds;
         
             var progressSec = currentPositionSec / totalSeconds;
-            tbCurrTime.Text = TimeSpan.FromSeconds(currentPositionSec).ToString(@"hh\:mm\:ss");
+            tbCurrTime.Text = currentPositionSec >= 3600 ? TimeSpan.FromSeconds(currentPositionSec).ToString(@"hh\:mm\:ss", CultureInfo.InvariantCulture) : TimeSpan.FromSeconds(currentPositionSec).ToString(@"mm\:ss", CultureInfo.InvariantCulture);
             sldTime.Value = progressSec * sldTime.Maximum;
             if (currentPositionSec > totalSeconds)
             {
