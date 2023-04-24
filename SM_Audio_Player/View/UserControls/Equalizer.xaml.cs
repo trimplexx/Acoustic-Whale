@@ -489,11 +489,12 @@ public partial class Equalizer
     {
         if (Nightcore_Box.IsChecked == true)
         {
-            if (secWaveEqualizer != null)
+            secWaveEqualizer?.UpdateEqualizer(3.5,2.5,3,3.5,2.5,3,2,1);
+            firstWaveEqualizer?.UpdateEqualizer(3.5,2.5,3,3.5,2.5,3,2,1);
+            if (secWaveFade != null)
             {
-                
-                var secSpeedControl = new SpeedControlSampleProvider(secWaveEqualizer) { Speed = 1.5f };
-                if (TracksProperties.SecWaveOut.PlaybackState == PlaybackState.Playing)
+                var secSpeedControl = new SpeedControlSampleProvider(secWaveFade) { Speed = 1.5f };
+                if (TracksProperties.SecWaveOut?.PlaybackState == PlaybackState.Playing)
                 {
                     TracksProperties.SecWaveOut?.Stop();
                     TracksProperties.SecWaveOut.Init(secSpeedControl);
@@ -504,7 +505,7 @@ public partial class Equalizer
             if (firstWaveFade != null)
             {
                 var speedControl = new SpeedControlSampleProvider(firstWaveFade) { Speed = 1.5f };
-                if(TracksProperties.WaveOut.PlaybackState == PlaybackState.Playing)
+                if(TracksProperties.WaveOut?.PlaybackState == PlaybackState.Playing)
                 {
                     TracksProperties.WaveOut?.Stop();
                     TracksProperties.WaveOut.Init(speedControl);
