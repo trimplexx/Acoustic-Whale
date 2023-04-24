@@ -22,6 +22,8 @@ public partial class Library
     * Utworzone zostało aby aktualizować poszczególne dane innych klas. 
     */
     public delegate void LibraryEventHandler(object sender, EventArgs e);
+    public delegate void OnDeleteTrackEventHandler(object sender, EventArgs e);
+    
 
     /*
     * Akcja odpowiadająca za resetowanie danych w momencie, gdy odświeżona lista będzie zawierać mniej elementów
@@ -61,7 +63,8 @@ public partial class Library
     public static event LibraryEventHandler? DoubleClickEvent;
 
     public static event ResetEverythingEventHandler? ResetEverything;
-
+    
+    public static event OnDeleteTrackEventHandler? OnDeleteTrack;
 
     /*
      * Istotne odświeżanie listy gdyby scieżka do pliku się zmieniła w trakcie odtwarzania, track z złą ściażka z pliku
@@ -334,8 +337,22 @@ public partial class Library
                     var newJsonData = JsonConvert.SerializeObject(TracksProperties.TracksList);
                     File.WriteAllText(JsonPath, newJsonData);
 
+                    if (TracksProperties.AudioFileReader?.FileName == TracksProperties.SelectedTrack?.Path && 
+                        TracksProperties.WaveOut?.PlaybackState == PlaybackState.Playing)
+                    {
+                        TracksProperties.WaveOut.Stop();
+                        TracksProperties.WaveOut = null;
+                        TracksProperties.AudioFileReader = null;
+                    }
+                    else if (TracksProperties.SecWaveOut?.PlaybackState == PlaybackState.Playing
+                             && TracksProperties.SecAudioFileReader?.FileName == TracksProperties.SelectedTrack?.Path)
+                    {
+                        TracksProperties.SecWaveOut.Stop();
+                        TracksProperties.SecWaveOut = null;
+                        TracksProperties.AudioFileReader = null;
+                    }
+                    
                     // Resetowanie wybranego utwór i odświeżanie ListView oraz ID utworów
-                    TracksProperties.SelectedTrack = null;
                     RefreshTrackListViewAndId();
 
                     // Zaznaczenie utworu na indeksie kolejnego elementu poniżej ostatnio zaznaczonego elementu
@@ -344,6 +361,7 @@ public partial class Library
                         var selectedIndex = Math.Max(selectedIndices.Min() - 1, 0);
                         lv.SelectedIndex = selectedIndex;
                     }
+                    OnDeleteTrack?.Invoke(this, EventArgs.Empty);
                 }
             }
             // Zaktualizowanie wybranego utworu, jeśli jakiś utwór jest wciąż zaznaczony po operacji usuwania

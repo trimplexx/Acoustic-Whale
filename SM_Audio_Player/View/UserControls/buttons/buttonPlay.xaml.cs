@@ -60,6 +60,7 @@ public partial class ButtonPlay : INotifyPropertyChanged
             ButtonPrevious.ResetEverything += NextTrackEvent;
             Equalizer.FadeInEvent += NextTrackEvent;
             Equalizer.FadeOffOn += NextTrackEvent;
+            Library.OnDeleteTrack += NextTrackEvent;
         }
         catch (Exception ex)
         {

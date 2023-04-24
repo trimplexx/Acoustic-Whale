@@ -50,14 +50,15 @@ public partial class ButtonNext
     {
         try
         {
-            if (TracksProperties.SelectedTrack == null)
-            {
-                _btnPlay.btnPlay_Click(sender, e);
-                NextSelectedNull?.Invoke(this, EventArgs.Empty);
-            }
+
             // Sprawdź czy jest dostępny jakikolwiek numer na liście
-            else if (TracksProperties.TracksList != null && TracksProperties.TracksList.Count > 0)
+            if (TracksProperties.TracksList != null && TracksProperties.TracksList.Count > 0)
             {
+                if (TracksProperties.SelectedTrack == null)
+                {
+                    _btnPlay.btnPlay_Click(sender, e);
+                    NextSelectedNull?.Invoke(this, EventArgs.Empty);
+                }
                 if (TracksProperties.SecWaveOut != null &&
                     TracksProperties.SecWaveOut.PlaybackState == PlaybackState.Playing)
                 {

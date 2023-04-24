@@ -46,6 +46,7 @@ public partial class Player : INotifyPropertyChanged
 
             Equalizer.FadeInEvent += OnTrackSwitch;
             Equalizer.FadeOffOn += OnTrackSwitch;
+            Library.OnDeleteTrack += OnTrackSwitch;
 
             // Przypisanie metody na tick timera
             TracksProperties._timer.Tick += Timer_Tick;
@@ -120,22 +121,20 @@ public partial class Player : INotifyPropertyChanged
                             {
                                 result = TracksProperties.SecAudioFileReader.TotalTime - TimeSpan.FromSeconds(7);
                             }
-                            TracksProperties.SelectedTrack.Time = result.TotalHours >= 1 ? result.ToString(@"hh\:mm\:ss") : result.ToString(@"mm\:ss");
                         }
                     }
-                    TracksProperties.SelectedTrack.Time = result.TotalHours >= 1 ? result.ToString(@"hh\:mm\:ss") : result.ToString(@"mm\:ss");
                 }
                 else
                 {
                     if (TracksProperties.AudioFileReader != null)
                     {
                         result = TracksProperties.AudioFileReader.TotalTime;
-                        TracksProperties.SelectedTrack.Time =
-                            TracksProperties.AudioFileReader.TotalTime.ToString(@"hh\:mm\:ss");
                     }
                 }
                 tbTime.Text = TracksProperties.SelectedTrack.Time;
+                TracksProperties.SelectedTrack.Time = result.TotalHours >= 1 ? result.ToString(@"hh\:mm\:ss") : result.ToString(@"mm\:ss"); 
             }
+            
             TracksProperties._timer.Start();
         }
         catch (Exception ex)
