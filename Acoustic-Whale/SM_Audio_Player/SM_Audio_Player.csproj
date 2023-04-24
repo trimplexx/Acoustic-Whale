@@ -27,4 +27,8 @@
         <Resource Include="assets\default.png" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="SoundTouch" />
+    </ItemGroup>
+
 </Project>

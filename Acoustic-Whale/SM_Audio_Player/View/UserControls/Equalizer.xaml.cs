@@ -8,6 +8,7 @@ using NAudio.Wave;
 using NAudio.Wave.SampleProviders;
 using SM_Audio_Player.Music;
 using SM_Audio_Player.View.UserControls.buttons;
+using VarispeedDemo.SoundTouch;
 
 namespace SM_Audio_Player.View.UserControls;
 
@@ -38,6 +39,41 @@ public partial class Equalizer
     public static event FadeInEventHandler? FadeInEvent;
     public static event FadeOffOnEventHandler? FadeOffOn;
 
+    private void InitNightcoreEffect()
+    {
+        if (Nightcore_Box.IsChecked == true)
+        {
+            if (_firstWaveFade != null)
+            {
+                var firstspeedControl = new VarispeedSampleProvider(_firstWaveFade, 100, new SoundTouchProfile(false, false));
+                firstspeedControl.PlaybackRate = 1.4f;;
+                TracksProperties.WaveOut?.Stop();
+                TracksProperties.WaveOut?.Init(firstspeedControl);
+            }
+            if (_secWaveFade != null)
+            {
+                var secSpeedControl = new VarispeedSampleProvider(_secWaveFade, 100, new SoundTouchProfile(false, false));
+                secSpeedControl.PlaybackRate = 1.4f;;
+                TracksProperties.SecWaveOut?.Stop();
+                TracksProperties.SecWaveOut?.Init(secSpeedControl);
+            }
+        }
+        else
+        {
+            if (_firstWaveFade != null)
+            {
+                TracksProperties.WaveOut?.Stop();
+                TracksProperties.WaveOut.Init(_firstWaveFade);
+
+            }
+            if (_secWaveFade != null)
+            {
+                TracksProperties.SecWaveOut?.Stop();
+                TracksProperties.SecWaveOut.Init(_secWaveFade);
+            }
+            
+        }
+    }
     /*
      * Ustawienie wartości bieżących suwaków, w momencie gdy jest zaznaczona opcja equalizera w odpowiedzi na zmiane
      * piosenki.
@@ -56,8 +92,7 @@ public partial class Equalizer
 
             _firstWaveFade = new FadeInOutSampleProvider(_firstWaveEqualizer);
 
-            TracksProperties.WaveOut?.Stop();
-            TracksProperties.WaveOut.Init(_firstWaveFade);
+            InitNightcoreEffect();
             TracksProperties.WaveOut?.Play();
 
             FadeOffOn?.Invoke(this, EventArgs.Empty);
@@ -86,19 +121,16 @@ public partial class Equalizer
             if (TracksProperties.SelectedTrack == TracksProperties.TracksList?.ElementAt(0) &&
                 !TracksProperties.IsSchuffleOn && TracksProperties.IsLoopOn != 1)
             {
-                TracksProperties.WaveOut?.Stop();
-                TracksProperties.WaveOut.Init(_firstWaveFade);
+                InitNightcoreEffect();
             }
             else if (TracksProperties.SelectedTrack?.Path == TracksProperties.FirstPlayed?.Path &&
                      TracksProperties.IsSchuffleOn && TracksProperties.IsLoopOn != 1)
             {
-                TracksProperties.WaveOut?.Stop();
-                TracksProperties.WaveOut.Init(_firstWaveFade);
+                InitNightcoreEffect();
             }
             else
             {
-                TracksProperties.WaveOut?.Stop();
-                TracksProperties.WaveOut.Init(_firstWaveFade);
+                InitNightcoreEffect();
                 TracksProperties.WaveOut?.Play();
             }
 
@@ -163,16 +195,28 @@ public partial class Equalizer
             ChangeEqualizerValues();
 
             _secWaveFade = new FadeInOutSampleProvider(_secWaveEqualizer);
-
+            _secWaveFade?.BeginFadeIn(6000);
+            
             TracksProperties.SecWaveOut?.Stop();
 
             if (TracksProperties.SecWaveOut == null)
                 TracksProperties.SecWaveOut = new WaveOutEvent();
 
-            TracksProperties.SecWaveOut.Init(_secWaveFade);
-
-            _secWaveFade?.BeginFadeIn(6000);
-            TracksProperties.SecWaveOut?.Play();
+            if (Nightcore_Box.IsChecked == true)
+            {
+                if (_secWaveFade != null)
+                {
+                    var secSpeedControl = new VarispeedSampleProvider(_secWaveFade, 100, new SoundTouchProfile(false, false));
+                    secSpeedControl.PlaybackRate = 1.4f;;
+                    TracksProperties.SecWaveOut.Init(secSpeedControl);
+                }
+            }
+            else
+            {
+                TracksProperties.SecWaveOut.Init(_secWaveFade);
+            }
+            
+            TracksProperties.SecWaveOut.Play();
         }
         catch (Exception ex)
         {
@@ -190,12 +234,24 @@ public partial class Equalizer
             ChangeEqualizerValues();
 
             _firstWaveFade = new FadeInOutSampleProvider(_firstWaveEqualizer, true);
-
-            TracksProperties.WaveOut?.Stop();
-
-            TracksProperties.WaveOut.Init(_firstWaveFade);
-
             _firstWaveFade?.BeginFadeIn(6000);
+            
+            TracksProperties.WaveOut?.Stop();
+            
+            if (Nightcore_Box.IsChecked == true)
+            {
+                if (_firstWaveFade != null)
+                {
+                    var firstSpeedControl = new VarispeedSampleProvider(_firstWaveFade, 100, new SoundTouchProfile(false, false));
+                    firstSpeedControl.PlaybackRate = 1.4f;;
+                    TracksProperties.WaveOut.Init(firstSpeedControl);
+                }
+            }
+            else
+            {
+                TracksProperties.WaveOut.Init(_secWaveFade);
+            }
+            
             TracksProperties.WaveOut?.Play();
         }
         catch (Exception ex)
@@ -479,9 +535,9 @@ public partial class Equalizer
                         _firstWaveEqualizer?.UpdateEqualizer(0, 0, 0, 0, 0, 0, 0, 0);
 
                     _firstWaveFade = new FadeInOutSampleProvider(_firstWaveEqualizer);
-                    TracksProperties.WaveOut?.Stop();
-                    TracksProperties.WaveOut.Init(_firstWaveFade);
 
+                    InitNightcoreEffect();
+                    
                     if (isPlaying)
                         TracksProperties.WaveOut?.Play();
                 }
@@ -516,32 +572,33 @@ public partial class Equalizer
     {
         if (Nightcore_Box.IsChecked == true)
         {
-            _secWaveEqualizer?.UpdateEqualizer(3.5, 2.5, 3, 3.5, 2.5, 3, 2, 1);
-            _firstWaveEqualizer?.UpdateEqualizer(3.5, 2.5, 3, 3.5, 2.5, 3, 2, 1);
-            if (_secWaveFade != null)
-            {
-                var secSpeedControl = new SpeedControlSampleProvider(_secWaveFade) { Speed = 1.5f };
-                if (TracksProperties.SecWaveOut?.PlaybackState == PlaybackState.Playing)
-                {
-                    TracksProperties.SecWaveOut?.Stop();
-                    TracksProperties.SecWaveOut.Init(secSpeedControl);
-                    TracksProperties.SecWaveOut?.Play();
-                }
-            }
-
             if (_firstWaveFade != null)
             {
-                var speedControl = new SpeedControlSampleProvider(_firstWaveFade) { Speed = 1.5f };
+                var speedControl = new VarispeedSampleProvider(_firstWaveFade, 50, new SoundTouchProfile(false, true));
+                speedControl.PlaybackRate = 1.4f;
+                
                 if (TracksProperties.WaveOut?.PlaybackState == PlaybackState.Playing)
                 {
-                    TracksProperties.WaveOut?.Stop();
+                    TracksProperties.WaveOut.Stop();
                     TracksProperties.WaveOut.Init(speedControl);
-                    TracksProperties.WaveOut?.Play();
+                    TracksProperties.WaveOut.Play();
                 }
                 else
                 {
                     TracksProperties.WaveOut?.Stop();
                     TracksProperties.WaveOut.Init(speedControl);
+                }
+            }
+            if (_secWaveFade != null)
+            {
+                var secSpeedControl = new VarispeedSampleProvider(_secWaveFade, 50, new SoundTouchProfile(false, true));
+                secSpeedControl.PlaybackRate = 1.4f;
+                
+                if (TracksProperties.SecWaveOut?.PlaybackState == PlaybackState.Playing)
+                {
+                    TracksProperties.SecWaveOut.Stop();
+                    TracksProperties.SecWaveOut.Init(secSpeedControl);
+                    TracksProperties.SecWaveOut.Play();
                 }
             }
         }
@@ -550,7 +607,7 @@ public partial class Equalizer
             if (TracksProperties.SecWaveOut?.PlaybackState == PlaybackState.Playing)
             {
                 TracksProperties.SecWaveOut?.Stop();
-                TracksProperties.SecWaveOut.Init(_secWaveEqualizer);
+                TracksProperties.SecWaveOut.Init(_secWaveFade);
                 TracksProperties.SecWaveOut?.Play();
             }
             else if (TracksProperties.WaveOut?.PlaybackState == PlaybackState.Playing)

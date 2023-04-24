@@ -214,6 +214,15 @@ public partial class Player : INotifyPropertyChanged
                     if (TracksProperties.SecAudioFileReader != null) TakeSecWave();
                 }
             }
+            var ts = new TimeSpan(0, 0, 0, 0, 20);
+            if (TracksProperties.AudioFileReader != null)
+            {
+                ts += TracksProperties.AudioFileReader.CurrentTime;
+                if (ts > TracksProperties.AudioFileReader.TotalTime)
+                {
+                    TracksProperties.WaveOut?.Stop();
+                }
+            }
         }
         catch (Exception ex)
         {
