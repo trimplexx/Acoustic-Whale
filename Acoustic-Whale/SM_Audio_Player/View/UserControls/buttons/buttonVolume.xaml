@@ -4,10 +4,10 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d"
-             d:DesignHeight="30" d:DesignWidth="185">
+             d:DesignHeight="40" d:DesignWidth="185">
 
-    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
-        <Button Width="30" Height="30" x:Name="btnVolume" Click="btnVolume_Click">
+    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center" Height="40">
+        <Button Width="30" Height="30" x:Name="btnVolume" Click="btnVolume_Click" Margin="0, 0, 0, 0">
             <Button.Template>
                 <ControlTemplate TargetType="Button">
                     <Viewbox>
@@ -50,8 +50,8 @@
                 </ControlTemplate>
             </Button.Template>
         </Button>
-        <Slider Style="{DynamicResource SliderStyle1}" Height="22" Width="140" IsSelectionRangeEnabled="True"
-                Margin="5, 5, 5, 3" Minimum="0" Maximum="100" x:Name="sldVolume" IsMoveToPointEnabled="True"
+        <Slider Style="{DynamicResource SliderStyle1}" Height="30" Width="140" IsSelectionRangeEnabled="True"
+                Margin="5, 6, 5, 3" Minimum="0" Maximum="100" x:Name="sldVolume" IsMoveToPointEnabled="True"
                 ValueChanged="sliderVolume_ValueChanged" SelectionEnd="{Binding ElementName=sldVolume, Path=Value}" />
     </StackPanel>
 
