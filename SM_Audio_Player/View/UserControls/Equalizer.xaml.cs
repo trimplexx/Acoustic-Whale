@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
+using NAudio.Dsp;
 using NAudio.Wave;
 using NAudio.Wave.SampleProviders;
 using SM_Audio_Player.Music;
@@ -110,6 +111,7 @@ public partial class Equalizer
         }
     }
 
+    
 
     private void ChangeEqualizerValues()
     {
@@ -431,7 +433,7 @@ public partial class Equalizer
         }
     }
 
-
+    
     private void Fade_CheckBoxClick(object sender, RoutedEventArgs e)
     {
         try
@@ -556,4 +558,12 @@ public partial class Equalizer
             }
         }
     }
+
+    private void Reset_Btn_Click(object sender, RoutedEventArgs e)
+    {
+
+    }
 }
+
+
+

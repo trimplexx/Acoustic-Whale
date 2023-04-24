@@ -1,7 +1,11 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Globalization;
+using System.Linq;
 using System.Windows;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
+using System.Windows.Threading;
 using NAudio.Wave;
 using SM_Audio_Player.Music;
 using SM_Audio_Player.View.UserControls.buttons;
@@ -18,6 +22,11 @@ public partial class Player : INotifyPropertyChanged
 
     private string? _albumImg;
     private TimeSpan result;
+    public delegate void FirstToSecEventHandler(object sender, EventArgs e);
+    public static event FirstToSecEventHandler? FirstToSec;
+    
+    public delegate void SecToFirstEventHandler(object sender, EventArgs e);
+    public static event SecToFirstEventHandler? SecToFirst;
 
     public Player()
     {
@@ -71,11 +80,11 @@ public partial class Player : INotifyPropertyChanged
     {
         TracksProperties._timer.Stop();
         sldTime.Value = 0;
-        title.Text = "Tytuł";
-        author.Text = "Autor";
-        CD.Text = "Płyta";
-        tbTime.Text = "hh:mm:ss";
-        tbCurrTime.Text = "hh:mm:ss";
+        title.Text = "Title";
+        author.Text = "Author";
+        CD.Text = "Album";
+        tbTime.Text = "0:00";
+        tbCurrTime.Text = "0:00";
         AlbumImg = null;
     }
 
@@ -109,15 +118,17 @@ public partial class Player : INotifyPropertyChanged
                         if (TracksProperties.TracksList != null)
                         {
                             if (TracksProperties.SelectedTrack.Path == TracksProperties.AudioFileReader?.FileName)
+                            {
                                 result = TracksProperties.AudioFileReader.TotalTime - TimeSpan.FromSeconds(7);
-                            else if (TracksProperties.SelectedTrack.Path ==
-                                     TracksProperties.SecAudioFileReader?.FileName)
+                            }
+                            else if(TracksProperties.SelectedTrack.Path == TracksProperties.SecAudioFileReader?.FileName)
+                            {
                                 result = TracksProperties.SecAudioFileReader.TotalTime - TimeSpan.FromSeconds(7);
-                            TracksProperties.SelectedTrack.Time = result.ToString(@"hh\:mm\:ss");
+                            }
+                            TracksProperties.SelectedTrack.Time = result.TotalHours >= 1 ? result.ToString(@"hh\:mm\:ss") : result.ToString(@"mm\:ss");
                         }
                     }
-
-                    TracksProperties.SelectedTrack.Time = result.ToString(@"hh\:mm\:ss");
+                    TracksProperties.SelectedTrack.Time = result.TotalHours >= 1 ? result.ToString(@"hh\:mm\:ss") : result.ToString(@"mm\:ss");
                 }
                 else
                 {
@@ -128,10 +139,8 @@ public partial class Player : INotifyPropertyChanged
                             TracksProperties.AudioFileReader.TotalTime.ToString(@"hh\:mm\:ss");
                     }
                 }
-
                 tbTime.Text = TracksProperties.SelectedTrack.Time;
             }
-
             TracksProperties._timer.Start();
         }
         catch (Exception ex)
@@ -148,7 +157,7 @@ public partial class Player : INotifyPropertyChanged
         {
             var currentPosition = TracksProperties.AudioFileReader.CurrentTime.TotalSeconds;
             var progress = currentPosition / totalSeconds;
-            tbCurrTime.Text = TimeSpan.FromSeconds(currentPosition).ToString(@"hh\:mm\:ss");
+            tbCurrTime.Text = currentPosition >= 3600 ? TimeSpan.FromSeconds(currentPosition).ToString(@"hh\:mm\:ss", CultureInfo.InvariantCulture) : TimeSpan.FromSeconds(currentPosition).ToString(@"mm\:ss", CultureInfo.InvariantCulture);
             sldTime.Value = progress * sldTime.Maximum;
             if (currentPosition > totalSeconds) FirstToSec?.Invoke(this, EventArgs.Empty);
         }
@@ -162,7 +171,7 @@ public partial class Player : INotifyPropertyChanged
             var currentPositionSec = TracksProperties.SecAudioFileReader.CurrentTime.TotalSeconds;
 
             var progressSec = currentPositionSec / totalSeconds;
-            tbCurrTime.Text = TimeSpan.FromSeconds(currentPositionSec).ToString(@"hh\:mm\:ss");
+            tbCurrTime.Text = currentPositionSec >= 3600 ? TimeSpan.FromSeconds(currentPositionSec).ToString(@"hh\:mm\:ss", CultureInfo.InvariantCulture) : TimeSpan.FromSeconds(currentPositionSec).ToString(@"mm\:ss", CultureInfo.InvariantCulture);
             sldTime.Value = progressSec * sldTime.Maximum;
             if (currentPositionSec > totalSeconds) SecToFirst?.Invoke(this, EventArgs.Empty);
         }
