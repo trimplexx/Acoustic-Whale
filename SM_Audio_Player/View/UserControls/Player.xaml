@@ -35,11 +35,11 @@
                     <RowDefinition Height="30*" />
                     <RowDefinition Height="30*" />
                 </Grid.RowDefinitions>
-                <TextBlock x:Name="title" Text="Tytuł" VerticalAlignment="Center" Foreground="#45a7bc"
+                <TextBlock x:Name="title" Text="Title" VerticalAlignment="Center" Foreground="#45a7bc"
                            Margin="8, 10, 5, 0" FontSize="17" />
-                <TextBlock Grid.Row="1" x:Name="author" Text="Autor" VerticalAlignment="Center" Foreground="#45a7bc"
+                <TextBlock Grid.Row="1" x:Name="author" Text="Author" VerticalAlignment="Center" Foreground="#45a7bc"
                            Margin="8, 0, 5, 0" />
-                <TextBlock Grid.Row="2" x:Name="CD" Text="Płyta" VerticalAlignment="Center" Foreground="#45a7bc"
+                <TextBlock Grid.Row="2" x:Name="CD" Text="Album" VerticalAlignment="Center" Foreground="#45a7bc"
                            Margin="8, 0, 5, 0" />
             </Grid>
 
