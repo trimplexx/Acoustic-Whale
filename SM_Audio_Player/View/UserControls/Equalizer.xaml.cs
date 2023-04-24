@@ -539,7 +539,11 @@ public partial class Equalizer
             }
         }
     }
-    
+
+    private void Reset_Btn_Click(object sender, RoutedEventArgs e)
+    {
+
+    }
 }
 
 
