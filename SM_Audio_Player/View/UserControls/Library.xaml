@@ -20,10 +20,10 @@
                 <GridView AllowsColumnReorder="False"
                           ColumnHeaderContainerStyle="{StaticResource GridViewColumnHeaderStyle1}">
                     <GridViewColumn Header="Id" Width="30" DisplayMemberBinding="{Binding Id}" />
-                    <GridViewColumn Header="Tytuł" Width="300" DisplayMemberBinding="{Binding Title}" />
-                    <GridViewColumn Header="Autor" Width="100" DisplayMemberBinding="{Binding Author}" />
-                    <GridViewColumn Header="Płyta" Width="100" DisplayMemberBinding="{Binding Album}" />
-                    <GridViewColumn Header="Czas trwania" Width="100" DisplayMemberBinding="{Binding Time}" />
+                    <GridViewColumn Header="Title" Width="300" DisplayMemberBinding="{Binding Title}" />
+                    <GridViewColumn Header="Author" Width="100" DisplayMemberBinding="{Binding Author}" />
+                    <GridViewColumn Header="Album" Width="100" DisplayMemberBinding="{Binding Album}" />
+                    <GridViewColumn Header="Duration" Width="100" DisplayMemberBinding="{Binding Time}" />
                 </GridView>
             </ListView.View>
             <ListView.ItemContainerStyle>

@@ -94,6 +94,7 @@ public partial class Player : INotifyPropertyChanged
                 title.Text = TracksProperties.SelectedTrack.Title;
                 author.Text = TracksProperties.SelectedTrack.Author;
                 CD.Text = TracksProperties.SelectedTrack.Album;
+                AlbumImg = TracksProperties.SelectedTrack.AlbumCoverPath;
                 
                 if (TracksProperties.IsFadeOn)
                 {
@@ -102,18 +103,24 @@ public partial class Player : INotifyPropertyChanged
                         if (TracksProperties.AudioFileReader != null)
                         {
                             var totalFirstTime = TracksProperties.AudioFileReader.TotalTime.ToString(@"hh\:mm\:ss");
-                            result = TimeSpan.Parse(totalFirstTime) - TimeSpan.FromSeconds(10);
+                            result = TimeSpan.Parse(totalFirstTime) - TimeSpan.FromSeconds(7);
                         }
                     }
                     else
                     {
                         if (TracksProperties.TracksList != null)
                         {
-                            TimeSpan totalTime = TimeSpan.Parse(TracksProperties.TracksList.ElementAt(TracksProperties.SelectedTrack.Id - 1).Time);
-                            result = totalTime - TimeSpan.FromSeconds(10);
+                            if (TracksProperties.SelectedTrack.Path == TracksProperties.AudioFileReader?.FileName)
+                            {
+                                result = TracksProperties.AudioFileReader.TotalTime - TimeSpan.FromSeconds(7);
+                            }
+                            else if(TracksProperties.SelectedTrack.Path == TracksProperties.SecAudioFileReader?.FileName)
+                            {
+                                result = TracksProperties.SecAudioFileReader.TotalTime - TimeSpan.FromSeconds(7);
+                            }
+                            TracksProperties.SelectedTrack.Time = result.ToString(@"hh\:mm\:ss");
                         }
                     }
-                    
                     TracksProperties.SelectedTrack.Time = result.ToString(@"hh\:mm\:ss");
                 }
                 else
@@ -126,10 +133,7 @@ public partial class Player : INotifyPropertyChanged
                     }
                 }
                 tbTime.Text = TracksProperties.SelectedTrack.Time;
-                AlbumImg = TracksProperties.SelectedTrack.AlbumCoverPath;
             }
-
-            sldTime.Value = 0;
             TracksProperties._timer.Start();
         }
         catch (Exception ex)
