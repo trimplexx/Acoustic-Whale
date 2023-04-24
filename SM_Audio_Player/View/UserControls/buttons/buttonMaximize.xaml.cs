@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Windows;
+using System.Windows.Controls;
 
 namespace SM_Audio_Player.View.UserControls.buttons;
 
@@ -41,16 +42,19 @@ public partial class ButtonMaximize : INotifyPropertyChanged
     {
         try
         {
+            Grid world = (Grid)Application.Current.MainWindow.FindName("world");
             if (Application.Current.MainWindow != null &&
                 Application.Current.MainWindow.WindowState == WindowState.Normal)
             {
                 Application.Current.MainWindow.WindowState = WindowState.Maximized;
+                world.Margin = new Thickness(6);
                 MaximizeIcon = Icons.GetMinIcon();
             }
             else if (Application.Current.MainWindow != null &&
                      Application.Current.MainWindow.WindowState == WindowState.Maximized)
             {
                 Application.Current.MainWindow.WindowState = WindowState.Normal;
+                world.Margin = new Thickness(0);
                 MaximizeIcon = Icons.GetMaxIcon();
             }
         }
