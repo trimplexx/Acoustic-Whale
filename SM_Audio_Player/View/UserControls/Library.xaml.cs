@@ -146,14 +146,17 @@ public partial class Library
     {
         try
         {
+            // Pobierz kliknięty nagłówek kolumny
             var headerClicked = e.OriginalSource as GridViewColumnHeader;
             if (headerClicked != null)
             {
+                // Pobierz powiązanie danych z kolumny
                 var binding = headerClicked.Column.DisplayMemberBinding as Binding;
                 if (binding != null)
                 {
                     var bindingPath = binding.Path.Path;
 
+                    // Jeśli ta sama kolumna została kliknięta ponownie, zmień kierunek sortowania
                     if (_prevColumnSorted == bindingPath && bindingPath != "Id")
                     {
                         if (!_sortingtype)
@@ -169,6 +172,7 @@ public partial class Library
 
                         _prevColumnSorted = bindingPath;
                     }
+                    // Jeśli inna kolumna została kliknięta, posortuj listę w kolejności rosnącej i ustaw kierunek sortowania na malejący
                     else if (_prevColumnSorted != bindingPath && bindingPath != "Id")
                     {
                         SortTracksList(true, bindingPath);
@@ -177,6 +181,7 @@ public partial class Library
                     }
                 }
 
+                // Odśwież ListView i ustaw zaznaczenie na aktualnie odtwarzanym utworze
                 RefreshTrackListViewAndId();
                 if (TracksProperties.TracksList != null && TracksProperties.SelectedTrack != null)
                     foreach (var track in TracksProperties.TracksList)
@@ -186,15 +191,18 @@ public partial class Library
         }
         catch (Exception ex)
         {
+            // Obsłuż i wyświetl wszystkie wyjątki, które mogą wystąpić podczas kliknięcia nagłówka kolumny w ListView
             MessageBox.Show($"ListView header click exception: {ex.Message}");
             throw;
         }
     }
 
+    // Metoda odpowiadająca za dodawanie utworów do biblioteki utworów w programie wraz ze wszystkimi metadanymi
     private void Add_Btn_Click(object sender, RoutedEventArgs e)
     {
         try
         {
+            // Utworzenie okna dialogowego umożliwiającego wybór plików muzycznych
             var openFileDialog = new OpenFileDialog();
             openFileDialog.Multiselect = true;
             openFileDialog.Filter =
@@ -202,6 +210,7 @@ public partial class Library
                 "Free Lossless Audio Codec (.flac)|.flac|All files (*.*)|*.*";
             var addedToTheList = false;
 
+            // Wyświetlenie okna dialogowego i dodanie wybranych plików do biblioteki
             if (openFileDialog.ShowDialog() == true)
             {
                 foreach (var filePath in openFileDialog.FileNames)
@@ -209,6 +218,7 @@ public partial class Library
                     var title = Path.GetFileNameWithoutExtension(filePath);
                     var newPath = filePath;
 
+                    // Sprawdzenie, czy plik został już dodany do biblioteki
                     if (TracksProperties.TracksList != null &&
                         TracksProperties.TracksList.Any(track => track.Path == newPath))
                     {
@@ -221,6 +231,7 @@ public partial class Library
                         if (result == MessageBoxResult.No) continue;
                     }
 
+                    // Pobranie metadanych z pliku muzycznego
                     var file = TagLib.File.Create(newPath);
                     var newTitle = file.Tag.Title ?? title;
                     var newAuthor = file.Tag.FirstPerformer ?? "Unknown";
@@ -229,6 +240,7 @@ public partial class Library
                     var albumCover = file.Tag.Pictures.FirstOrDefault();
                     var albumCoverPath = "";
 
+                    // Jeśli plik posiada okładkę, to zostaje ona zapisana w folderze aplikacji
                     if (albumCover != null)
                     {
                         var albumCoverImage = new BitmapImage();
@@ -244,12 +256,14 @@ public partial class Library
                         encoder.Save(fileStream);
                     }
 
+                    // Konwersja czasu trwania utworu na format hh:mm:ss
                     var hours = duration / 3600;
                     var minutes = duration % 3600 / 60;
                     var seconds = duration % 60;
 
                     var formattedTime = string.Format("{0:D2}:{1:D2}:{2:D2}", hours, minutes, seconds);
 
+                    // Dodanie utworu do listy utworów
                     if (TracksProperties.TracksList != null)
                     {
                         var newId = TracksProperties.TracksList.Count + 1;
@@ -259,11 +273,12 @@ public partial class Library
                         addedToTheList = true;
                     }
 
+                    // Aktualizacja pliku JSON zawierającego dane o utworach
                     var newJsonData = JsonConvert.SerializeObject(TracksProperties.TracksList);
                     File.WriteAllText(JsonPath, newJsonData);
                     RefreshTrackListViewAndId();
                 }
-
+                // Wyświetlenie komunikatu o pomyślnym dodaniu utworów do biblioteki
                 if (addedToTheList) MessageBox.Show("Successfully added to the list.", "Add Music");
             }
 
@@ -280,32 +295,40 @@ public partial class Library
         }
     }
 
+    // Metoda odpowiadająca za usuwanie piosenek z biblioteki utworów
     private void Delete_Btn_Click(object sender, RoutedEventArgs e)
     {
         try
         {
+            // Sprawdzenie, czy coś jest zaznaczone na liście utworów
             if (lv.SelectedItems.Count > 0)
             {
+                // Wyświetlenie okna dialogowe z potwierdzeniem usunięcia wybranych utworów
                 var result = MessageBox.Show(
                     $"Are you sure you want to delete {lv.SelectedItems.Count} track(s)?",
                     "Confirm Delete", MessageBoxButton.YesNo, MessageBoxImage.Question);
 
+                // Jeśli użytkownik potwierdzi, usuń wybrane utwory
                 if (result == MessageBoxResult.Yes)
                 {
                     var selectedIndices = new List<int>();
                     foreach (var item in lv.SelectedItems) selectedIndices.Add(lv.Items.IndexOf(item));
 
-                    // Posortuj indeksy w porządku malejącym, aby uniknąć problemów z usuwaniem wielu elementów
+                    // Posortowanie indeksów w porządku malejącym, aby uniknąć problemów z usuwaniem wielu elementów
                     selectedIndices.Sort((a, b) => b.CompareTo(a));
 
-                    // Sortuj indeksy w kolejności malejącej, aby uniknąć problemów z usuwaniem wielu elementów
+                    // Sortowanie indeksów w kolejności malejącej, aby uniknąć problemów z usuwaniem wielu elementów
                     foreach (var index in selectedIndices) TracksProperties.TracksList?.RemoveAt(index);
 
+                    // Zapisanie zaktualizowanej listy utworów do pliku JSON
                     var newJsonData = JsonConvert.SerializeObject(TracksProperties.TracksList);
                     File.WriteAllText(JsonPath, newJsonData);
+
+                    // Resetowanie wybranego utwór i odświeżanie ListView oraz ID utworów
                     TracksProperties.SelectedTrack = null;
                     RefreshTrackListViewAndId();
 
+                    // Zaznaczenie utworu na indeksie kolejnego elementu poniżej ostatnio zaznaczonego elementu
                     if (lv.Items.Count > 0)
                     {
                         var selectedIndex = Math.Max(selectedIndices.Min() - 1, 0);
@@ -313,7 +336,7 @@ public partial class Library
                     }
                 }
             }
-
+            // Zaktualizowanie wybranego utworu, jeśli jakiś utwór jest wciąż zaznaczony po operacji usuwania
             if (lv.SelectedIndex != -1)
             {
                 var elementId = lv.SelectedIndex;
@@ -322,15 +345,18 @@ public partial class Library
         }
         catch (Exception ex)
         {
+            // Obsłużenie i wyświetlenie wszystkich wyjątków, które mogą wystąpić podczas operacji usuwania
             MessageBox.Show($"Delete track exception {ex.Message}");
             throw;
         }
     }
 
+    // Metoda wywoływana po zmianie zaznaczenia na liście utworów
     private void Lv_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
     {
         try
         {
+            // Jeśli jakiś utwór jest zaznaczony, zaktualizuj wybrany utwór w TracksProperties
             if (lv.SelectedIndex != -1)
             {
                 var elementId = lv.SelectedIndex;
@@ -339,20 +365,24 @@ public partial class Library
         }
         catch (Exception ex)
         {
+            // Obsłuż i wyświetl wszystkie wyjątki, które mogą wystąpić podczas zmiany zaznaczenia utworu
             MessageBox.Show($"Track selectedIndex changing exception {ex.Message}");
             throw;
         }
     }
 
+    // Metoda wywoływana po zmianie aktualnie odtwarzanego utworu
     private void OnTrackSwitch(object sender, EventArgs e)
     {
         try
         {
+            // Jeśli wybrany utwór nie jest pusty, ustaw zaznaczenie ListView na indeks odpowiadający ID wybranego utworu
             if (TracksProperties.SelectedTrack != null)
                 lv.SelectedIndex = TracksProperties.SelectedTrack.Id - 1;
         }
         catch (Exception ex)
         {
+            // Obsłuż i wyświetl wszystkie wyjątki, które mogą wystąpić podczas zmiany aktualnie odtwarzanego utworu
             MessageBox.Show($"Track switch Library class exception {ex.Message}");
             throw;
         }
