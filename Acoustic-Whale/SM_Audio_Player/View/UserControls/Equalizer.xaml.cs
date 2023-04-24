@@ -38,7 +38,6 @@ public partial class Equalizer
     public static event FadeInEventHandler? FadeInEvent;
     public static event FadeOffOnEventHandler? FadeOffOn;
 
-
     /*
      * Ustawienie wartości bieżących suwaków, w momencie gdy jest zaznaczona opcja equalizera w odpowiedzi na zmiane
      * piosenki.
