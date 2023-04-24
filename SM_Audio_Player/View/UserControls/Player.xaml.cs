@@ -22,10 +22,7 @@ public partial class Player : INotifyPropertyChanged
 
     private string? _albumImg;
     private TimeSpan result;
-    public delegate void FirstToSecEventHandler(object sender, EventArgs e);
     public static event FirstToSecEventHandler? FirstToSec;
-    
-    public delegate void SecToFirstEventHandler(object sender, EventArgs e);
     public static event SecToFirstEventHandler? SecToFirst;
 
     public Player()
@@ -73,8 +70,6 @@ public partial class Player : INotifyPropertyChanged
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;
-    public static event FirstToSecEventHandler? FirstToSec;
-    public static event SecToFirstEventHandler? SecToFirst;
 
     private void ResetValues(object sender, EventArgs e)
     {
