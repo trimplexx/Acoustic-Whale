@@ -259,6 +259,10 @@ public partial class Library
                         encoder.Frames.Add(BitmapFrame.Create(albumCoverImage));
                         encoder.Save(fileStream);
                     }
+                    else
+                    {
+                        albumCoverPath = "..\\..\\assets\\default.png";
+                    }
 
                     // Konwersja czasu trwania utworu na format hh:mm:ss lub mm:ss, w zależności od długości utworu
                     var formattedTime = "";
