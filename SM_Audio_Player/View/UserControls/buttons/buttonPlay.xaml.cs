@@ -295,6 +295,7 @@ public partial class ButtonPlay : INotifyPropertyChanged
 
                 // Wyczyszczenie listy poprzednich utworów
                 TracksProperties.PrevTrack.Clear();
+                TracksProperties.FirstPlayed = TracksProperties.SelectedTrack;
             }
             else
             {

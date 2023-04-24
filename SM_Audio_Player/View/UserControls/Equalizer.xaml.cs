@@ -27,7 +27,7 @@ public partial class Equalizer
         InitializeComponent();
         ButtonNext.NextButtonClicked += NextPrevEvent;
         ButtonPlay.TrackEnd += NextPrevEvent;
-        ButtonPrevious.PreviousButtonClicked += NextPrevEvent;
+        ButtonPrevious.PreviousButtonClicked += ButtonDoubleClickEvent;
         Library.DoubleClickEvent += ButtonDoubleClickEvent;
         Player.FirstToSec += FirstToSecChange;
         Player.SecToFirst += SecToFirstChange;
@@ -56,6 +56,8 @@ public partial class Equalizer
             TracksProperties.WaveOut?.Stop();
             TracksProperties.WaveOut.Init(firstWaveFade);
             TracksProperties.WaveOut?.Play();
+            
+            
             FadeOffOn?.Invoke(this, EventArgs.Empty);
         }
         catch (Exception ex)
@@ -78,16 +80,21 @@ public partial class Equalizer
 
             firstWaveFade = new FadeInOutSampleProvider(firstWaveEqualizer);
 
-            if (TracksProperties.WaveOut?.PlaybackState == PlaybackState.Playing)
+            if(TracksProperties.SelectedTrack == TracksProperties.TracksList?.ElementAt(0) && !TracksProperties.IsSchuffleOn && TracksProperties.IsLoopOn != 1)
             {
                 TracksProperties.WaveOut?.Stop();
                 TracksProperties.WaveOut.Init(firstWaveFade);
-                TracksProperties.WaveOut?.Play();
+            }
+            else if(TracksProperties.SelectedTrack?.Path == TracksProperties.FirstPlayed?.Path && TracksProperties.IsSchuffleOn && TracksProperties.IsLoopOn != 1)
+            {
+                TracksProperties.WaveOut?.Stop();
+                TracksProperties.WaveOut.Init(firstWaveFade);
             }
             else
             {
                 TracksProperties.WaveOut?.Stop();
                 TracksProperties.WaveOut.Init(firstWaveFade);
+                TracksProperties.WaveOut?.Play();
             }
 
             FadeOffOn?.Invoke(this, EventArgs.Empty);
@@ -431,6 +438,8 @@ public partial class Equalizer
                 
                 if(TracksProperties.SecAudioFileReader != null)
                     TracksProperties.AudioFileReader = TracksProperties.SecAudioFileReader;
+
+                TracksProperties.SecAudioFileReader = null;
                 
                 TracksProperties._timer.Stop();
                 TracksProperties.SecWaveOut?.Stop();
@@ -464,10 +473,6 @@ public partial class Equalizer
     {
 
     }
-    private void OnOffFade(object sender, RoutedEventArgs e)
-    {
-
-    }
     private void OnOffDelay(object sender, RoutedEventArgs e)
     {
 
@@ -482,8 +487,58 @@ public partial class Equalizer
     }
     private void OnOffNightcore(object sender, RoutedEventArgs e)
     {
+        if (Nightcore_Box.IsChecked == true)
+        {
+            if (secWaveEqualizer != null)
+            {
+                
+                var secSpeedControl = new SpeedControlSampleProvider(secWaveEqualizer) { Speed = 1.5f };
+                if (TracksProperties.SecWaveOut.PlaybackState == PlaybackState.Playing)
+                {
+                    TracksProperties.SecWaveOut?.Stop();
+                    TracksProperties.SecWaveOut.Init(secSpeedControl);
+                    TracksProperties.SecWaveOut?.Play();
+                }
+            }
 
+            if (firstWaveFade != null)
+            {
+                var speedControl = new SpeedControlSampleProvider(firstWaveFade) { Speed = 1.5f };
+                if(TracksProperties.WaveOut.PlaybackState == PlaybackState.Playing)
+                {
+                    TracksProperties.WaveOut?.Stop();
+                    TracksProperties.WaveOut.Init(speedControl);
+                    TracksProperties.WaveOut?.Play();
+                }
+                else
+                {
+                    TracksProperties.WaveOut?.Stop();
+                    TracksProperties.WaveOut.Init(speedControl);
+                }
+            }
+        }
+        else
+        {
+            if (TracksProperties.SecWaveOut?.PlaybackState == PlaybackState.Playing)
+            {
+                TracksProperties.SecWaveOut?.Stop();
+                TracksProperties.SecWaveOut.Init(secWaveEqualizer);
+                TracksProperties.SecWaveOut?.Play();
+            }
+            else if(TracksProperties.WaveOut?.PlaybackState == PlaybackState.Playing)
+            {
+                TracksProperties.WaveOut?.Stop();
+                TracksProperties.WaveOut.Init(firstWaveFade);
+                TracksProperties.WaveOut?.Play();
+            }
+            else
+            {
+                TracksProperties.WaveOut?.Stop();
+                TracksProperties.WaveOut.Init(firstWaveFade);
+            }
+        }
     }
+    
 }
 
 
