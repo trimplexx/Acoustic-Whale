@@ -154,7 +154,7 @@ public partial class Equalizer
                 
             TracksProperties.SecWaveOut.Init(secWaveFade);
             
-            secWaveFade?.BeginFadeIn(11000);
+            secWaveFade?.BeginFadeIn(6000);
             TracksProperties.SecWaveOut?.Play();
         }
         catch (Exception ex)
@@ -179,7 +179,7 @@ public partial class Equalizer
 
             TracksProperties.WaveOut.Init(firstWaveFade);
             
-            firstWaveFade?.BeginFadeIn(11000);
+            firstWaveFade?.BeginFadeIn(6000);
             TracksProperties.WaveOut?.Play();
         }
         catch (Exception ex)
@@ -195,7 +195,7 @@ public partial class Equalizer
         {
             if (Fade_box.IsChecked == true)
             {
-                firstWaveFade?.BeginFadeOut(10000);
+                firstWaveFade?.BeginFadeOut(7000);
 
                 if (TracksProperties.IsLoopOn == 2)
                 {
@@ -313,7 +313,7 @@ public partial class Equalizer
         {
         if (Fade_box.IsChecked == true)
         {
-            secWaveFade?.BeginFadeOut(10000);
+            secWaveFade?.BeginFadeOut(7000);
 
             if (TracksProperties.IsLoopOn == 2)
             {
