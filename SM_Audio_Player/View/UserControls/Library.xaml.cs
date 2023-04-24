@@ -152,7 +152,7 @@ public partial class Library
         {
             // Pobierz kliknięty nagłówek kolumny
             var headerClicked = e.OriginalSource as GridViewColumnHeader;
-            if (headerClicked != null)
+            if (headerClicked?.Column != null)
             {
                 // Pobierz powiązanie danych z kolumny
                 var binding = headerClicked.Column.DisplayMemberBinding as Binding;
