@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
@@ -127,6 +128,15 @@ public partial class Equalizer
             _firstWaveEqualizer?.UpdateEqualizer(0, 0, 0, 0, 0, 0, 0, 0);
             _secWaveEqualizer?.UpdateEqualizer(0, 0, 0, 0, 0, 0, 0, 0);
         }
+
+        Slider_Value0.Text = ((int)sld1.Value).ToString();
+        Slider_Value1.Text = ((int)sld2.Value).ToString();
+        Slider_Value2.Text = ((int)sld3.Value).ToString();
+        Slider_Value3.Text = ((int)sld4.Value).ToString();
+        Slider_Value4.Text = ((int)sld5.Value).ToString();
+        Slider_Value5.Text = ((int)sld6.Value).ToString();
+        Slider_Value6.Text = ((int)sld7.Value).ToString();
+        Slider_Value7.Text = ((int)sld8.Value).ToString();
     }
 
     /*
@@ -442,7 +452,6 @@ public partial class Equalizer
             {
                 TracksProperties.IsFadeOn = true;
             }
-
             else
             {
                 TracksProperties.IsFadeOn = false;
@@ -561,7 +570,15 @@ public partial class Equalizer
 
     private void Reset_Btn_Click(object sender, RoutedEventArgs e)
     {
-
+        sld1.Value = 0;
+        sld2.Value = 0;
+        sld3.Value = 0;
+        sld4.Value = 0;
+        sld5.Value = 0;
+        sld6.Value = 0;
+        sld7.Value = 0;
+        sld8.Value = 0;
+        ChangeEqualizerValues();
     }
 }
 
