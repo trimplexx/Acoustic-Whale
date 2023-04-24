@@ -87,6 +87,7 @@
                     PreviewMouseLeftButtonUp="TimeSlider_PreviewMouseLeftButtonUp" Minimum="0"
                     Maximum="{Binding TracksProperties.SelectedTrack.Duration.TotalSeconds}" Value="0"
                     SelectionEnd="{Binding ElementName=sldTime,Path=Value}" />
+            <Border BorderBrush="#45a7bc" BorderThickness="1" Margin="15, 30, 15, 0" CornerRadius="2.5"/>
 
         </StackPanel>
     </Grid>
