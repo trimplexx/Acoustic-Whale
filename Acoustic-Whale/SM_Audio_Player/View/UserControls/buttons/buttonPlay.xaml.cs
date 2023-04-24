@@ -340,7 +340,7 @@ public partial class ButtonPlay : INotifyPropertyChanged
              * czasu trwania utworu, tak więc do zakończonego czasu dodawana zostaje wartość 20 milisekund, 
              * kótra przewyższa TotalTime, więc przełączony zostanie dopierdo w tym momencie na kolejny utwór.
              */
-            var ts = new TimeSpan(0, 0, 0, 0, 20);
+            var ts = new TimeSpan(0, 0, 0, 0, 40);
             if (TracksProperties.AudioFileReader != null && !TracksProperties.IsFadeOn)
             {
                 ts += TracksProperties.AudioFileReader.CurrentTime;

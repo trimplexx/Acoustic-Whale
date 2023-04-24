@@ -37,8 +37,8 @@
         </Grid.ColumnDefinitions>
 
         <TextBlock FontSize="22" HorizontalAlignment="Center">Equalizer</TextBlock>
-        <TextBlock Grid.Column="1" FontSize="22"  HorizontalAlignment="Center">Efekty</TextBlock>
-        <TextBlock Grid.Column="2" FontSize="22" HorizontalAlignment="Center">Opcje</TextBlock>
+        <TextBlock Grid.Column="1" FontSize="22"  HorizontalAlignment="Center">Effects</TextBlock>
+        <TextBlock Grid.Column="2" FontSize="22" HorizontalAlignment="Center">Options</TextBlock>
 
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
@@ -88,11 +88,11 @@
                 </CheckBox.LayoutTransform>
                 Delay
             </CheckBox>
-            <CheckBox Name="Choir_Box" Click="OnOffChoir">
+            <CheckBox Name="Chorus_Box" Click="OnOffChorus">
                 <CheckBox.LayoutTransform>
                     <ScaleTransform ScaleX="1.6" ScaleY="1.6" />
                 </CheckBox.LayoutTransform>
-                Choir
+                Chorus
             </CheckBox>
             <CheckBox Name="Distortion_Box" Click="OnOffDistortion">
                 <CheckBox.LayoutTransform>

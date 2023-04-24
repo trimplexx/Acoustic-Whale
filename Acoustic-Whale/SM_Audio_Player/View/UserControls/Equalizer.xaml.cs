@@ -50,30 +50,35 @@ public partial class Equalizer
                 TracksProperties.WaveOut?.Stop();
                 TracksProperties.WaveOut?.Init(firstspeedControl);
             }
-            if (_secWaveFade != null)
-            {
-                var secSpeedControl = new VarispeedSampleProvider(_secWaveFade, 100, new SoundTouchProfile(false, false));
-                secSpeedControl.PlaybackRate = 1.4f;;
-                TracksProperties.SecWaveOut?.Stop();
-                TracksProperties.SecWaveOut?.Init(secSpeedControl);
-            }
         }
-        else
+    }
+
+    private void InitDelayEffect()
+    {
+        if (Delay_Box.IsChecked == true)
         {
             if (_firstWaveFade != null)
             {
+                var firstDelayEffect = new DelayEffect(_firstWaveFade, 300, 0.7f);
                 TracksProperties.WaveOut?.Stop();
-                TracksProperties.WaveOut.Init(_firstWaveFade);
-
+                TracksProperties.WaveOut?.Init(firstDelayEffect);
             }
-            if (_secWaveFade != null)
-            {
-                TracksProperties.SecWaveOut?.Stop();
-                TracksProperties.SecWaveOut.Init(_secWaveFade);
-            }
-            
         }
     }
+
+    private void InitChorusEffect()
+    {
+        if (Chorus_Box.IsChecked == true)
+        {
+            if (_firstWaveFade != null)
+            {
+                var firstChorusEffect = new ChorusEffect(_firstWaveFade, 200, 0.4f);
+                TracksProperties.WaveOut?.Stop();
+                TracksProperties.WaveOut?.Init(firstChorusEffect);
+            }
+        }
+    }
+    
     /*
      * Ustawienie wartości bieżących suwaków, w momencie gdy jest zaznaczona opcja equalizera w odpowiedzi na zmiane
      * piosenki.
@@ -91,8 +96,12 @@ public partial class Equalizer
                 _firstWaveEqualizer?.UpdateEqualizer(0, 0, 0, 0, 0, 0, 0, 0);
 
             _firstWaveFade = new FadeInOutSampleProvider(_firstWaveEqualizer);
-
+            TracksProperties.WaveOut?.Stop();
+             TracksProperties.WaveOut.Init(_firstWaveFade);
+            
             InitNightcoreEffect();
+            InitDelayEffect();
+            InitChorusEffect();
             TracksProperties.WaveOut?.Play();
 
             FadeOffOn?.Invoke(this, EventArgs.Empty);
@@ -117,20 +126,28 @@ public partial class Equalizer
                 _firstWaveEqualizer?.UpdateEqualizer(0, 0, 0, 0, 0, 0, 0, 0);
 
             _firstWaveFade = new FadeInOutSampleProvider(_firstWaveEqualizer);
-
+            TracksProperties.WaveOut?.Stop();
+            TracksProperties.WaveOut.Init(_firstWaveFade);
+            
             if (TracksProperties.SelectedTrack == TracksProperties.TracksList?.ElementAt(0) &&
                 !TracksProperties.IsSchuffleOn && TracksProperties.IsLoopOn != 1)
             {
                 InitNightcoreEffect();
+                InitDelayEffect();
+                InitChorusEffect();
             }
             else if (TracksProperties.SelectedTrack?.Path == TracksProperties.FirstPlayed?.Path &&
                      TracksProperties.IsSchuffleOn && TracksProperties.IsLoopOn != 1)
             {
                 InitNightcoreEffect();
+                InitDelayEffect();
+                InitChorusEffect();
             }
             else
             {
                 InitNightcoreEffect();
+                InitDelayEffect();
+                InitChorusEffect();
                 TracksProperties.WaveOut?.Play();
             }
 
@@ -211,6 +228,22 @@ public partial class Equalizer
                     TracksProperties.SecWaveOut.Init(secSpeedControl);
                 }
             }
+            else if (Delay_Box.IsChecked == true)
+            {
+                if (_secWaveFade != null)
+                {
+                    var secDelayEffect = new DelayEffect(_secWaveFade, 300, 0.5f);
+                    TracksProperties.SecWaveOut.Init(secDelayEffect);
+                }
+            }
+            else if (Chorus_Box.IsChecked == true)
+            {
+                if (_secWaveFade != null)
+                {
+                    var secChorusEffect = new ChorusEffect(_secWaveFade, 160, 0.4f);
+                    TracksProperties.SecWaveOut.Init(secChorusEffect);
+                }
+            }
             else
             {
                 TracksProperties.SecWaveOut.Init(_secWaveFade);
@@ -245,6 +278,22 @@ public partial class Equalizer
                     var firstSpeedControl = new VarispeedSampleProvider(_firstWaveFade, 100, new SoundTouchProfile(false, false));
                     firstSpeedControl.PlaybackRate = 1.4f;;
                     TracksProperties.WaveOut.Init(firstSpeedControl);
+                }
+            }
+            else if (Delay_Box.IsChecked == true)
+            {
+                if (_firstWaveFade != null)
+                {
+                    var firstDelayEffect = new DelayEffect(_firstWaveFade, 300, 0.5f);
+                    TracksProperties.WaveOut.Init(firstDelayEffect);
+                }
+            }
+            else if (Chorus_Box.IsChecked == true)
+            {
+                if (_firstWaveFade != null)
+                {
+                    var firstChorusEffect = new ChorusEffect(_firstWaveFade, 160, 0.4f);
+                    TracksProperties.WaveOut.Init(firstChorusEffect);
                 }
             }
             else
@@ -535,8 +584,12 @@ public partial class Equalizer
                         _firstWaveEqualizer?.UpdateEqualizer(0, 0, 0, 0, 0, 0, 0, 0);
 
                     _firstWaveFade = new FadeInOutSampleProvider(_firstWaveEqualizer);
-
+                    TracksProperties.WaveOut?.Stop();
+                    TracksProperties.WaveOut.Init(_firstWaveFade);
+                    
                     InitNightcoreEffect();
+                    InitDelayEffect();
+                    InitChorusEffect();
                     
                     if (isPlaying)
                         TracksProperties.WaveOut?.Play();
@@ -551,17 +604,85 @@ public partial class Equalizer
             throw;
         }
     }
-
-    private void OnOffEffects(object sender, RoutedEventArgs e)
-    {
-    }
-
     private void OnOffDelay(object sender, RoutedEventArgs e)
     {
+        Nightcore_Box.IsChecked = false;
+        Chorus_Box.IsChecked = false;
+        Distortion_Box.IsChecked = false;
+        
+        if (Delay_Box.IsChecked == true)
+        {
+            if (_firstWaveFade != null)
+            {
+                var firstDelayEffect = new DelayEffect(_firstWaveFade, 300, 0.5f);
+
+                if (TracksProperties.WaveOut?.PlaybackState == PlaybackState.Playing)
+                {
+                    TracksProperties.WaveOut.Stop();
+                    TracksProperties.WaveOut.Init(firstDelayEffect);
+                    TracksProperties.WaveOut.Play();
+                }
+                else
+                {
+                    TracksProperties.WaveOut?.Stop();
+                    TracksProperties.WaveOut.Init(firstDelayEffect);
+                }
+            }
+            if (_secWaveFade != null)
+            {
+                var secDelayEffect = new DelayEffect(_secWaveFade, 300, 0.5f);
+
+                if (TracksProperties.SecWaveOut?.PlaybackState == PlaybackState.Playing)
+                {
+                    TracksProperties.SecWaveOut.Stop();
+                    TracksProperties.SecWaveOut.Init(secDelayEffect);
+                    TracksProperties.SecWaveOut.Play();
+                }
+            }
+        }
+        else
+            ImplementBaseWave();
+        
     }
 
-    private void OnOffChoir(object sender, RoutedEventArgs e)
+    private void OnOffChorus(object sender, RoutedEventArgs e)
     {
+        Nightcore_Box.IsChecked = false;
+        Delay_Box.IsChecked = false;
+        Distortion_Box.IsChecked = false;
+        
+        if (Chorus_Box.IsChecked == true)
+        {
+            if (_firstWaveFade != null)
+            {
+                var firstChorusEffect = new ChorusEffect(_firstWaveFade, 160, 0.4f);
+
+                if (TracksProperties.WaveOut?.PlaybackState == PlaybackState.Playing)
+                {
+                    TracksProperties.WaveOut.Stop();
+                    TracksProperties.WaveOut.Init(firstChorusEffect);
+                    TracksProperties.WaveOut.Play();
+                }
+                else
+                {
+                    TracksProperties.WaveOut?.Stop();
+                    TracksProperties.WaveOut.Init(firstChorusEffect);
+                }
+            }
+            if (_secWaveFade != null)
+            {
+                var secChorusEffect = new ChorusEffect(_secWaveFade, 160, 0.4f);
+
+                if (TracksProperties.SecWaveOut?.PlaybackState == PlaybackState.Playing)
+                {
+                    TracksProperties.SecWaveOut.Stop();
+                    TracksProperties.SecWaveOut.Init(secChorusEffect);
+                    TracksProperties.SecWaveOut.Play();
+                }
+            }
+        }
+        else
+            ImplementBaseWave();
     }
 
     private void OnOffDistortion(object sender, RoutedEventArgs e)
@@ -570,6 +691,10 @@ public partial class Equalizer
 
     private void OnOffNightcore(object sender, RoutedEventArgs e)
     {
+        Delay_Box.IsChecked = false;
+        Chorus_Box.IsChecked = false;
+        Distortion_Box.IsChecked = false;
+        
         if (Nightcore_Box.IsChecked == true)
         {
             if (_firstWaveFade != null)
@@ -603,24 +728,28 @@ public partial class Equalizer
             }
         }
         else
+            ImplementBaseWave();
+        
+    }
+
+    private void ImplementBaseWave()
+    {
+        if (TracksProperties.SecWaveOut?.PlaybackState == PlaybackState.Playing)
         {
-            if (TracksProperties.SecWaveOut?.PlaybackState == PlaybackState.Playing)
-            {
-                TracksProperties.SecWaveOut?.Stop();
-                TracksProperties.SecWaveOut.Init(_secWaveFade);
-                TracksProperties.SecWaveOut?.Play();
-            }
-            else if (TracksProperties.WaveOut?.PlaybackState == PlaybackState.Playing)
-            {
-                TracksProperties.WaveOut?.Stop();
-                TracksProperties.WaveOut.Init(_firstWaveFade);
-                TracksProperties.WaveOut?.Play();
-            }
-            else
-            {
-                TracksProperties.WaveOut?.Stop();
-                TracksProperties.WaveOut.Init(_firstWaveFade);
-            }
+            TracksProperties.SecWaveOut?.Stop();
+            TracksProperties.SecWaveOut.Init(_secWaveFade);
+            TracksProperties.SecWaveOut?.Play();
+        }
+        else if (TracksProperties.WaveOut?.PlaybackState == PlaybackState.Playing)
+        {
+            TracksProperties.WaveOut?.Stop();
+            TracksProperties.WaveOut.Init(_firstWaveFade);
+            TracksProperties.WaveOut?.Play();
+        }
+        else
+        {
+            TracksProperties.WaveOut?.Stop();
+            TracksProperties.WaveOut.Init(_firstWaveFade);
         }
     }
 
