@@ -293,9 +293,12 @@ public partial class Equalizer
             /*
              * Nałożenie efektu FadeIn pogłaśniającego stopniowo piosenkę.
              */
-            _secWaveFade = new FadeInOutSampleProvider(_secWaveEqualizer);
-            _secWaveFade?.BeginFadeIn(6000);
-            
+            if (_secWaveEqualizer != null)
+            {
+                _secWaveFade = new FadeInOutSampleProvider(_secWaveEqualizer);
+                _secWaveFade?.BeginFadeIn(6000);
+            }
+
             TracksProperties.SecWaveOut?.Stop();
 
             if (TracksProperties.SecWaveOut == null)
@@ -370,8 +373,12 @@ public partial class Equalizer
             /*
              * Nałożenie efektu fade in pogłaśniającego stopniowo piosenkę.
              */
-            _firstWaveFade = new FadeInOutSampleProvider(_firstWaveEqualizer, true);
-            _firstWaveFade?.BeginFadeIn(6000);
+            if (_firstWaveEqualizer != null)
+            {
+                _firstWaveFade = new FadeInOutSampleProvider(_firstWaveEqualizer, true);
+                _firstWaveFade?.BeginFadeIn(6000);
+            }
+                
             
             TracksProperties.WaveOut?.Stop();
             
@@ -1068,10 +1075,14 @@ public partial class Equalizer
                 sld6.Value, sld7.Value, sld8.Value);
         else
             _firstWaveEqualizer?.UpdateEqualizer(0, 0, 0, 0, 0, 0, 0,0 );
-        _firstWaveFade = new FadeInOutSampleProvider(_firstWaveEqualizer);
+        
+        if(_firstWaveEqualizer != null)
+            _firstWaveFade = new FadeInOutSampleProvider(_firstWaveEqualizer);
         TracksProperties.SecWaveOut?.Stop();
         TracksProperties.WaveOut?.Stop();
-        TracksProperties.WaveOut.Init(_firstWaveFade);
+        
+        if(_firstWaveFade != null)
+            TracksProperties.WaveOut.Init(_firstWaveFade);
         
         InitNightcoreEffect();
         InitDelayEffect();
@@ -1091,20 +1102,29 @@ public partial class Equalizer
     {
         if (TracksProperties.SecWaveOut?.PlaybackState == PlaybackState.Playing)
         {
-            TracksProperties.SecWaveOut.Stop();
-            TracksProperties.SecWaveOut.Init(_secWaveFade);
-            TracksProperties.SecWaveOut.Play();
+            if (_secWaveFade != null)
+            {
+                TracksProperties.SecWaveOut.Stop();
+                TracksProperties.SecWaveOut.Init(_secWaveFade);
+                TracksProperties.SecWaveOut.Play();      
+            }
         }
         else if (TracksProperties.WaveOut?.PlaybackState == PlaybackState.Playing)
         {
-            TracksProperties.WaveOut.Stop();
-            TracksProperties.WaveOut.Init(_firstWaveFade);
-            TracksProperties.WaveOut.Play();
+            if (_firstWaveFade != null)
+            {
+                TracksProperties.WaveOut.Stop();
+                TracksProperties.WaveOut.Init(_firstWaveFade);
+                TracksProperties.WaveOut.Play();
+            }
         }
         else
         {
-            TracksProperties.WaveOut?.Stop();
-            TracksProperties.WaveOut.Init(_firstWaveFade);
+            if (_firstWaveFade != null)
+            {
+                TracksProperties.WaveOut?.Stop();
+                TracksProperties.WaveOut.Init(_firstWaveFade);
+            }
         }
     }
     
