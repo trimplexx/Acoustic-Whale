@@ -1054,7 +1054,7 @@ public partial class Equalizer
                     TracksProperties.SecWaveOut.Init(secStereoToMono);
                     TracksProperties.SecWaveOut.Play();
                 }
-            }
+            } 
         }
         else
             ImplementBaseWave();
