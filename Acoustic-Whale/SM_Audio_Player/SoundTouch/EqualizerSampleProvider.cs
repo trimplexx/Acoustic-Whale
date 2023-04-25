@@ -2,7 +2,7 @@
 using NAudio.Dsp;
 using NAudio.Wave;
 
-namespace SM_Audio_Player.Music;
+namespace SM_Audio_Player.SoundTouch;
 
 public class EqualizerSampleProvider : ISampleProvider
 {

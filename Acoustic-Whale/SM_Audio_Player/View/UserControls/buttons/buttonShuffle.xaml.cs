@@ -75,7 +75,7 @@ public partial class ButtonShuffle : INotifyPropertyChanged
                     TracksProperties.AvailableNumbers = Enumerable.Range(0, TracksProperties.TracksList.Count).ToList();
                     var random = new Random();
                     TracksProperties.AvailableNumbers =
-                        TracksProperties.AvailableNumbers.OrderBy(x => random.Next()).ToList();
+                        TracksProperties.AvailableNumbers.OrderBy(_ => random.Next()).ToList();
                 }
 
                 TracksProperties.PrevTrack.Clear();
@@ -97,7 +97,7 @@ public partial class ButtonShuffle : INotifyPropertyChanged
                             Enumerable.Range(0, TracksProperties.TracksList.Count).ToList();
                         var random = new Random();
                         TracksProperties.AvailableNumbers =
-                            TracksProperties.AvailableNumbers.OrderBy(x => random.Next()).ToList();
+                            TracksProperties.AvailableNumbers.OrderBy(_ => random.Next()).ToList();
                     }
 
                     TracksProperties.AvailableNumbers?.Remove(TracksProperties.SelectedTrack.Id - 1);

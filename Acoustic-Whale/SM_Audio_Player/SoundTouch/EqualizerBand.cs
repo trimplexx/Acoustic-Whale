@@ -1,4 +1,4 @@
-﻿namespace SM_Audio_Player.Music;
+﻿namespace SM_Audio_Player.SoundTouch;
 
 public class EqualizerBand
 {

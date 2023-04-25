@@ -1,4 +1,4 @@
-namespace VarispeedDemo.SoundTouch
+namespace SM_Audio_Player.SoundTouch
 {
     internal class SoundTouchProfile
     {

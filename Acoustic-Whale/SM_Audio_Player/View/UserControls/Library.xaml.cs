@@ -242,7 +242,7 @@ public partial class Library
                     var newAlbum = file.Tag.Album ?? "Unknown";
                     var duration = (int)file.Properties.Duration.TotalSeconds;
                     var albumCover = file.Tag.Pictures.FirstOrDefault();
-                    var albumCoverPath = "";
+                    string albumCoverPath;
 
                     // Jeśli plik posiada okładkę, to zostaje ona zapisana w folderze aplikacji
                     if (albumCover != null)
@@ -265,7 +265,7 @@ public partial class Library
                     }
 
                     // Konwersja czasu trwania utworu na format hh:mm:ss lub mm:ss, w zależności od długości utworu
-                    var formattedTime = "";
+                    string formattedTime;
                     if (duration >= 3600)
                     {
                         var hours = duration / 3600;
