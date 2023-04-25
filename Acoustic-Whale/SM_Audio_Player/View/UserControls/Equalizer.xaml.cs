@@ -120,14 +120,14 @@ public partial class Equalizer
              * zostanie odtworzona. 
              */
             if (TracksProperties.SelectedTrack == TracksProperties.TracksList?.ElementAt(0) &&
-                !TracksProperties.IsSchuffleOn && TracksProperties.IsLoopOn != 1)
+                !TracksProperties.IsSchuffleOn && TracksProperties.IsLoopOn == 0)
             {
                 InitNightcoreEffect();
                 InitDelayEffect();
                 InitChorusEffect();
             }
             else if (TracksProperties.SelectedTrack?.Path == TracksProperties.FirstPlayed?.Path &&
-                     TracksProperties.IsSchuffleOn && TracksProperties.IsLoopOn != 1)
+                     TracksProperties.IsSchuffleOn && TracksProperties.IsLoopOn == 0)
             {
                 InitNightcoreEffect();
                 InitDelayEffect();
