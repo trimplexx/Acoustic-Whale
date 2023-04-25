@@ -17,6 +17,7 @@
         <WindowChrome GlassFrameThickness="0" CornerRadius="0" CaptionHeight="0"/>
     </WindowChrome.WindowChrome>
 
+    <!-- Główne okno -->
     <Grid x:Name="world" Background="#333333">
         <Grid.RowDefinitions>
             <RowDefinition Height="30" />
