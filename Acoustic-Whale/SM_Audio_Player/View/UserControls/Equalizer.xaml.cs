@@ -28,6 +28,7 @@ public partial class Equalizer
     private FadeInOutSampleProvider? _secWaveFade;
     private StereoToMonoSampleProvider? _firstStereoToMono;
     private StereoToMonoSampleProvider? _secStereoToMono;
+    private bool _equalizerOn = true;
 
     public Equalizer()
     {
@@ -71,7 +72,7 @@ public partial class Equalizer
             if (StereoToMono_Box.IsChecked == true && _firstStereoToMono != null)
                 _firstWaveEqualizer = new EqualizerSampleProvider(_firstStereoToMono);
             
-            if (Equalizer_box.IsChecked == true)
+            if (_equalizerOn)
                 _firstWaveEqualizer?.UpdateEqualizer(sld1.Value, sld2.Value, sld3.Value, sld4.Value, sld5.Value,
                     sld6.Value, sld7.Value, sld8.Value);
             else
@@ -116,7 +117,7 @@ public partial class Equalizer
             if (StereoToMono_Box.IsChecked == true && _firstStereoToMono != null)
                 _firstWaveEqualizer = new EqualizerSampleProvider(_firstStereoToMono);
             
-            if (Equalizer_box.IsChecked == true)
+            if (_equalizerOn)
                 _firstWaveEqualizer?.UpdateEqualizer(sld1.Value, sld2.Value, sld3.Value, sld4.Value, sld5.Value,
                     sld6.Value, sld7.Value, sld8.Value);
             else
@@ -175,7 +176,7 @@ public partial class Equalizer
     {
         try
         {
-            if (Equalizer_box.IsChecked == true)
+            if (_equalizerOn)
             {
                 _firstWaveEqualizer?.UpdateEqualizer(sld1.Value, sld2.Value, sld3.Value, sld4.Value, sld5.Value, sld6.Value,
                     sld7.Value, sld8.Value);
@@ -247,6 +248,16 @@ public partial class Equalizer
      */
     private void OnOffEqualizer(object sender, RoutedEventArgs e)
     {
+        if (_equalizerOn)
+        {
+            _equalizerOn = false;
+            Equalizer_Btn.Content = "Equalizer Off";
+        }
+        else
+        {
+            _equalizerOn = true;
+            Equalizer_Btn.Content = "Equalizer On";
+        }
         ChangeEqualizerValues();
     }
     
@@ -737,7 +748,7 @@ public partial class Equalizer
                     if (StereoToMono_Box.IsChecked == true && _firstStereoToMono != null)
                         _firstWaveEqualizer = new EqualizerSampleProvider(_firstStereoToMono);
                     
-                    if (Equalizer_box.IsChecked == true)
+                    if (_equalizerOn)
                         _firstWaveEqualizer?.UpdateEqualizer(sld1.Value, sld2.Value, sld3.Value, sld4.Value, sld5.Value,
                             sld6.Value, sld7.Value, sld8.Value);
                     else
@@ -1052,7 +1063,7 @@ public partial class Equalizer
         if (StereoToMono_Box.IsChecked == true && _firstStereoToMono != null)
             _firstWaveEqualizer = new EqualizerSampleProvider(_firstStereoToMono);
 
-        if (Equalizer_box.IsChecked == true)
+        if (_equalizerOn)
             _firstWaveEqualizer?.UpdateEqualizer(sld1.Value, sld2.Value, sld3.Value, sld4.Value, sld5.Value,
                 sld6.Value, sld7.Value, sld8.Value);
         else
