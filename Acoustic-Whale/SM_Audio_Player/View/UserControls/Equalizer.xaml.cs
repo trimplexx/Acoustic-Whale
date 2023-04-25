@@ -160,8 +160,7 @@ public partial class Equalizer
         }
     }
 
-    
-
+    // metoda odpowiedzialna za zmienianie wartosci przez equalizera na pasmach czestotliwosci
     private void ChangeEqualizerValues()
     {
         if (Equalizer_box.IsChecked == true)
@@ -547,7 +546,6 @@ public partial class Equalizer
         }
     }
 
-    
     private void Fade_CheckBoxClick(object sender, RoutedEventArgs e)
     {
         try
@@ -604,6 +602,8 @@ public partial class Equalizer
             throw;
         }
     }
+
+    // Włączenie bądź wyłączenie opóźnienia za pomocą check boxa. 
     private void OnOffDelay(object sender, RoutedEventArgs e)
     {
         Nightcore_Box.IsChecked = false;
@@ -645,6 +645,7 @@ public partial class Equalizer
         
     }
 
+    // Włączenie bądź wyłączenie chóru za pomocą check boxa. 
     private void OnOffChorus(object sender, RoutedEventArgs e)
     {
         Nightcore_Box.IsChecked = false;
@@ -685,10 +686,13 @@ public partial class Equalizer
             ImplementBaseWave();
     }
 
+    // Włączenie bądź wyłączenie zniekształcenia za pomocą check boxa.
     private void OnOffDistortion(object sender, RoutedEventArgs e)
     {
+
     }
 
+    // Włączenie bądź wyłączenie nightcore za pomocą check boxa. 
     private void OnOffNightcore(object sender, RoutedEventArgs e)
     {
         Delay_Box.IsChecked = false;
@@ -729,9 +733,9 @@ public partial class Equalizer
         }
         else
             ImplementBaseWave();
-        
     }
 
+    // metoda implementujaca dany efekt na aktualnie grajacy utwór
     private void ImplementBaseWave()
     {
         if (TracksProperties.SecWaveOut?.PlaybackState == PlaybackState.Playing)
@@ -753,6 +757,7 @@ public partial class Equalizer
         }
     }
 
+    //restowanie sliderow equalizera
     private void Reset_Btn_Click(object sender, RoutedEventArgs e)
     {
         sld1.Value = 0;
@@ -766,6 +771,3 @@ public partial class Equalizer
         ChangeEqualizerValues();
     }
 }
-
-
-

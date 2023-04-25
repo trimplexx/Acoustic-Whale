@@ -12,15 +12,16 @@ public static class TracksProperties
     // Lista z utworami
     public static List<Tracks>? TracksList = new();
 
+    // Lista poprzednich utworów do przycisku schuffle
+    public static List<Tracks?> PrevTrack = new();
+
+    // Timer utworu
     public static DispatcherTimer _timer = new();
 
     // Flagi przycisków Loop oraz Schuffle
     public static int IsLoopOn = 0;
     public static bool IsSchuffleOn = false;
     public static bool IsFadeOn = false;
-
-    // Lista poprzednich utworów do przycisku schuffle
-    public static List<Tracks?> PrevTrack = new();
 
     // Wybrany aktualnie utwor z listy
     public static Tracks? SelectedTrack { get; set; }

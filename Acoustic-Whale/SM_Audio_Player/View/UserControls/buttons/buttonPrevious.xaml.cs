@@ -122,8 +122,13 @@ public partial class ButtonPrevious
                         }
                         else
                         {
+                            if (TracksProperties.SelectedTrack != null && TracksProperties.SelectedTrack.Id == 1 && TracksProperties.IsLoopOn == 1)
+                            {
+                                TracksProperties.SelectedTrack = TracksProperties.TracksList[TracksProperties.TracksList.Count-1];
+                                _btnPlay.PlayNewTrack();
+                            }
                             // Sprawdzanie czy to pierwszy utwór na liście, jeżeli tak odtworzony zostanie od nowa.
-                            if (TracksProperties.SelectedTrack != null && TracksProperties.SelectedTrack.Id == 1)
+                            else if (TracksProperties.SelectedTrack != null && TracksProperties.SelectedTrack.Id == 1 && TracksProperties.IsLoopOn == 0)
                             {
                                 _btnPlay.PlayNewTrack();
                             }
@@ -131,8 +136,17 @@ public partial class ButtonPrevious
                             {
                                 // W innym wypadku zostanie odtworzony poprzedni utwór.
                                 if (TracksProperties.SelectedTrack != null)
-                                    TracksProperties.SelectedTrack =
+                                {
+                                    if (TracksProperties.SelectedTrack.Id != 1)
+                                    {
+                                        TracksProperties.SelectedTrack =
                                         TracksProperties.TracksList.ElementAt(TracksProperties.SelectedTrack.Id - 2);
+                                    }
+                                    else
+                                    {
+                                        TracksProperties.SelectedTrack = TracksProperties.TracksList[TracksProperties.TracksList.Count - 1];
+                                    }
+                                }
                                 _btnPlay.PlayNewTrack();
                             }
                         }

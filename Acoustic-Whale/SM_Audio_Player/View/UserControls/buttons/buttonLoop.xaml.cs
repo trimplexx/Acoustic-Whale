@@ -10,6 +10,7 @@ public partial class ButtonLoop : INotifyPropertyChanged
     private string? _loopColor;
     private string? _loopIcon;
     private string? _loopMouseColor;
+    public event PropertyChangedEventHandler? PropertyChanged;
 
     public ButtonLoop()
     {
@@ -57,8 +58,6 @@ public partial class ButtonLoop : INotifyPropertyChanged
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("LoopMouseColor"));
         }
     }
-
-    public event PropertyChangedEventHandler? PropertyChanged;
 
     /*Powtarzaj aktualnie włączony utwór*/
     private void btnLoop_Click(object sender, RoutedEventArgs e)

@@ -30,7 +30,6 @@ public partial class ButtonPlay : INotifyPropertyChanged
     */
     public delegate void TrackEndEventHandler(object sender, EventArgs e);
 
-
     // Obiekt do losowania liczb do Schufflowania utworów 
     private readonly Random _random = new();
 
