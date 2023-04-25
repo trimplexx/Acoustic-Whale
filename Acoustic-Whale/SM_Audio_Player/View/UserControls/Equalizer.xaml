@@ -100,25 +100,25 @@
         <StackPanel Grid.Row="1" Grid.Column="1" Margin="10">
             <CheckBox Template="{DynamicResource CheckBoxTemplate1}" Name="Delay_Box" Click="OnOffDelay">
                 <CheckBox.LayoutTransform>
-                    <ScaleTransform ScaleX="1.6" ScaleY="1.6" />
+                    <ScaleTransform ScaleX="1.5" ScaleY="1.5" />
                 </CheckBox.LayoutTransform>
                 Delay
             </CheckBox>
             <CheckBox Template="{DynamicResource CheckBoxTemplate1}" Name="Chorus_Box" Click="OnOffChorus">
                 <CheckBox.LayoutTransform>
-                    <ScaleTransform ScaleX="1.6" ScaleY="1.6" />
+                    <ScaleTransform ScaleX="1.5" ScaleY="1.5" />
                 </CheckBox.LayoutTransform>
                 Chorus
             </CheckBox>
             <CheckBox Template="{DynamicResource CheckBoxTemplate1}" Name="Distortion_Box" Click="OnOffDistortion">
                 <CheckBox.LayoutTransform>
-                    <ScaleTransform ScaleX="1.6" ScaleY="1.6" />
+                    <ScaleTransform ScaleX="1.5" ScaleY="1.5" />
                 </CheckBox.LayoutTransform>
                 Distortion
             </CheckBox>
             <CheckBox Template="{DynamicResource CheckBoxTemplate1}" Name="Nightcore_Box" Click="OnOffNightcore">
                 <CheckBox.LayoutTransform>
-                    <ScaleTransform ScaleX="1.6" ScaleY="1.6" />
+                    <ScaleTransform ScaleX="1.5" ScaleY="1.5" />
                 </CheckBox.LayoutTransform>
                 Nightcore
             </CheckBox>
@@ -128,26 +128,30 @@
         <StackPanel Grid.Row="1" Grid.Column="2" Margin="10">
             <CheckBox Template="{DynamicResource CheckBoxTemplate1}" Name="Fade_box" Click="Fade_CheckBoxClick" >
                 <CheckBox.LayoutTransform>
-                    <ScaleTransform ScaleX="1.6" ScaleY="1.6" />
+                    <ScaleTransform ScaleX="1.5" ScaleY="1.5" />
                 </CheckBox.LayoutTransform>
                 Fade In/Out
             </CheckBox>
             <CheckBox Template="{DynamicResource CheckBoxTemplate1}" Name="StereoToMono_Box" Click="OnOffStereoToMono">
                 <CheckBox.LayoutTransform>
-                    <ScaleTransform ScaleX="1.6" ScaleY="1.6" />
+                    <ScaleTransform ScaleX="1.5" ScaleY="1.5" />
                 </CheckBox.LayoutTransform>
                 Stereo To Mono
             </CheckBox>
         </StackPanel>
 
         <StackPanel Grid.Row="2" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
+            
+            <!--do wywalenia -->
             <CheckBox Template="{DynamicResource CheckBoxTemplate1}" x:Name="Equalizer_box" Click="OnOffEqualizer" IsChecked="True">
                 <CheckBox.LayoutTransform>
-                    <ScaleTransform ScaleX="1.6" ScaleY="1.6" />
+                    <ScaleTransform ScaleX="1.5" ScaleY="1.5" />
                 </CheckBox.LayoutTransform>
                 Equalizer
             </CheckBox>
-            <Button Style="{DynamicResource ButtonStyle1}" Name="Reset_Btn" Click="Reset_Btn_Click" Content="Reset" FontSize="21" Padding="5" Background="Transparent" Foreground="#45a7bc" BorderThickness="0" Margin="5,0,5,0" VerticalContentAlignment="Center"/>
+            <!-- zmieniane na przycisk (desi chciał) -->
+            <Button Style="{DynamicResource ButtonStyle1}" Name="Equalizer_Btn" Click="OnOffEqualizer" Content="Equalizer On/Off" FontSize="16" Padding="5" Background="Transparent" Foreground="#45a7bc" BorderThickness="0" Margin="5,0,5,5" VerticalContentAlignment="Center"/>
+            <Button Style="{DynamicResource ButtonStyle1}" Name="Reset_Btn" Click="Reset_Btn_Click" Content="Reset" FontSize="16" Padding="5" Background="Transparent" Foreground="#45a7bc" BorderThickness="0" Margin="5,0,5,5" VerticalContentAlignment="Center"/>
         </StackPanel>
 
     </Grid>
