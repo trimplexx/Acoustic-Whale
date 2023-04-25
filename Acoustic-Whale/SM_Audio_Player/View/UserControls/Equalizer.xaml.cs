@@ -26,6 +26,8 @@ public partial class Equalizer
     private FadeInOutSampleProvider? _firstWaveFade;
     private EqualizerSampleProvider? _secWaveEqualizer;
     private FadeInOutSampleProvider? _secWaveFade;
+    private StereoToMonoSampleProvider? _firstStereoToMono;
+    private StereoToMonoSampleProvider? _secStereoToMono;
 
     public Equalizer()
     {
@@ -62,8 +64,13 @@ public partial class Equalizer
              * Fade nie należy umieścić w innym z dostępnych efektów. Jeżeli nie to bazowym efektem zostaje Equalizer
              * nałożony na efekt Fade in/out.
              */
+            InitStereoToMonoEffect();
             if (TracksProperties.AudioFileReader != null)
                 _firstWaveEqualizer = new EqualizerSampleProvider(TracksProperties.AudioFileReader);
+            
+            if (StereoToMono_Box.IsChecked == true && _firstStereoToMono != null)
+                _firstWaveEqualizer = new EqualizerSampleProvider(_firstStereoToMono);
+            
             if (Equalizer_box.IsChecked == true)
                 _firstWaveEqualizer?.UpdateEqualizer(sld1.Value, sld2.Value, sld3.Value, sld4.Value, sld5.Value,
                     sld6.Value, sld7.Value, sld8.Value);
@@ -77,7 +84,6 @@ public partial class Equalizer
             InitNightcoreEffect();
             InitDelayEffect();
             InitChorusEffect();
-            InitStereoToMonoEffect();
             TracksProperties.WaveOut?.Play();
 
             /*
@@ -103,8 +109,13 @@ public partial class Equalizer
             /*
              * Inicjalizacja bazowych efektów podobnie jak w przypadku powyżej. 
              */
+            InitStereoToMonoEffect();
             if (TracksProperties.AudioFileReader != null)
                 _firstWaveEqualizer = new EqualizerSampleProvider(TracksProperties.AudioFileReader);
+            
+            if (StereoToMono_Box.IsChecked == true && _firstStereoToMono != null)
+                _firstWaveEqualizer = new EqualizerSampleProvider(_firstStereoToMono);
+            
             if (Equalizer_box.IsChecked == true)
                 _firstWaveEqualizer?.UpdateEqualizer(sld1.Value, sld2.Value, sld3.Value, sld4.Value, sld5.Value,
                     sld6.Value, sld7.Value, sld8.Value);
@@ -126,7 +137,6 @@ public partial class Equalizer
                 InitNightcoreEffect();
                 InitDelayEffect();
                 InitChorusEffect();
-                InitStereoToMonoEffect();
             }
             else if (TracksProperties.SelectedTrack?.Path == TracksProperties.FirstPlayed?.Path &&
                      TracksProperties.IsSchuffleOn && TracksProperties.IsLoopOn == 0)
@@ -134,14 +144,12 @@ public partial class Equalizer
                 InitNightcoreEffect();
                 InitDelayEffect();
                 InitChorusEffect();
-                InitStereoToMonoEffect();
             }
             else
             {
                 InitNightcoreEffect();
                 InitDelayEffect();
                 InitChorusEffect();
-                InitStereoToMonoEffect();
                 TracksProperties.WaveOut?.Play();
             }
 
@@ -254,8 +262,21 @@ public partial class Equalizer
     {
         try
         {
-            if (TracksProperties.SecAudioFileReader != null)
-                _secWaveEqualizer = new EqualizerSampleProvider(TracksProperties.SecAudioFileReader);
+            if (StereoToMono_Box.IsChecked == true)
+            {
+                if (TracksProperties.SecAudioFileReader != null)
+                {
+                    _secStereoToMono = new StereoToMonoSampleProvider(TracksProperties.SecAudioFileReader);
+                }
+            }
+            
+            if (TracksProperties.AudioFileReader != null)
+                if (TracksProperties.SecAudioFileReader != null)
+                    _secWaveEqualizer = new EqualizerSampleProvider(TracksProperties.SecAudioFileReader);
+
+            if (StereoToMono_Box.IsChecked == true && _secStereoToMono != null)
+                _secWaveEqualizer = new EqualizerSampleProvider(_secStereoToMono);
+            
             ChangeEqualizerValues();
 
             /*
@@ -297,14 +318,6 @@ public partial class Equalizer
                     TracksProperties.SecWaveOut.Init(secChorusEffect);
                 }
             }
-            else if (StereoToMono_Box.IsChecked == true)
-            {
-                if (_secWaveFade != null)
-                {
-                    var stereoToMono = new StereoToMonoSampleProvider(_secWaveFade);
-                    TracksProperties.SecWaveOut.Init(stereoToMono);
-                }
-            }
             else
             {
                 TracksProperties.SecWaveOut.Init(_secWaveFade);
@@ -327,8 +340,20 @@ public partial class Equalizer
     {
         try
         {
+            if (StereoToMono_Box.IsChecked == true)
+            {
+                if (TracksProperties.AudioFileReader != null)
+                {
+                    _firstStereoToMono = new StereoToMonoSampleProvider(TracksProperties.AudioFileReader);
+                }
+            }
+            
             if (TracksProperties.AudioFileReader != null)
                 _firstWaveEqualizer = new EqualizerSampleProvider(TracksProperties.AudioFileReader);
+            
+            if (StereoToMono_Box.IsChecked == true && _firstStereoToMono != null)
+                _firstWaveEqualizer = new EqualizerSampleProvider(_firstStereoToMono);
+            
             ChangeEqualizerValues();
 
             /*
@@ -365,14 +390,6 @@ public partial class Equalizer
                 {
                     var chorusEffect = new ChorusEffect(_firstWaveFade, 160, 0.4f);
                     TracksProperties.WaveOut.Init(chorusEffect);
-                }
-            }
-            else if (StereoToMono_Box.IsChecked == true)
-            {
-                if (_firstWaveFade != null)
-                {
-                    var stereoToMono = new StereoToMonoSampleProvider(_firstWaveFade);
-                    TracksProperties.WaveOut.Init(stereoToMono);
                 }
             }
             else
@@ -713,7 +730,13 @@ public partial class Equalizer
 
                 if (TracksProperties.AudioFileReader != null)
                 {
+                    InitStereoToMonoEffect();
+                    
                     _firstWaveEqualizer = new EqualizerSampleProvider(TracksProperties.AudioFileReader);
+                    
+                    if (StereoToMono_Box.IsChecked == true && _firstStereoToMono != null)
+                        _firstWaveEqualizer = new EqualizerSampleProvider(_firstStereoToMono);
+                    
                     if (Equalizer_box.IsChecked == true)
                         _firstWaveEqualizer?.UpdateEqualizer(sld1.Value, sld2.Value, sld3.Value, sld4.Value, sld5.Value,
                             sld6.Value, sld7.Value, sld8.Value);
@@ -730,8 +753,7 @@ public partial class Equalizer
                     InitNightcoreEffect();
                     InitDelayEffect();
                     InitChorusEffect();
-                    InitStereoToMonoEffect();
-                    
+
                     /*
                      * Flaga isPlaying wykorzystana wcześniej do sprawdzania czy muzyka w momencie wyłączenia opcji była odtwarzana.
                      * Jeżeli tak to chcemy odtworzyć z powrotem graną muzykę.
@@ -808,11 +830,11 @@ public partial class Equalizer
     {
         if (StereoToMono_Box.IsChecked == true)
         {
-            if (_firstWaveFade != null)
+            if (TracksProperties.AudioFileReader != null)
             {
-                var stereoToMono = new StereoToMonoSampleProvider(_firstWaveFade);
+               _firstStereoToMono = new StereoToMonoSampleProvider(TracksProperties.AudioFileReader);
                 TracksProperties.WaveOut?.Stop();
-                TracksProperties.WaveOut?.Init(stereoToMono);
+                TracksProperties.WaveOut?.Init(_firstStereoToMono);
             }
         }
     }
@@ -829,8 +851,7 @@ public partial class Equalizer
         Nightcore_Box.IsChecked = false;
         Chorus_Box.IsChecked = false;
         Distortion_Box.IsChecked = false;
-        StereoToMono_Box.IsChecked = false;
-        
+
         if (Delay_Box.IsChecked == true)
         {
             /*
@@ -887,8 +908,7 @@ public partial class Equalizer
         Nightcore_Box.IsChecked = false;
         Delay_Box.IsChecked = false;
         Distortion_Box.IsChecked = false;
-        StereoToMono_Box.IsChecked = false;
-        
+
         if (Chorus_Box.IsChecked == true)
         {
             /*
@@ -950,8 +970,7 @@ public partial class Equalizer
         Delay_Box.IsChecked = false;
         Chorus_Box.IsChecked = false;
         Distortion_Box.IsChecked = false;
-        StereoToMono_Box.IsChecked = false;
-        
+
         if (Nightcore_Box.IsChecked == true)
         {
             /*
@@ -1004,60 +1023,53 @@ public partial class Equalizer
     
     private void OnOffStereoToMono(object sender, RoutedEventArgs e)
     {
+        var isPlaying = false;
         /*
-         * Wyłączenie innych check boxów, ponieważ z założenia możemy nałożyć dodatkowo do opcji equalizera oraz
-         * Fade in/out jeden z efektów na siebie.
+         * Sprawdzanie czy jakikolwiek track w chwili wyłączenia był odtwarzany. Jeżeli tak to zmieni się wartość
+         * flagi isPlaying.
          */
-        Delay_Box.IsChecked = false;
-        Chorus_Box.IsChecked = false;
-        Distortion_Box.IsChecked = false;
-        Nightcore_Box.IsChecked = false;
+        if (TracksProperties.WaveOut?.PlaybackState == PlaybackState.Playing)
+            isPlaying = true;
+        else if (TracksProperties.SecWaveOut?.PlaybackState == PlaybackState.Playing)
+            isPlaying = true;
         
-        if (StereoToMono_Box.IsChecked == true)
-        {
-            /*
-             * Sprawdzanie czy, któryś z zadeklarowanych obiektów nie jest równy null, oraz przypisanie do obu
-             * nowego ISampleProvidera z efektem nightcore.
-             */
-            if (_firstWaveFade != null)
-            {
-                /*
-                 * Utworzenie obiektu klasy VarispeedSampleProvider w celu uzyskania efektu Nightcore poprzez
-                 * przyśpieszenie granego utworu.
-                 */
-                var firstStereoToMono = new StereoToMonoSampleProvider(_firstWaveFade);
+        /*
+        * Przepisanie wartości SecAudioFileReadera do bazowego obiektu będącego źródłem odtwarzanej muzyki w programie,
+        * jeżeli ten był w danym momencie głównym źródłem.
+        */
+        if (TracksProperties.SecAudioFileReader != null && TracksProperties.SelectedTrack?.Path == TracksProperties.SecAudioFileReader.FileName)
+            TracksProperties.AudioFileReader = TracksProperties.SecAudioFileReader;
 
-                if (TracksProperties.WaveOut?.PlaybackState == PlaybackState.Playing)
-                {
-                    TracksProperties.WaveOut.Stop();
-                    TracksProperties.WaveOut.Init(firstStereoToMono);
-                    TracksProperties.WaveOut.Play();
-                }
-                else
-                {
-                    TracksProperties.WaveOut?.Stop();
-                    TracksProperties.WaveOut.Init(firstStereoToMono);
-                }
-            }
-            if (_secWaveFade != null)
-            {
-                var secStereoToMono = new StereoToMonoSampleProvider(_secWaveFade);
+        TracksProperties.SecAudioFileReader = null;
+        
+        InitStereoToMonoEffect();
+        if (TracksProperties.AudioFileReader != null)
+            _firstWaveEqualizer = new EqualizerSampleProvider(TracksProperties.AudioFileReader);
+        
+        /*
+         * Sprawdzenie zaznaczenia opcji Stereo to mono
+         */
+        if (StereoToMono_Box.IsChecked == true && _firstStereoToMono != null)
+            _firstWaveEqualizer = new EqualizerSampleProvider(_firstStereoToMono);
 
-                /*
-                * Sprawdzenie tylko i wyłączenie czy druga śceiżka dźwiękowa w danym momencie była grana, poniważ
-                * z założenia, gdy utwór zostaje zatrzymany automatycznie zmieniana jest ścieżka na bazowe
-                * źródło dźwięku oraz odtwarzacz.
-                */
-                if (TracksProperties.SecWaveOut?.PlaybackState == PlaybackState.Playing)
-                {
-                    TracksProperties.SecWaveOut.Stop();
-                    TracksProperties.SecWaveOut.Init(secStereoToMono);
-                    TracksProperties.SecWaveOut.Play();
-                }
-            }  
-        }
+        if (Equalizer_box.IsChecked == true)
+            _firstWaveEqualizer?.UpdateEqualizer(sld1.Value, sld2.Value, sld3.Value, sld4.Value, sld5.Value,
+                sld6.Value, sld7.Value, sld8.Value);
         else
-            ImplementBaseWave();
+            _firstWaveEqualizer?.UpdateEqualizer(0, 0, 0, 0, 0, 0, 0,0 );
+        _firstWaveFade = new FadeInOutSampleProvider(_firstWaveEqualizer);
+        TracksProperties.SecWaveOut?.Stop();
+        TracksProperties.WaveOut?.Stop();
+        TracksProperties.WaveOut.Init(_firstWaveFade);
+        
+        InitNightcoreEffect();
+        InitDelayEffect();
+        InitChorusEffect();
+
+        if (isPlaying)
+        {
+            TracksProperties.WaveOut?.Play();
+        }
     }
 
     /*
