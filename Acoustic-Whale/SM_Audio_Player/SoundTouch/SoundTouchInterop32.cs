@@ -2,7 +2,7 @@
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace VarispeedDemo.SoundTouch
+namespace SM_Audio_Player.SoundTouch
 {
     class SoundTouchInterop32
     {

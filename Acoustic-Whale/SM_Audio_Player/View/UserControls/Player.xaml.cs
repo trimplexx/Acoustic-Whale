@@ -1,11 +1,8 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Globalization;
-using System.Linq;
 using System.Windows;
-using System.Windows.Controls.Primitives;
 using System.Windows.Input;
-using System.Windows.Threading;
 using NAudio.Wave;
 using SM_Audio_Player.Music;
 using SM_Audio_Player.View.UserControls.buttons;
@@ -17,11 +14,10 @@ public partial class Player : INotifyPropertyChanged
     public delegate void FirstToSecEventHandler(object sender, EventArgs e);
 
     public delegate void SecToFirstEventHandler(object sender, EventArgs e);
-
-    private const bool IsDraggingSlider = false;
+    
 
     private string? _albumImg;
-    private TimeSpan result;
+    private TimeSpan _result;
     public static event FirstToSecEventHandler? FirstToSec;
     public static event SecToFirstEventHandler? SecToFirst;
 
@@ -49,9 +45,9 @@ public partial class Player : INotifyPropertyChanged
             Library.OnDeleteTrack += OnTrackSwitch;
 
             // Przypisanie metody na tick timera
-            TracksProperties._timer.Tick += Timer_Tick;
+            TracksProperties.Timer.Tick += Timer_Tick;
             // Usatwienie co ile odświeża sie timer
-            TracksProperties._timer.Interval = new TimeSpan(0, 0, 0, 0, 600);
+            TracksProperties.Timer.Interval = new TimeSpan(0, 0, 0, 0, 600);
         }
         catch (Exception ex)
         {
@@ -74,7 +70,7 @@ public partial class Player : INotifyPropertyChanged
 
     private void ResetValues(object sender, EventArgs e)
     {
-        TracksProperties._timer.Stop();
+        TracksProperties.Timer.Stop();
         sldTime.Value = 0;
         title.Text = "Title";
         author.Text = "Author";
@@ -85,9 +81,12 @@ public partial class Player : INotifyPropertyChanged
     }
 
     /*
-     * Ustawienie wszelkich wartości na temat piosenki przy jej zmianie oraz startowej wartości slidera
+     * Event wykonywany w momencie zmiany piosenki, czy zaznaczenia opcji Fade in/out w celu zmiany poszczególnych
+     * wartości w widoku oraz zmiennej _result określającej pożądaną długość piosenki. _result jest wartością od której
+     * odejmujemy 7 sekund w momencie włączenia efektu fade in/out w celu skrócenia piosenki aby nastąpiło przełączenie
+     * na kolejną w klasie Equalizer z efektem stopniowego pogłaśniania, gdy dana piosenka będzie się wyciszać na ostatnie
+     * 7 sekund.
      */
-
     private void OnTrackSwitch(object sender, EventArgs e)
     {
         try
@@ -99,44 +98,57 @@ public partial class Player : INotifyPropertyChanged
                 CD.Text = TracksProperties.SelectedTrack.Album;
                 AlbumImg = TracksProperties.SelectedTrack.AlbumCoverPath;
 
+                /*
+                 * Sprawdzanie włączonej opcji Fade in/out
+                 */
                 if (TracksProperties.IsFadeOn)
                 {
+                    /*
+                     * Jeżeli loop to odejmuje czas od AudioFileReadera.
+                     */
                     if (TracksProperties.IsLoopOn == 2)
                     {
                         if (TracksProperties.AudioFileReader != null)
                         {
                             var totalFirstTime = TracksProperties.AudioFileReader.TotalTime.ToString(@"hh\:mm\:ss");
-                            result = TimeSpan.Parse(totalFirstTime) - TimeSpan.FromSeconds(7);
+                            _result = TimeSpan.Parse(totalFirstTime) - TimeSpan.FromSeconds(7);
                         }
                     }
                     else
                     {
                         if (TracksProperties.TracksList != null)
                         {
+                            /*
+                             * Sprawdzanie, który z obecnych ścieżek dźwięku jest odtwarzany, a następnie od właściwej
+                             * jest odejmowany czas 7 sekund.
+                             */
                             if (TracksProperties.SelectedTrack.Path == TracksProperties.AudioFileReader?.FileName)
                             {
-                                result = TracksProperties.AudioFileReader.TotalTime - TimeSpan.FromSeconds(7);
+                                _result = TracksProperties.AudioFileReader.TotalTime - TimeSpan.FromSeconds(7);
                             }
                             else if(TracksProperties.SelectedTrack.Path == TracksProperties.SecAudioFileReader?.FileName)
                             {
-                                result = TracksProperties.SecAudioFileReader.TotalTime - TimeSpan.FromSeconds(7);
+                                _result = TracksProperties.SecAudioFileReader.TotalTime - TimeSpan.FromSeconds(7);
                             }
-                            TracksProperties.SelectedTrack.Time = result.TotalHours >= 1 ? result.ToString(@"hh\:mm\:ss") : result.ToString(@"mm\:ss"); 
+                            TracksProperties.SelectedTrack.Time = _result.TotalHours >= 1 ? _result.ToString(@"hh\:mm\:ss") : _result.ToString(@"mm\:ss"); 
                         }
                     }
-                    TracksProperties.SelectedTrack.Time = result.TotalHours >= 1 ? result.ToString(@"hh\:mm\:ss") : result.ToString(@"mm\:ss"); 
+                    /*
+                     * Przypisanie czasu do wybranego utworu, a następnie wyświetlenie go w widoku.
+                     */
+                    TracksProperties.SelectedTrack.Time = _result.TotalHours >= 1 ? _result.ToString(@"hh\:mm\:ss") : _result.ToString(@"mm\:ss"); 
                 }
                 else
                 {
                     if (TracksProperties.AudioFileReader != null)
                     {
-                        result = TracksProperties.AudioFileReader.TotalTime;
-                        TracksProperties.SelectedTrack.Time = result.TotalHours >= 1 ? result.ToString(@"hh\:mm\:ss") : result.ToString(@"mm\:ss"); 
+                        _result = TracksProperties.AudioFileReader.TotalTime;
+                        TracksProperties.SelectedTrack.Time = _result.TotalHours >= 1 ? _result.ToString(@"hh\:mm\:ss") : _result.ToString(@"mm\:ss"); 
                     }
                 }
                 tbTime.Text = TracksProperties.SelectedTrack.Time;
             }
-            TracksProperties._timer.Start();
+            TracksProperties.Timer.Start();
         }
         catch (Exception ex)
         {
@@ -145,9 +157,13 @@ public partial class Player : INotifyPropertyChanged
         }
     }
 
+    /*
+     * Metoda pobierająca czas z pierwszej (bazowej) ścieżki dźwiękowej w celu aktualizowania pozycji slidera w metodzie
+     * Timer_tick
+     */
     private void TakeFirstWave()
     {
-        var totalSeconds = result.TotalSeconds;
+        var totalSeconds = _result.TotalSeconds;
         if (TracksProperties.AudioFileReader != null)
         {
             var currentPosition = TracksProperties.AudioFileReader.CurrentTime.TotalSeconds;
@@ -158,9 +174,12 @@ public partial class Player : INotifyPropertyChanged
         }
     }
 
+    /*
+    * Metoda pobierająca czas z drugiej ścieżki dźwiękowej w celu aktualizowania pozycji slidera w metodzie Timer_tick
+    */
     private void TakeSecWave()
     {
-        var totalSeconds = result.TotalSeconds;
+        var totalSeconds = _result.TotalSeconds;
         if (TracksProperties.SecAudioFileReader != null)
         {
             var currentPositionSec = TracksProperties.SecAudioFileReader.CurrentTime.TotalSeconds;
@@ -182,6 +201,11 @@ public partial class Player : INotifyPropertyChanged
         {
             if (TracksProperties.AudioFileReader != null)
             {
+                /*
+                 * Specjalne sprawdzanie, wymyślone na potrzebę włączonej funkcji loop == 2 odpowiadającej
+                 * za otwarzanie po sobie tych samych piosenek w celu pobrania właściwego źródła dźwieku
+                 * do wyświetlanej pozycji slidera oraz wartości.
+                 */
                 if (TracksProperties.AudioFileReader.FileName == TracksProperties.SecAudioFileReader?.FileName
                     && TracksProperties.SelectedTrack?.Path == TracksProperties.AudioFileReader.FileName)
                 {
@@ -205,15 +229,23 @@ public partial class Player : INotifyPropertyChanged
                         TakeSecWave();
                     }
                 }
-                else if (TracksProperties.SelectedTrack?.Path == TracksProperties.AudioFileReader?.FileName)
+                /*
+                 * Pozostałe możliwe opcje pobierające wartości z odpowiednich źródeł dźwięku.
+                 */
+                else if (TracksProperties.SelectedTrack?.Path == TracksProperties.AudioFileReader.FileName)
                 {
-                    if (TracksProperties.AudioFileReader != null) TakeFirstWave();
+                    TakeFirstWave();
                 }
                 else
                 {
                     if (TracksProperties.SecAudioFileReader != null) TakeSecWave();
                 }
             }
+            /*
+             * Dodatkowe sprawdzanie czy podany utwór przekroczył swój czas, wykonane na tej zasadzie ze względu
+             * na minimalny błąd czasowy sprawdzania wartości. Dodatkowa funkcjonalność została wykonanana ze względu
+             * na brak działania Eventu zatrzymania się muzyki przy włączonej opcji Nightcore.
+             */
             var ts = new TimeSpan(0, 0, 0, 0, 20);
             if (TracksProperties.AudioFileReader != null)
             {
@@ -239,7 +271,7 @@ public partial class Player : INotifyPropertyChanged
     {
         try
         {
-            TracksProperties._timer.Stop();
+            TracksProperties.Timer.Stop();
         }
         catch (Exception ex)
         {
@@ -249,13 +281,15 @@ public partial class Player : INotifyPropertyChanged
     }
 
     /*
-     * Gdy klawisz zostanie podniesiony ustanowiona zostanie nowa pozycja piosenki oraz wznowione odliczanie timera
+     * Event odpowiadający za sterowanie pozycją slidera, w którym wykorzystane zostały tak samo powyższe warunki
+     * wykorzystane w evencie Timer_Tick, z tym że ciało warunków zmienione zostało odpowiednią funkcją zmieniającą
+     * położenie slidera.
     */
     private void TimeSlider_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
     {
         try
         {
-            var totalSeconds = result.TotalSeconds;
+            var totalSeconds = _result.TotalSeconds;
             var progress = sldTime.Value / sldTime.Maximum;
             var newPosition = totalSeconds * progress;
 
@@ -295,7 +329,7 @@ public partial class Player : INotifyPropertyChanged
                 }
             }
 
-            TracksProperties._timer.Start();
+            TracksProperties.Timer.Start();
         }
         catch (Exception ex)
         {

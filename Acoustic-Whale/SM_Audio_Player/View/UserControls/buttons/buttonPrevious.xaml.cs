@@ -50,6 +50,9 @@ public partial class ButtonPrevious
                 // Sprawdź czy jest dostępny jakikolwiek numer na liście
                 if (TracksProperties.TracksList != null && TracksProperties.TracksList.Count > 0)
                 {
+                    /*
+                     * Przepisanie do bazowej ścieżki AudioFileReader utworu odtwarzanego z SecAudioFileReader.
+                     */
                     if (TracksProperties.SecWaveOut != null &&
                         TracksProperties.SecWaveOut.PlaybackState == PlaybackState.Playing)
                     {
@@ -100,7 +103,7 @@ public partial class ButtonPrevious
                                     Enumerable.Range(0, TracksProperties.TracksList.Count).ToList();
                                 var random = new Random();
                                 TracksProperties.AvailableNumbers =
-                                    TracksProperties.AvailableNumbers.OrderBy(x => random.Next()).ToList();
+                                    TracksProperties.AvailableNumbers.OrderBy(_ => random.Next()).ToList();
                                 _btnPlay.PlayNewTrack();
                             }
                             // Jeżeli lista posiada poprzedni utwór, zostanie on wpisany jako obecny oraz zostanie odtworzony
@@ -110,9 +113,7 @@ public partial class ButtonPrevious
                              * Jezeli track, nie jest pierwszym, także jego numer zostanie zwrócony do listy dostępnych
                              * numerów, aby mógł być ponownie wybrany do odsłuchu
                              */
-                                if (TracksProperties.SelectedTrack != TracksProperties.FirstPlayed)
-                                    if (TracksProperties.SelectedTrack != null)
-                                        TracksProperties.AvailableNumbers?.Add(TracksProperties.SelectedTrack.Id - 1);
+                                if (TracksProperties.SelectedTrack != TracksProperties.FirstPlayed) TracksProperties.AvailableNumbers?.Add(TracksProperties.SelectedTrack.Id - 1);
 
                                 TracksProperties.SelectedTrack =
                                     TracksProperties.PrevTrack.ElementAt(TracksProperties.PrevTrack.Count - 1);

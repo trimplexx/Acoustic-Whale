@@ -1,14 +1,12 @@
 ﻿using System;
-using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
-using NAudio.Dsp;
 using NAudio.Wave;
 using NAudio.Wave.SampleProviders;
 using SM_Audio_Player.Music;
+using SM_Audio_Player.SoundTouch;
 using SM_Audio_Player.View.UserControls.buttons;
-using VarispeedDemo.SoundTouch;
 
 namespace SM_Audio_Player.View.UserControls;
 
@@ -18,6 +16,12 @@ public partial class Equalizer
 
     public delegate void FadeOffOnEventHandler(object sender, EventArgs e);
 
+    /*
+     * Podstawowe efekty ISampleProvider, które kolejno będą się na siebie nakładać, aby uzyskać możliwy efekt equalizera
+     * oraz Fade in/out w tym samym czasie. Dodatkowo aplikacja zakłada rozbudowanie o kolejny możliwy efekt dźwiękowy
+     * dostępny w tym samym czasie na utworze, dlatego dwa bazowe efekty będą dodatkowo rozbudowane o kolejny z nich
+     * w dalszej części kodu.
+     */
     private EqualizerSampleProvider? _firstWaveEqualizer;
     private FadeInOutSampleProvider? _firstWaveFade;
     private EqualizerSampleProvider? _secWaveEqualizer;
@@ -26,6 +30,10 @@ public partial class Equalizer
     public Equalizer()
     {
         InitializeComponent();
+        /*
+         * Przypisanie odpowiednich eventów występujących w innych miejscach w kodzie, aby aplikacja działała
+         * płynnie oraz aktualizowała swoje wartości.
+         */
         ButtonNext.NextButtonClicked += NextPrevEvent;
         ButtonPlay.TrackEnd += NextPrevEvent;
         ButtonPrevious.PreviousButtonClicked += ButtonDoubleClickEvent;
@@ -39,54 +47,21 @@ public partial class Equalizer
     public static event FadeInEventHandler? FadeInEvent;
     public static event FadeOffOnEventHandler? FadeOffOn;
 
-    private void InitNightcoreEffect()
-    {
-        if (Nightcore_Box.IsChecked == true)
-        {
-            if (_firstWaveFade != null)
-            {
-                var firstspeedControl = new VarispeedSampleProvider(_firstWaveFade, 100, new SoundTouchProfile(false, false));
-                firstspeedControl.PlaybackRate = 1.4f;;
-                TracksProperties.WaveOut?.Stop();
-                TracksProperties.WaveOut?.Init(firstspeedControl);
-            }
-        }
-    }
-
-    private void InitDelayEffect()
-    {
-        if (Delay_Box.IsChecked == true)
-        {
-            if (_firstWaveFade != null)
-            {
-                var firstDelayEffect = new DelayEffect(_firstWaveFade, 300, 0.7f);
-                TracksProperties.WaveOut?.Stop();
-                TracksProperties.WaveOut?.Init(firstDelayEffect);
-            }
-        }
-    }
-
-    private void InitChorusEffect()
-    {
-        if (Chorus_Box.IsChecked == true)
-        {
-            if (_firstWaveFade != null)
-            {
-                var firstChorusEffect = new ChorusEffect(_firstWaveFade, 200, 0.4f);
-                TracksProperties.WaveOut?.Stop();
-                TracksProperties.WaveOut?.Init(firstChorusEffect);
-            }
-        }
-    }
+    #region ChangingTracksEvents
     
     /*
-     * Ustawienie wartości bieżących suwaków, w momencie gdy jest zaznaczona opcja equalizera w odpowiedzi na zmiane
-     * piosenki.
+     * Event odpowiadający za wybranie danej piosenki, która wiemy że będzie aktualie wymagana do odtworzenia, a nie będzie
+     * możliwe, że użytkownik będzie chciał żeby była zatrzymana.
      */
     private void ButtonDoubleClickEvent(object sender, EventArgs e)
     {
         try
         {
+            /*
+             * Stworzenie kolejno nowych obiektów Equalizera oraz Fade, aby następnie sprawdzić, czy dodatkowo efektu
+             * Fade nie należy umieścić w innym z dostępnych efektów. Jeżeli nie to bazowym efektem zostaje Equalizer
+             * nałożony na efekt Fade in/out.
+             */
             if (TracksProperties.AudioFileReader != null)
                 _firstWaveEqualizer = new EqualizerSampleProvider(TracksProperties.AudioFileReader);
             if (Equalizer_box.IsChecked == true)
@@ -104,6 +79,9 @@ public partial class Equalizer
             InitChorusEffect();
             TracksProperties.WaveOut?.Play();
 
+            /*
+             * Event aktualizujący dane w innych miejscach kodu.
+             */
             FadeOffOn?.Invoke(this, EventArgs.Empty);
         }
         catch (Exception ex)
@@ -113,10 +91,17 @@ public partial class Equalizer
         }
     }
 
+    /*
+     * Event odpowiadający za zagranie następnego tracka, który został odtworzony samoczynnie, bądź przez przycisk
+     * 'Next', aby sprawdzać czy dana piosenka nie powinna sie przypadkiem zatrzymać. 
+     */
     private void NextPrevEvent(object sender, EventArgs e)
     {
         try
         {
+            /*
+             * Inicjalizacja bazowych efektów podobnie jak w przypadku powyżej. 
+             */
             if (TracksProperties.AudioFileReader != null)
                 _firstWaveEqualizer = new EqualizerSampleProvider(TracksProperties.AudioFileReader);
             if (Equalizer_box.IsChecked == true)
@@ -129,6 +114,11 @@ public partial class Equalizer
             TracksProperties.WaveOut?.Stop();
             TracksProperties.WaveOut.Init(_firstWaveFade);
             
+            /*
+             * Sprawdzanie czy zainicjalizowana piosenka nie powinna zostać zatrzymana, w momencie, gdy przełączy się na 1
+             * element z listy. Bądź gdy przełączy się na pierwszy utwór z opcją Schuffle. W przeciwnym wypadku piosenka
+             * zostanie odtworzona. 
+             */
             if (TracksProperties.SelectedTrack == TracksProperties.TracksList?.ElementAt(0) &&
                 !TracksProperties.IsSchuffleOn && TracksProperties.IsLoopOn != 1)
             {
@@ -151,6 +141,9 @@ public partial class Equalizer
                 TracksProperties.WaveOut?.Play();
             }
 
+            /*
+            * Event aktualizujący dane w innych miejscach kodu.
+            */
             FadeOffOn?.Invoke(this, EventArgs.Empty);
         }
         catch (Exception ex)
@@ -159,36 +152,79 @@ public partial class Equalizer
             throw;
         }
     }
-
-    // metoda odpowiedzialna za zmienianie wartosci przez equalizera na pasmach czestotliwosci
+    #endregion
+    
+    #region EqualizerLogic
+    
+    /*
+     * Metoda odpowiada za aktualizacje wartości equalizerów służąca do wywołania w innych miejscach kodu.
+     */
     private void ChangeEqualizerValues()
     {
-        if (Equalizer_box.IsChecked == true)
+        try
         {
-            _firstWaveEqualizer?.UpdateEqualizer(sld1.Value, sld2.Value, sld3.Value, sld4.Value, sld5.Value, sld6.Value,
-                sld7.Value, sld8.Value);
-            _secWaveEqualizer?.UpdateEqualizer(sld1.Value, sld2.Value, sld3.Value, sld4.Value, sld5.Value, sld6.Value,
-                sld7.Value, sld8.Value);
+            if (Equalizer_box.IsChecked == true)
+            {
+                _firstWaveEqualizer?.UpdateEqualizer(sld1.Value, sld2.Value, sld3.Value, sld4.Value, sld5.Value, sld6.Value,
+                    sld7.Value, sld8.Value);
+                _secWaveEqualizer?.UpdateEqualizer(sld1.Value, sld2.Value, sld3.Value, sld4.Value, sld5.Value, sld6.Value,
+                    sld7.Value, sld8.Value);
+            }
+            else
+            {
+                _firstWaveEqualizer?.UpdateEqualizer(0, 0, 0, 0, 0, 0, 0, 0);
+                _secWaveEqualizer?.UpdateEqualizer(0, 0, 0, 0, 0, 0, 0, 0);
+            }
         }
-        else
+        catch (Exception ex)
         {
-            _firstWaveEqualizer?.UpdateEqualizer(0, 0, 0, 0, 0, 0, 0, 0);
-            _secWaveEqualizer?.UpdateEqualizer(0, 0, 0, 0, 0, 0, 0, 0);
+            MessageBox.Show($"ChangeEqualizerValues on mouse click: {ex.Message}");
+            throw;
         }
-
-        Slider_Value0.Text = ((int)sld1.Value).ToString();
-        Slider_Value1.Text = ((int)sld2.Value).ToString();
-        Slider_Value2.Text = ((int)sld3.Value).ToString();
-        Slider_Value3.Text = ((int)sld4.Value).ToString();
-        Slider_Value4.Text = ((int)sld5.Value).ToString();
-        Slider_Value5.Text = ((int)sld6.Value).ToString();
-        Slider_Value6.Text = ((int)sld7.Value).ToString();
-        Slider_Value7.Text = ((int)sld8.Value).ToString();
     }
-
+    
     /*
-     * Zmiana wartości pasm w momencie puszczenia klawiszu myszki na sliderze.
+     * Przycisk resetujący wartości sliderów oraz wartości equalizera.
      */
+    private void Reset_Btn_Click(object sender, RoutedEventArgs e)
+    {
+        sld1.Value = 0;
+        sld2.Value = 0;
+        sld3.Value = 0;
+        sld4.Value = 0;
+        sld5.Value = 0;
+        sld6.Value = 0;
+        sld7.Value = 0;
+        sld8.Value = 0;
+        ChangeEqualizerValues();
+    }
+    
+    /*
+     * Event odpowiadający za dynamiczne przypisywanie wartości do pól nad sliderami.
+     */
+    private void DynamicEqualizerValueChaning(object sender, RoutedPropertyChangedEventArgs<double> e)
+    {
+        try
+        {
+            Slider_Value1.Text = ((int)sld1.Value).ToString();
+            Slider_Value2.Text = ((int)sld2.Value).ToString();
+            Slider_Value3.Text = ((int)sld3.Value).ToString();
+            Slider_Value4.Text = ((int)sld4.Value).ToString();
+            Slider_Value5.Text = ((int)sld5.Value).ToString();
+            Slider_Value6.Text = ((int)sld6.Value).ToString();
+            Slider_Value7.Text = ((int)sld7.Value).ToString();
+            Slider_Value8.Text = ((int)sld8.Value).ToString();
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"DynamicEqualizerValueChaning: {ex.Message}");
+            throw;
+        }
+    }
+    
+    /*
+ * Zmiana wartości equalizera w momencie puszczenia klawiszu myszki na sliderze.
+ */
     private void OnSliderValueChange(object sender, MouseButtonEventArgs mouseButtonEventArgs)
     {
         ChangeEqualizerValues();
@@ -201,7 +237,15 @@ public partial class Equalizer
     {
         ChangeEqualizerValues();
     }
+    
+    #endregion
 
+    #region FadeInOutLogic
+    
+    /*
+     * Uniwersalna metoda użyta następnie w evencie zmiany muzyki pozwalająca na inicjalizacje drugiej ścieżki dźwiękowej
+     * do równoczesnego odtworzenia aby uzyskać efekt Fade in/out
+     */
     private void InitializeSecWave()
     {
         try
@@ -210,6 +254,9 @@ public partial class Equalizer
                 _secWaveEqualizer = new EqualizerSampleProvider(TracksProperties.SecAudioFileReader);
             ChangeEqualizerValues();
 
+            /*
+             * Nałożenie efektu FadeIn pogłaśniającego stopniowo piosenkę.
+             */
             _secWaveFade = new FadeInOutSampleProvider(_secWaveEqualizer);
             _secWaveFade?.BeginFadeIn(6000);
             
@@ -218,12 +265,15 @@ public partial class Equalizer
             if (TracksProperties.SecWaveOut == null)
                 TracksProperties.SecWaveOut = new WaveOutEvent();
 
+            /*
+             * Sprawdzanie czy zostały nałożone jakiekolwiek inne efekty.
+             */
             if (Nightcore_Box.IsChecked == true)
             {
                 if (_secWaveFade != null)
                 {
                     var secSpeedControl = new VarispeedSampleProvider(_secWaveFade, 100, new SoundTouchProfile(false, false));
-                    secSpeedControl.PlaybackRate = 1.4f;;
+                    secSpeedControl.PlaybackRate = 1.4f;
                     TracksProperties.SecWaveOut.Init(secSpeedControl);
                 }
             }
@@ -257,6 +307,10 @@ public partial class Equalizer
         }
     }
 
+    /*
+    * Uniwersalna metoda użyta następnie w evencie zmiany muzyki pozwalająca na inicjalizacje następnej ścieżki dźwiękowej
+    * do równoczesnego odtworzenia aby uzyskać efekt Fade in/out
+    */
     private void InitializeFirstWave()
     {
         try
@@ -265,17 +319,23 @@ public partial class Equalizer
                 _firstWaveEqualizer = new EqualizerSampleProvider(TracksProperties.AudioFileReader);
             ChangeEqualizerValues();
 
+            /*
+             * Nałożenie efektu fade in pogłaśniającego stopniowo piosenkę.
+             */
             _firstWaveFade = new FadeInOutSampleProvider(_firstWaveEqualizer, true);
             _firstWaveFade?.BeginFadeIn(6000);
             
             TracksProperties.WaveOut?.Stop();
             
+            /*
+             * Sprawdzenie czy zostały nałożone jakieś inne efekty dźwiękowe.
+             */
             if (Nightcore_Box.IsChecked == true)
             {
                 if (_firstWaveFade != null)
                 {
                     var firstSpeedControl = new VarispeedSampleProvider(_firstWaveFade, 100, new SoundTouchProfile(false, false));
-                    firstSpeedControl.PlaybackRate = 1.4f;;
+                    firstSpeedControl.PlaybackRate = 1.4f;
                     TracksProperties.WaveOut.Init(firstSpeedControl);
                 }
             }
@@ -309,6 +369,11 @@ public partial class Equalizer
         }
     }
 
+    /*
+     * Metoda wywoływana z klasy Player, która odpowiada za płynną zamiane pierwszej ścieżki dźwiękowej na drugą, uzyskując
+     * w ten sposób efekt Fade in/out przy pomocy użycia FadeInOutSampleProvider. Event obejmuje wszelkie możliwe opcje
+     * zmiany piosenki na następną włącznie z nałożonymi funkcjonalnościami schuffle bądź loop.
+     */
     private void FirstToSecChange(object sender, EventArgs e)
     {
         try
@@ -317,12 +382,17 @@ public partial class Equalizer
             {
                 _firstWaveFade?.BeginFadeOut(7000);
 
+                // Sprawdzenie funkcji loop tego samego utworu.
                 if (TracksProperties.IsLoopOn == 2)
                 {
-                    TracksProperties.SecAudioFileReader = new AudioFileReader(TracksProperties.TracksList?
-                        .ElementAt(TracksProperties.SelectedTrack.Id - 1).Path);
-                    TracksProperties.SelectedTrack =
-                        TracksProperties.TracksList?.ElementAt(TracksProperties.SelectedTrack.Id - 1);
+                    if (TracksProperties.SelectedTrack != null)
+                    {
+                        TracksProperties.SecAudioFileReader = new AudioFileReader(TracksProperties.TracksList?
+                            .ElementAt(TracksProperties.SelectedTrack.Id - 1).Path);
+                        TracksProperties.SelectedTrack =
+                            TracksProperties.TracksList?.ElementAt(TracksProperties.SelectedTrack.Id - 1);
+                    }
+
                     InitializeSecWave();
                 }
                 // Sprawdzenie czy jest włączona opcja schuffle, ponieważ ona zmienia następny track
@@ -330,52 +400,62 @@ public partial class Equalizer
                 {
                     if (TracksProperties.AvailableNumbers?.Count == 0)
                     {
-                        TracksProperties.SelectedTrack =
-                            TracksProperties.TracksList?.ElementAt(TracksProperties.FirstPlayed.Id - 1);
-
-                        // Reset listy dostępnych numerów utworów
-                        if (TracksProperties.TracksList != null)
+                        if (TracksProperties.FirstPlayed != null)
                         {
-                            TracksProperties.AvailableNumbers =
-                                Enumerable.Range(0, TracksProperties.TracksList.Count).ToList();
-                            var random = new Random();
-                            TracksProperties.AvailableNumbers =
-                                TracksProperties.AvailableNumbers.OrderBy(x => random.Next()).ToList();
-                        }
+                            TracksProperties.SelectedTrack =
+                                TracksProperties.TracksList?.ElementAt(TracksProperties.FirstPlayed.Id - 1);
 
-                        // Usunięcie numeru odtwarzanego utworu z listy, aby ten się nie powtórzył w momencie losowania
-                        if (TracksProperties.SelectedTrack != null)
-                            TracksProperties.AvailableNumbers.Remove(TracksProperties.SelectedTrack.Id - 1);
+                            // Reset listy dostępnych numerów utworów
+                            if (TracksProperties.TracksList != null)
+                            {
+                                TracksProperties.AvailableNumbers =
+                                    Enumerable.Range(0, TracksProperties.TracksList.Count).ToList();
+                                var random = new Random();
+                                TracksProperties.AvailableNumbers =
+                                    TracksProperties.AvailableNumbers.OrderBy(_ => random.Next()).ToList();
+                            }
 
-                        // Wyczyszczenie listy poprzednich utworów
-                        TracksProperties.PrevTrack.Clear();
+                            // Usunięcie numeru odtwarzanego utworu z listy, aby ten się nie powtórzył w momencie losowania
+                            if (TracksProperties.SelectedTrack != null)
+                                TracksProperties.AvailableNumbers.Remove(TracksProperties.SelectedTrack.Id - 1);
 
-                        if (TracksProperties.IsLoopOn == 1)
-                        {
-                            TracksProperties.SecAudioFileReader =
-                                new AudioFileReader(TracksProperties.SelectedTrack?.Path);
-                            if (TracksProperties.SelectedTrack == TracksProperties.FirstPlayed)
-                                if (TracksProperties.WaveOut != null)
-                                    InitializeSecWave();
-                        }
-                        else
-                        {
-                            TracksProperties.SecWaveOut?.Stop();
-                            TracksProperties.WaveOut?.Stop();
-                            TracksProperties.SecAudioFileReader = null;
-                            TracksProperties.AudioFileReader = null;
-                            TracksProperties._timer.Stop();
+                            // Wyczyszczenie listy poprzednich utworów
+                            TracksProperties.PrevTrack.Clear();
+
+                            // Sprawdzenie użycia funkcji loop, jeżeli jest włączona następny utwór zostanie włączony
+                            if (TracksProperties.IsLoopOn == 1)
+                            {
+                                TracksProperties.SecAudioFileReader =
+                                    new AudioFileReader(TracksProperties.SelectedTrack?.Path);
+                                if (TracksProperties.SelectedTrack == TracksProperties.FirstPlayed)
+                                    if (TracksProperties.WaveOut != null)
+                                        InitializeSecWave();
+                            }
+                            // W przeciwnym razie wyczyścimy zasoby
+                            else
+                            {
+                                TracksProperties.SecWaveOut?.Stop();
+                                TracksProperties.WaveOut?.Stop();
+                                TracksProperties.SecAudioFileReader = null;
+                                TracksProperties.AudioFileReader = null;
+                                TracksProperties.Timer.Stop();
+                            }
                         }
                     }
                     else
                     {
-                        TracksProperties.SecAudioFileReader =
-                            new AudioFileReader(TracksProperties.TracksList?
-                                .ElementAt(TracksProperties.AvailableNumbers.ElementAt(0)).Path);
-                        TracksProperties.PrevTrack.Add(TracksProperties.SelectedTrack);
-                        TracksProperties.SelectedTrack =
-                            TracksProperties.TracksList?.ElementAt(TracksProperties.AvailableNumbers.ElementAt(0));
-                        TracksProperties.AvailableNumbers.RemoveAt(0);
+                        // Jeżeli są dostępne następne utwory, odtwórz go korzystając z listy AvailableNumbers.
+                        if (TracksProperties.AvailableNumbers != null)
+                        {
+                            TracksProperties.SecAudioFileReader =
+                                new AudioFileReader(TracksProperties.TracksList?
+                                    .ElementAt(TracksProperties.AvailableNumbers.ElementAt(0)).Path);
+                            TracksProperties.PrevTrack.Add(TracksProperties.SelectedTrack);
+                            TracksProperties.SelectedTrack =
+                                TracksProperties.TracksList?.ElementAt(TracksProperties.AvailableNumbers.ElementAt(0));
+                            TracksProperties.AvailableNumbers.RemoveAt(0);
+                        }
+
                         InitializeSecWave();
                     }
                 }
@@ -386,7 +466,7 @@ public partial class Equalizer
                         // Przełączenie na 1 utwór z listy po zakończeniu ostatniego
                         TracksProperties.SelectedTrack = TracksProperties.TracksList?.ElementAt(0);
 
-                        // Sprawdzenie czy jest loop, jeżeli tak to zatrzymaj muzykę i zmień ikone
+                        // Sprawdzenie czy jest loop
                         if (TracksProperties.IsLoopOn == 1)
                         {
                             TracksProperties.SecAudioFileReader =
@@ -399,7 +479,7 @@ public partial class Equalizer
                             TracksProperties.WaveOut?.Stop();
                             TracksProperties.SecAudioFileReader = null;
                             TracksProperties.AudioFileReader = null;
-                            TracksProperties._timer.Stop();
+                            TracksProperties.Timer.Stop();
                         }
                     }
                     else
@@ -427,6 +507,12 @@ public partial class Equalizer
         }
     }
 
+    
+    /*
+     * Podobnie jak w powyższym przypadku metoda wywoływana z klasy Player, odpowiada za płynną zamiane drugiej ścieżki
+     * dźwiękowej na pierwszą, uzyskując w ten sposób efekt Fade in/out przy pomocy użycia FadeInOutSampleProvider.
+     * Event obejmuje wszelkie możliwe opcje zmiany piosenki na następną włącznie z nałożonymi funkcjonalnościami schuffle bądź loop.
+     */
     private void SecToFirstChange(object sender, EventArgs e)
     {
         try
@@ -435,12 +521,17 @@ public partial class Equalizer
             {
                 _secWaveFade?.BeginFadeOut(7000);
 
+                // Sprawdzenie funkcji loop tego samego utworu.
                 if (TracksProperties.IsLoopOn == 2)
                 {
-                    TracksProperties.AudioFileReader = new AudioFileReader(TracksProperties.TracksList
-                        ?.ElementAt(TracksProperties.SelectedTrack.Id - 1).Path);
-                    TracksProperties.SelectedTrack =
-                        TracksProperties.TracksList?.ElementAt(TracksProperties.SelectedTrack.Id - 1);
+                    if (TracksProperties.SelectedTrack != null)
+                    {
+                        TracksProperties.AudioFileReader = new AudioFileReader(TracksProperties.TracksList
+                            ?.ElementAt(TracksProperties.SelectedTrack.Id - 1).Path);
+                        TracksProperties.SelectedTrack =
+                            TracksProperties.TracksList?.ElementAt(TracksProperties.SelectedTrack.Id - 1);
+                    }
+
                     InitializeFirstWave();
                 }
                 // Sprawdzenie czy jest włączona opcja schuffle, ponieważ ona zmienia następny track
@@ -448,54 +539,63 @@ public partial class Equalizer
                 {
                     if (TracksProperties.AvailableNumbers?.Count == 0)
                     {
-                        TracksProperties.SelectedTrack =
-                            TracksProperties.TracksList?.ElementAt(TracksProperties.FirstPlayed.Id - 1);
-
-                        // Reset listy dostępnych numerów utworów
-                        if (TracksProperties.TracksList != null)
+                        if (TracksProperties.FirstPlayed != null)
                         {
-                            TracksProperties.AvailableNumbers =
-                                Enumerable.Range(0, TracksProperties.TracksList.Count).ToList();
-                            var random = new Random();
-                            TracksProperties.AvailableNumbers =
-                                TracksProperties.AvailableNumbers.OrderBy(x => random.Next()).ToList();
-                        }
+                            TracksProperties.SelectedTrack =
+                                TracksProperties.TracksList?.ElementAt(TracksProperties.FirstPlayed.Id - 1);
 
-                        // Usunięcie numeru odtwarzanego utworu z listy, aby ten się nie powtórzył w momencie losowania
-                        if (TracksProperties.SelectedTrack != null)
-                            TracksProperties.AvailableNumbers.Remove(TracksProperties.SelectedTrack.Id - 1);
+                            // Reset listy dostępnych numerów utworów
+                            if (TracksProperties.TracksList != null)
+                            {
+                                TracksProperties.AvailableNumbers =
+                                    Enumerable.Range(0, TracksProperties.TracksList.Count).ToList();
+                                var random = new Random();
+                                TracksProperties.AvailableNumbers =
+                                    TracksProperties.AvailableNumbers.OrderBy(_ => random.Next()).ToList();
+                            }
 
-                        // Wyczyszczenie listy poprzednich utworów
-                        TracksProperties.PrevTrack.Clear();
+                            // Usunięcie numeru odtwarzanego utworu z listy, aby ten się nie powtórzył w momencie losowania
+                            if (TracksProperties.SelectedTrack != null)
+                                TracksProperties.AvailableNumbers.Remove(TracksProperties.SelectedTrack.Id - 1);
+
+                            // Wyczyszczenie listy poprzednich utworów
+                            TracksProperties.PrevTrack.Clear();
 
 
-                        if (TracksProperties.IsLoopOn == 1)
-                        {
-                            TracksProperties.AudioFileReader =
-                                new AudioFileReader(TracksProperties.SelectedTrack?.Path);
-                            if (TracksProperties.SelectedTrack == TracksProperties.FirstPlayed)
-                                if (TracksProperties.WaveOut != null)
-                                    InitializeFirstWave();
-                        }
-                        else
-                        {
-                            TracksProperties.SecWaveOut?.Stop();
-                            TracksProperties.WaveOut?.Stop();
-                            TracksProperties.SecAudioFileReader = null;
-                            TracksProperties.AudioFileReader = null;
-                            TracksProperties._timer.Stop();
+                            // Sprawdzenie użycia funkcji loop, jeżeli jest włączona następny utwór zostanie włączony
+                            if (TracksProperties.IsLoopOn == 1)
+                            {
+                                TracksProperties.AudioFileReader =
+                                    new AudioFileReader(TracksProperties.SelectedTrack?.Path);
+                                if (TracksProperties.SelectedTrack == TracksProperties.FirstPlayed)
+                                    if (TracksProperties.WaveOut != null)
+                                        InitializeFirstWave();
+                            }
+                            // W przeciwnym razie wyczyścimy zasoby
+                            else
+                            {
+                                TracksProperties.SecWaveOut?.Stop();
+                                TracksProperties.WaveOut?.Stop();
+                                TracksProperties.SecAudioFileReader = null;
+                                TracksProperties.AudioFileReader = null;
+                                TracksProperties.Timer.Stop();
+                            }
                         }
                     }
                     else
                     {
-                        TracksProperties.AudioFileReader =
-                            new AudioFileReader(TracksProperties.TracksList
-                                ?.ElementAt(TracksProperties.AvailableNumbers.ElementAt(0)).Path);
-                        TracksProperties.PrevTrack.Add(TracksProperties.SelectedTrack);
-                        TracksProperties.SelectedTrack =
-                            TracksProperties.TracksList?.ElementAt(TracksProperties.AvailableNumbers.ElementAt(0));
-                        InitializeFirstWave();
-                        TracksProperties.AvailableNumbers?.RemoveAt(0);
+                        // Jeżeli są dostępne następne utwory, odtwórz go korzystając z listy AvailableNumbers.
+                        if (TracksProperties.AvailableNumbers != null)
+                        {
+                            TracksProperties.AudioFileReader =
+                                new AudioFileReader(TracksProperties.TracksList
+                                    ?.ElementAt(TracksProperties.AvailableNumbers.ElementAt(0)).Path);
+                            TracksProperties.PrevTrack.Add(TracksProperties.SelectedTrack);
+                            TracksProperties.SelectedTrack =
+                                TracksProperties.TracksList?.ElementAt(TracksProperties.AvailableNumbers.ElementAt(0));
+                            InitializeFirstWave();
+                            TracksProperties.AvailableNumbers.RemoveAt(0);
+                        }
                     }
                 }
                 else
@@ -514,7 +614,7 @@ public partial class Equalizer
                         }
                         else
                         {
-                            TracksProperties._timer.Stop();
+                            TracksProperties.Timer.Stop();
                             TracksProperties.SecWaveOut?.Stop();
                             TracksProperties.WaveOut?.Stop();
                             TracksProperties.SecAudioFileReader = null;
@@ -546,30 +646,49 @@ public partial class Equalizer
         }
     }
 
+    /*
+     * Event odpowiadający za włączenie i wyłączanie funkcji fade in/out.
+     */
     private void Fade_CheckBoxClick(object sender, RoutedEventArgs e)
     {
         try
         {
             if (Fade_box.IsChecked == true)
             {
+                /* Przypisanie wartości flagi przechowywanej w statycznej klasie w celu oznajmienia w innych
+                 * miejscach kodu, że funckja została włączona.
+                 */
                 TracksProperties.IsFadeOn = true;
             }
             else
             {
+
+                // Informacja o wyłączeniu funkcji Fade in/out
                 TracksProperties.IsFadeOn = false;
                 var isPlaying = false;
 
+                /*
+                 * Sprawdzanie czy jakikolwiek track w chwili wyłączenia był odtwarzany. Jeżeli tak to zmieni się wartość
+                 * flagi isPlaying.
+                 */
                 if (TracksProperties.WaveOut?.PlaybackState == PlaybackState.Playing)
                     isPlaying = true;
                 else if (TracksProperties.SecWaveOut?.PlaybackState == PlaybackState.Playing)
                     isPlaying = true;
 
+                /*
+                 * Przepisanie wartości SecAudioFileReadera do bazowego obiektu będącego źródłem odtwarzanej muzyki w programie,
+                 * jeżeli ten był w danym momencie głównym źródłem.
+                 */
                 if (TracksProperties.SecAudioFileReader != null && TracksProperties.SelectedTrack?.Path == TracksProperties.SecAudioFileReader.FileName)
                     TracksProperties.AudioFileReader = TracksProperties.SecAudioFileReader;
 
                 TracksProperties.SecAudioFileReader = null;
 
-                TracksProperties._timer.Stop();
+                /*
+                 * Zatrzymanie muzyki w celu poniższego zainicjalizowania nowej ścieżki dźwięku.
+                 */
+                TracksProperties.Timer.Stop();
                 TracksProperties.SecWaveOut?.Stop();
 
                 if (TracksProperties.AudioFileReader != null)
@@ -585,10 +704,17 @@ public partial class Equalizer
                     TracksProperties.WaveOut?.Stop();
                     TracksProperties.WaveOut.Init(_firstWaveFade);
                     
+                    /*
+                     * Sprawdzenie innych nałożonych efektów dźwiękowych.
+                     */
                     InitNightcoreEffect();
                     InitDelayEffect();
                     InitChorusEffect();
                     
+                    /*
+                     * Flaga isPlaying wykorzystana wcześniej do sprawdzania czy muzyka w momencie wyłączenia opcji była odtwarzana.
+                     * Jeżeli tak to chcemy odtworzyć z powrotem graną muzykę.
+                     */
                     if (isPlaying)
                         TracksProperties.WaveOut?.Play();
                 }
@@ -602,16 +728,77 @@ public partial class Equalizer
             throw;
         }
     }
+    #endregion
 
-    // Włączenie bądź wyłączenie opóźnienia za pomocą check boxa. 
+    #region OtherEffects
+    /*
+    * Sprawdzanie czy efekt nightcore nie został nałożony, aby aktualizować następną piosenkę o dodatkowy efekt.
+    */
+    private void InitNightcoreEffect()
+    {
+        if (Nightcore_Box.IsChecked == true)
+        {
+            if (_firstWaveFade != null)
+            {
+                var firstspeedControl = new VarispeedSampleProvider(_firstWaveFade, 100, new SoundTouchProfile(false, false));
+                firstspeedControl.PlaybackRate = 1.4f;
+                TracksProperties.WaveOut?.Stop();
+                TracksProperties.WaveOut?.Init(firstspeedControl);
+            }
+        }
+    }
+
+    /*
+    * Sprawdzanie czy efekt Delay nie został nałożony, aby aktualizować następną piosenkę o dodatkowy efekt.
+    */
+    private void InitDelayEffect()
+    {
+        if (Delay_Box.IsChecked == true)
+        {
+            if (_firstWaveFade != null)
+            {
+                var firstDelayEffect = new DelayEffect(_firstWaveFade, 300, 0.7f);
+                TracksProperties.WaveOut?.Stop();
+                TracksProperties.WaveOut?.Init(firstDelayEffect);
+            }
+        }
+    }
+    
+    /*
+    * Sprawdzanie czy efekt Chorus nie został nałożony, aby aktualizować następną piosenkę o dodatkowy efekt.
+    */
+    private void InitChorusEffect()
+    {
+        if (Chorus_Box.IsChecked == true)
+        {
+            if (_firstWaveFade != null)
+            {
+                var firstChorusEffect = new ChorusEffect(_firstWaveFade, 200, 0.4f);
+                TracksProperties.WaveOut?.Stop();
+                TracksProperties.WaveOut?.Init(firstChorusEffect);
+            }
+        }
+    }
+    
+    /*
+     * Metoda odpowiadająca za event załączenia efektu Delay, poprzez naciśnięcie checkBoxa.
+     */
     private void OnOffDelay(object sender, RoutedEventArgs e)
     {
+        /*
+        * Wyłączenie innych check boxów, ponieważ z założenia możemy nałożyć dodatkowo do opcji equalizera oraz
+        * Fade in/out jeden z efektów na siebie.
+        */
         Nightcore_Box.IsChecked = false;
         Chorus_Box.IsChecked = false;
         Distortion_Box.IsChecked = false;
         
         if (Delay_Box.IsChecked == true)
         {
+            /*
+            * Sprawdzanie czy, któryś z zadeklarowanych obiektów nie jest równy null, oraz przypisanie do obu
+            * nowego ISampleProvidera z efektem delay.
+            */
             if (_firstWaveFade != null)
             {
                 var firstDelayEffect = new DelayEffect(_firstWaveFade, 300, 0.5f);
@@ -632,6 +819,11 @@ public partial class Equalizer
             {
                 var secDelayEffect = new DelayEffect(_secWaveFade, 300, 0.5f);
 
+                /*
+                 * Sprawdzenie tylko i wyłączenie czy druga śceiżka dźwiękowa w danym momencie była grana, poniważ
+                 * z założenia, gdy utwór zostaje zatrzymany automatycznie zmieniana jest ścieżka na bazowe
+                 * źródło dźwięku oraz odtwarzacz.
+                 */
                 if (TracksProperties.SecWaveOut?.PlaybackState == PlaybackState.Playing)
                 {
                     TracksProperties.SecWaveOut.Stop();
@@ -644,16 +836,26 @@ public partial class Equalizer
             ImplementBaseWave();
         
     }
-
-    // Włączenie bądź wyłączenie chóru za pomocą check boxa. 
+    
+    /*
+    * Metoda odpowiadająca za event załączenia efektu Chorus, poprzez naciśnięcie checkBoxa.
+    */
     private void OnOffChorus(object sender, RoutedEventArgs e)
     {
+        /*
+        * Wyłączenie innych check boxów, ponieważ z założenia możemy nałożyć dodatkowo do opcji equalizera oraz
+        * Fade in/out jeden z efektów na siebie.
+        */
         Nightcore_Box.IsChecked = false;
         Delay_Box.IsChecked = false;
         Distortion_Box.IsChecked = false;
         
         if (Chorus_Box.IsChecked == true)
         {
+            /*
+            * Sprawdzanie czy, któryś z zadeklarowanych obiektów nie jest równy null, oraz przypisanie do obu
+            * nowego ISampleProvidera z efektem chorus.
+            */
             if (_firstWaveFade != null)
             {
                 var firstChorusEffect = new ChorusEffect(_firstWaveFade, 160, 0.4f);
@@ -674,6 +876,11 @@ public partial class Equalizer
             {
                 var secChorusEffect = new ChorusEffect(_secWaveFade, 160, 0.4f);
 
+                /*
+                * Sprawdzenie tylko i wyłączenie czy druga śceiżka dźwiękowa w danym momencie była grana, poniważ
+                * z założenia, gdy utwór zostaje zatrzymany automatycznie zmieniana jest ścieżka na bazowe
+                * źródło dźwięku oraz odtwarzacz.
+                */
                 if (TracksProperties.SecWaveOut?.PlaybackState == PlaybackState.Playing)
                 {
                     TracksProperties.SecWaveOut.Stop();
@@ -692,18 +899,33 @@ public partial class Equalizer
 
     }
 
-    // Włączenie bądź wyłączenie nightcore za pomocą check boxa. 
+    /*
+    * Metoda odpowiadająca za event załączenia efektu Nightcore, poprzez naciśnięcie checkBoxa.
+    */
     private void OnOffNightcore(object sender, RoutedEventArgs e)
     {
+        /*
+         * Wyłączenie innych check boxów, ponieważ z założenia możemy nałożyć dodatkowo do opcji equalizera oraz
+         * Fade in/out jeden z efektów na siebie.
+         */
         Delay_Box.IsChecked = false;
         Chorus_Box.IsChecked = false;
         Distortion_Box.IsChecked = false;
         
         if (Nightcore_Box.IsChecked == true)
         {
+            /*
+             * Sprawdzanie czy, któryś z zadeklarowanych obiektów nie jest równy null, oraz przypisanie do obu
+             * nowego ISampleProvidera z efektem nightcore.
+             */
             if (_firstWaveFade != null)
             {
+                /*
+                 * Utworzenie obiektu klasy VarispeedSampleProvider w celu uzyskania efektu Nightcore poprzez
+                 * przyśpieszenie granego utworu.
+                 */
                 var speedControl = new VarispeedSampleProvider(_firstWaveFade, 50, new SoundTouchProfile(false, true));
+                // Wartość przyśpieszenia utworu.
                 speedControl.PlaybackRate = 1.4f;
                 
                 if (TracksProperties.WaveOut?.PlaybackState == PlaybackState.Playing)
@@ -723,6 +945,11 @@ public partial class Equalizer
                 var secSpeedControl = new VarispeedSampleProvider(_secWaveFade, 50, new SoundTouchProfile(false, true));
                 secSpeedControl.PlaybackRate = 1.4f;
                 
+                /*
+                * Sprawdzenie tylko i wyłączenie czy druga śceiżka dźwiękowa w danym momencie była grana, poniważ
+                * z założenia, gdy utwór zostaje zatrzymany automatycznie zmieniana jest ścieżka na bazowe
+                * źródło dźwięku oraz odtwarzacz.
+                */
                 if (TracksProperties.SecWaveOut?.PlaybackState == PlaybackState.Playing)
                 {
                     TracksProperties.SecWaveOut.Stop();
@@ -735,20 +962,23 @@ public partial class Equalizer
             ImplementBaseWave();
     }
 
-    // metoda implementujaca dany efekt na aktualnie grajacy utwór
+    /*
+     * Metoda odpowiadająca za powrócenie bazowej ścieżki odtwarzania się dźwięku, w momencie wyłączenia, któregość
+     * z checkBoxów. Metoda dodatkowo sprawdza czy muzyka była grana oraz jeżeli tak, to wznawia jej odtwarzanie.
+     */
     private void ImplementBaseWave()
     {
         if (TracksProperties.SecWaveOut?.PlaybackState == PlaybackState.Playing)
         {
-            TracksProperties.SecWaveOut?.Stop();
+            TracksProperties.SecWaveOut.Stop();
             TracksProperties.SecWaveOut.Init(_secWaveFade);
-            TracksProperties.SecWaveOut?.Play();
+            TracksProperties.SecWaveOut.Play();
         }
         else if (TracksProperties.WaveOut?.PlaybackState == PlaybackState.Playing)
         {
-            TracksProperties.WaveOut?.Stop();
+            TracksProperties.WaveOut.Stop();
             TracksProperties.WaveOut.Init(_firstWaveFade);
-            TracksProperties.WaveOut?.Play();
+            TracksProperties.WaveOut.Play();
         }
         else
         {
@@ -756,18 +986,6 @@ public partial class Equalizer
             TracksProperties.WaveOut.Init(_firstWaveFade);
         }
     }
-
-    //restowanie sliderow equalizera
-    private void Reset_Btn_Click(object sender, RoutedEventArgs e)
-    {
-        sld1.Value = 0;
-        sld2.Value = 0;
-        sld3.Value = 0;
-        sld4.Value = 0;
-        sld5.Value = 0;
-        sld6.Value = 0;
-        sld7.Value = 0;
-        sld8.Value = 0;
-        ChangeEqualizerValues();
-    }
+    
+    #endregion
 }
