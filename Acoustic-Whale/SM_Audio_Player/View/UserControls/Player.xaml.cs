@@ -8,7 +8,7 @@ using SM_Audio_Player.Music;
 using SM_Audio_Player.View.UserControls.buttons;
 
 namespace SM_Audio_Player.View.UserControls;
-
+adasdadas
 public partial class Player : INotifyPropertyChanged
 {
     public delegate void FirstToSecEventHandler(object sender, EventArgs e);
