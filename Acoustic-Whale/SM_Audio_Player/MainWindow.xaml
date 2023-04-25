@@ -36,9 +36,9 @@
         </StackPanel>
         <UC:Player Grid.Row="1" Margin="15, 0, 15, 0" />
         <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Orientation="Horizontal" Grid.Row="2">
-            <Button Name="Playlist_Btn" Click="Playlist_Btn_Click" Content="Playlist" FontSize="16"
+            <Button Style="{DynamicResource ButtonStyle1}" Name="Playlist_Btn" Click="Playlist_Btn_Click" Content="Playlist" FontSize="16"
                     Background="Transparent" Foreground="#45a7bc" BorderThickness="0" Padding="5" Margin="5,0,5,0" />
-            <Button Name="Equalizer_Btn" Click="Equalizer_Btn_Click" Content="Equalizer" FontSize="16"
+            <Button Style="{DynamicResource ButtonStyle1}" Name="Equalizer_Btn" Click="Equalizer_Btn_Click" Content="Settings" FontSize="16"
                     Background="Transparent" Foreground="#45a7bc" BorderThickness="0" Padding="5" Margin="5,0,5,0" />
         </StackPanel>
         <UC:Library x:Name="Lib" Grid.Row="3" Margin="15, 0, 15, 0" Visibility="Visible" />
