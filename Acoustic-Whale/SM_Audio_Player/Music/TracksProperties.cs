@@ -16,7 +16,7 @@ public static class TracksProperties
     public static List<Tracks?> PrevTrack = new();
 
     // Timer utworu
-    public static DispatcherTimer _timer = new();
+    public static DispatcherTimer Timer = new();
 
     // Flagi przycisków Loop oraz Schuffle
     public static int IsLoopOn = 0;
