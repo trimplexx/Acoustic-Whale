@@ -85,6 +85,7 @@ public partial class Equalizer
             InitNightcoreEffect();
             InitDelayEffect();
             InitChorusEffect();
+            InitDistortionEffect();
             TracksProperties.WaveOut?.Play();
 
             /*
@@ -138,6 +139,7 @@ public partial class Equalizer
                 InitNightcoreEffect();
                 InitDelayEffect();
                 InitChorusEffect();
+                InitDistortionEffect();
             }
             else if (TracksProperties.SelectedTrack?.Path == TracksProperties.FirstPlayed?.Path &&
                      TracksProperties.IsSchuffleOn && TracksProperties.IsLoopOn == 0)
@@ -145,12 +147,14 @@ public partial class Equalizer
                 InitNightcoreEffect();
                 InitDelayEffect();
                 InitChorusEffect();
+                InitDistortionEffect();
             }
             else
             {
                 InitNightcoreEffect();
                 InitDelayEffect();
                 InitChorusEffect();
+                InitDistortionEffect();
                 TracksProperties.WaveOut?.Play();
             }
 
@@ -332,6 +336,14 @@ public partial class Equalizer
                     TracksProperties.SecWaveOut.Init(secChorusEffect);
                 }
             }
+            else if (Distortion_Box.IsChecked == true)
+            {
+                if (_secWaveFade != null)
+                {
+                    var distortionEffect = new DistortionSampleProvider(_secWaveFade) { Gain = 1.5f, Mix = 7f };
+                    TracksProperties.SecWaveOut.Init(distortionEffect);
+                }
+            }
             else
             {
                 TracksProperties.SecWaveOut.Init(_secWaveFade);
@@ -408,6 +420,14 @@ public partial class Equalizer
                 {
                     var chorusEffect = new ChorusEffect(_firstWaveFade, 160, 0.4f);
                     TracksProperties.WaveOut.Init(chorusEffect);
+                }
+            }
+            else if (Distortion_Box.IsChecked == true)
+            {
+                if (_firstWaveFade != null)
+                {
+                    var distortionEffect = new DistortionSampleProvider(_firstWaveFade) { Gain = 1.5f, Mix = 7f };
+                    TracksProperties.WaveOut.Init(distortionEffect);
                 }
             }
             else
@@ -771,6 +791,7 @@ public partial class Equalizer
                     InitNightcoreEffect();
                     InitDelayEffect();
                     InitChorusEffect();
+                    InitDistortionEffect();
 
                     /*
                      * Flaga isPlaying wykorzystana wcześniej do sprawdzania czy muzyka w momencie wyłączenia opcji była odtwarzana.
@@ -818,7 +839,7 @@ public partial class Equalizer
         {
             if (_firstWaveFade != null)
             {
-                var delayEffect = new DelayEffect(_firstWaveFade, 300, 0.7f);
+                var delayEffect = new DelayEffect(_firstWaveFade, 300, 0.5f);
                 TracksProperties.WaveOut?.Stop();
                 TracksProperties.WaveOut?.Init(delayEffect);
             }
@@ -834,9 +855,25 @@ public partial class Equalizer
         {
             if (_firstWaveFade != null)
             {
-                var chorusEffect = new ChorusEffect(_firstWaveFade, 200, 0.4f);
+                var chorusEffect = new ChorusEffect(_firstWaveFade, 200, 0.5f);
                 TracksProperties.WaveOut?.Stop();
                 TracksProperties.WaveOut?.Init(chorusEffect);
+            }
+        }
+    }
+    
+    /*
+    * Sprawdzanie czy efekt Chorus nie został nałożony, aby aktualizować następną piosenkę o dodatkowy efekt.
+    */
+    private void InitDistortionEffect()
+    {
+        if (Distortion_Box.IsChecked == true)
+        {
+            if (_firstWaveFade != null)
+            {
+                var distortionEffect = new DistortionSampleProvider(_firstWaveFade) {Gain = 1.5f, Mix = 7f};
+                TracksProperties.WaveOut?.Stop();
+                TracksProperties.WaveOut?.Init(distortionEffect);
             }
         }
     }
@@ -935,7 +972,7 @@ public partial class Equalizer
             */
             if (_firstWaveFade != null)
             {
-                var firstChorusEffect = new ChorusEffect(_firstWaveFade, 160, 0.4f);
+                var firstChorusEffect = new ChorusEffect(_firstWaveFade, 160, 0.5f);
 
                 if (TracksProperties.WaveOut?.PlaybackState == PlaybackState.Playing)
                 {
@@ -951,7 +988,7 @@ public partial class Equalizer
             }
             if (_secWaveFade != null)
             {
-                var secChorusEffect = new ChorusEffect(_secWaveFade, 160, 0.4f);
+                var secChorusEffect = new ChorusEffect(_secWaveFade, 160, 0.5f);
 
                 /*
                 * Sprawdzenie tylko i wyłączenie czy druga śceiżka dźwiękowa w danym momencie była grana, poniważ
@@ -973,7 +1010,59 @@ public partial class Equalizer
     // Włączenie bądź wyłączenie zniekształcenia za pomocą check boxa.
     private void OnOffDistortion(object sender, RoutedEventArgs e)
     {
+/*
+         * Wyłączenie innych check boxów, ponieważ z założenia możemy nałożyć dodatkowo do opcji equalizera oraz
+         * Fade in/out jeden z efektów na siebie.
+         */
+        Delay_Box.IsChecked = false;
+        Chorus_Box.IsChecked = false;
+        Nightcore_Box.IsChecked = false;
 
+        if (Distortion_Box.IsChecked == false)
+        {
+            /*
+             * Sprawdzanie czy, któryś z zadeklarowanych obiektów nie jest równy null, oraz przypisanie do obu
+             * nowego ISampleProvidera z efektem nightcore.
+             */
+            if (_firstWaveFade != null)
+            {
+                /*
+                 * Utworzenie obiektu klasy VarispeedSampleProvider w celu uzyskania efektu Nightcore poprzez
+                 * przyśpieszenie granego utworu.
+                 */
+                var distortionEffect = new DistortionSampleProvider(_firstWaveFade) {Gain = 1.5f, Mix = 7f};
+
+                if (TracksProperties.WaveOut?.PlaybackState == PlaybackState.Playing)
+                {
+                    TracksProperties.WaveOut.Stop();
+                    TracksProperties.WaveOut.Init(distortionEffect);
+                    TracksProperties.WaveOut.Play();
+                }
+                else
+                {
+                    TracksProperties.WaveOut?.Stop();
+                    TracksProperties.WaveOut.Init(distortionEffect);
+                }
+            }
+            if (_secWaveFade != null)
+            {
+                var distortionEffect = new DistortionSampleProvider(_secWaveFade) {Gain = 1.5f, Mix = 7f};
+
+                /*
+                * Sprawdzenie tylko i wyłączenie czy druga śceiżka dźwiękowa w danym momencie była grana, poniważ
+                * z założenia, gdy utwór zostaje zatrzymany automatycznie zmieniana jest ścieżka na bazowe
+                * źródło dźwięku oraz odtwarzacz.
+                */
+                if (TracksProperties.SecWaveOut?.PlaybackState == PlaybackState.Playing)
+                {
+                    TracksProperties.SecWaveOut.Stop();
+                    TracksProperties.SecWaveOut.Init(distortionEffect);
+                    TracksProperties.SecWaveOut.Play();
+                }
+            }
+        }
+        else
+            ImplementBaseWave();
     }
 
     /*
@@ -1087,6 +1176,7 @@ public partial class Equalizer
         InitNightcoreEffect();
         InitDelayEffect();
         InitChorusEffect();
+        InitDistortionEffect();
 
         if (isPlaying)
         {
