@@ -708,7 +708,7 @@ public partial class Equalizer
     {
         try
         {
-            if (Fade_box.IsChecked == true)
+            if (Fade_box.IsChecked == false)
             {
                 /* Przypisanie wartości flagi przechowywanej w statycznej klasie w celu oznajmienia w innych
                  * miejscach kodu, że funckja została włączona.
@@ -870,7 +870,7 @@ public partial class Equalizer
         Chorus_Box.IsChecked = false;
         Distortion_Box.IsChecked = false;
 
-        if (Delay_Box.IsChecked == true)
+        if (Delay_Box.IsChecked == false)
         {
             /*
             * Sprawdzanie czy, któryś z zadeklarowanych obiektów nie jest równy null, oraz przypisanie do obu
@@ -927,7 +927,7 @@ public partial class Equalizer
         Delay_Box.IsChecked = false;
         Distortion_Box.IsChecked = false;
 
-        if (Chorus_Box.IsChecked == true)
+        if (Chorus_Box.IsChecked == false)
         {
             /*
             * Sprawdzanie czy, któryś z zadeklarowanych obiektów nie jest równy null, oraz przypisanie do obu
@@ -989,7 +989,7 @@ public partial class Equalizer
         Chorus_Box.IsChecked = false;
         Distortion_Box.IsChecked = false;
 
-        if (Nightcore_Box.IsChecked == true)
+        if (Nightcore_Box.IsChecked == false)
         {
             /*
              * Sprawdzanie czy, któryś z zadeklarowanych obiektów nie jest równy null, oraz przypisanie do obu
@@ -1067,7 +1067,7 @@ public partial class Equalizer
         /*
          * Sprawdzenie zaznaczenia opcji Stereo to mono
          */
-        if (StereoToMono_Box.IsChecked == true && _firstStereoToMono != null)
+        if (StereoToMono_Box.IsChecked == false && _firstStereoToMono != null)
             _firstWaveEqualizer = new EqualizerSampleProvider(_firstStereoToMono);
 
         if (_equalizerOn)

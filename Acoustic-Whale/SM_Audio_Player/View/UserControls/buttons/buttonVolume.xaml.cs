@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.IO;
 using System.Windows;
+using System.Windows.Input;
 using Newtonsoft.Json;
 using SM_Audio_Player.Music;
 
@@ -10,7 +11,6 @@ namespace SM_Audio_Player.View.UserControls.buttons;
 public partial class ButtonVolume : INotifyPropertyChanged
 {
     private const string JsonPath = @"MusicVolumeJSON.json";
-    private double _currentVolumeValue;
     private bool _isMuted;
     private double _savedVolumeValue;
     private string? _volumeIcon;
@@ -22,11 +22,11 @@ public partial class ButtonVolume : INotifyPropertyChanged
             DataContext = this;
             InitializeComponent();
             if (File.Exists(JsonPath))
-                _currentVolumeValue = ReadVolumeFromJsonFile();
+                TracksProperties.Volume = ReadVolumeFromJsonFile();
             else
-                _currentVolumeValue = 50;
+                TracksProperties.Volume = 50;
 
-            sldVolume.Value = _currentVolumeValue;
+            sldVolume.Value = TracksProperties.Volume;
             VolumeIcon = ValueIconChange(sldVolume.Value);
             ButtonNext.NextButtonClicked += OnTrackSwitch;
             ButtonPrevious.PreviousButtonClicked += OnTrackSwitch;
@@ -100,7 +100,7 @@ public partial class ButtonVolume : INotifyPropertyChanged
             if (_isMuted && _savedVolumeValue != 0)
             {
                 sldVolume.Value = _savedVolumeValue;
-                ValueIconChange(_currentVolumeValue);
+                ValueIconChange(TracksProperties.Volume);
                 _isMuted = false;
             }
             else
@@ -123,10 +123,10 @@ public partial class ButtonVolume : INotifyPropertyChanged
         try
         {
             /*Pobieranie aktualnej wartości slidera*/
-            _currentVolumeValue = e.NewValue;
-            ValueIconChange(_currentVolumeValue);
+            TracksProperties.Volume = e.NewValue;
+            ValueIconChange(TracksProperties.Volume);
 
-            var sliderValue = _currentVolumeValue / 100.0; // Skalowanie wartości na zakres od 0 do 1
+            var sliderValue = TracksProperties.Volume / 100.0; // Skalowanie wartości na zakres od 0 do 1
             var newVolume = sliderValue; // Obliczamy nową wartość głośności
 
             if (TracksProperties.AudioFileReader != null)
@@ -136,7 +136,7 @@ public partial class ButtonVolume : INotifyPropertyChanged
                 TracksProperties.SecAudioFileReader.Volume = (float)newVolume;
 
             // Zapis do pliku JSON w celu ponownego odpalenia aplikacji z zapisaną wartością głośności
-            var output = JsonConvert.SerializeObject(_currentVolumeValue, Formatting.Indented);
+            var output = JsonConvert.SerializeObject(TracksProperties.Volume, Formatting.Indented);
             File.WriteAllText(JsonPath, output);
         }
         catch (Exception ex)
@@ -169,8 +169,8 @@ public partial class ButtonVolume : INotifyPropertyChanged
     {
         try
         {
-            ValueIconChange(_currentVolumeValue);
-            var sliderValue = _currentVolumeValue / 100.0; // Skalowanie wartości na zakres od 0 do 1
+            ValueIconChange(TracksProperties.Volume);
+            var sliderValue = TracksProperties.Volume / 100.0; // Skalowanie wartości na zakres od 0 do 1
             var newVolume = sliderValue; // Obliczamy nową wartość głośności
 
             if (TracksProperties.AudioFileReader != null)

@@ -21,6 +21,7 @@ public partial class ButtonShuffle : INotifyPropertyChanged
             ShuffleMouseColor = "#2FC7E9";
             ShuffleIcon = Icons.GetShuffleIconOff();
             InitializeComponent();
+            MainWindow.OnSchuffle += btnShuffle_Click;
         }
         catch (Exception ex)
         {
@@ -62,7 +63,7 @@ public partial class ButtonShuffle : INotifyPropertyChanged
     public event PropertyChangedEventHandler? PropertyChanged;
 
     /*Włącz losowe odtwarzanie utworów*/
-    private void btnShuffle_Click(object sender, RoutedEventArgs e)
+    private void btnShuffle_Click(object sender, EventArgs e)
     {
         try
         {

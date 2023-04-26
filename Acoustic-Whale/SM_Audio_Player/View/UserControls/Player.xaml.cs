@@ -38,10 +38,13 @@ public partial class Player : INotifyPropertyChanged
             ButtonPlay.ResetEverything += ResetValues;
             Library.DoubleClickEvent += OnTrackSwitch;
             Library.ResetEverything += ResetValues;
+            Library.ResetSelected += OnTrackSwitch;
 
             Equalizer.FadeInEvent += OnTrackSwitch;
             Equalizer.FadeOffOn += OnTrackSwitch;
             Library.OnDeleteTrack += OnTrackSwitch;
+            MainWindow.ForwardSong += TimeSlider_CtrlShiftRight;
+            MainWindow.RewindSong += TimeSlider_CtrlShiftRight;
 
             // Przypisanie metody na tick timera
             TracksProperties.Timer.Tick += Timer_Tick;
@@ -336,4 +339,70 @@ public partial class Player : INotifyPropertyChanged
             throw;
         }
     }
+
+    private void TimeSlider_CtrlShiftRight(object sender, EventArgs e)
+    {
+        try
+        {
+            var totalSeconds = _result.TotalSeconds;
+            double progress;
+            if (Keyboard.IsKeyDown(Key.Right)&& sldTime.Value < sldTime.Maximum - 0.1)
+            {
+                progress = (sldTime.Value + 0.1) / sldTime.Maximum;
+            }
+            else if (Keyboard.IsKeyDown(Key.Left) && sldTime.Value  > sldTime.Minimum + 0.1)
+            {
+                progress = (sldTime.Value - 0.1) / sldTime.Maximum;
+            }
+            else
+            {
+                progress = (sldTime.Value) / sldTime.Maximum;
+            }
+            
+            var newPosition = totalSeconds * progress;
+
+            if (TracksProperties.AudioFileReader != null)
+            {
+                if (TracksProperties.AudioFileReader.FileName == TracksProperties.SecAudioFileReader?.FileName
+                    && TracksProperties.SelectedTrack?.Path == TracksProperties.AudioFileReader.FileName)
+                {
+                    var currentPosition = TracksProperties.AudioFileReader.CurrentTime.TotalSeconds;
+                    var currentPositionSec = TracksProperties.SecAudioFileReader.CurrentTime.TotalSeconds;
+
+                    if (TracksProperties.WaveOut?.PlaybackState == PlaybackState.Playing
+                        && TracksProperties.SecWaveOut?.PlaybackState == PlaybackState.Playing)
+                    {
+                        if (currentPosition > currentPositionSec)
+                            TracksProperties.SecAudioFileReader.CurrentTime = TimeSpan.FromSeconds(newPosition);
+                        else
+                            TracksProperties.AudioFileReader.CurrentTime = TimeSpan.FromSeconds(newPosition);
+                    }
+                    else if (TracksProperties.WaveOut?.PlaybackState == PlaybackState.Playing)
+                    {
+                        TracksProperties.AudioFileReader.CurrentTime = TimeSpan.FromSeconds(newPosition);
+                    }
+                    else if (TracksProperties.SecWaveOut?.PlaybackState == PlaybackState.Playing)
+                    {
+                        TracksProperties.SecAudioFileReader.CurrentTime = TimeSpan.FromSeconds(newPosition);
+                    }
+                }
+                else if (TracksProperties.SelectedTrack?.Path == TracksProperties.AudioFileReader.FileName)
+                {
+                    TracksProperties.AudioFileReader.CurrentTime = TimeSpan.FromSeconds(newPosition);
+                }
+                else
+                {
+                    if (TracksProperties.SecAudioFileReader != null)
+                        TracksProperties.SecAudioFileReader.CurrentTime = TimeSpan.FromSeconds(newPosition);
+                }
+            }
+            TracksProperties.Timer.Start();
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Position change error: {ex.Message}");
+            throw;
+        }
+    }
+
 }

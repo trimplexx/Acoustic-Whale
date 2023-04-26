@@ -21,6 +21,7 @@ public partial class ButtonLoop : INotifyPropertyChanged
             LoopMouseColor = "#2FC7E9";
             LoopIcon = Icons.GetLoopOff();
             InitializeComponent();
+            MainWindow.OnLoop += btnLoop_Click;
         }
         catch (Exception ex)
         {
@@ -60,7 +61,7 @@ public partial class ButtonLoop : INotifyPropertyChanged
     }
 
     /*Powtarzaj aktualnie włączony utwór*/
-    private void btnLoop_Click(object sender, RoutedEventArgs e)
+    private void btnLoop_Click(object sender, EventArgs e)
     {
         try
         {

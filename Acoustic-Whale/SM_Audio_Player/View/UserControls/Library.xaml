@@ -14,7 +14,7 @@
         <!-- Główna biblioteka (List View) -->
         <ListView x:Name='lv' Background="Transparent" BorderThickness="0" Foreground="#45a7bc"
                   GridViewColumnHeader.Click="GridViewColumnHeaderClickedHandler"
-                  SelectionChanged="Lv_OnSelectionChanged" FontSize="16" AlternationCount="2">
+                  SelectionChanged="Lv_OnSelectionChanged" KeyDown="KeyDownEvent" FontSize="16" AlternationCount="2">
 
             <ListView.View>
                 <GridView AllowsColumnReorder="False"
@@ -69,8 +69,8 @@
 
         <!-- Menu na dole układu -->
         <Menu VerticalAlignment="Center" Background="Transparent" Foreground="#45a7bc" Grid.Row="1">
-            <MenuItem Name="Add_Btn" Click="Add_Btn_Click" Header="Add" FontSize="16" Padding="20,5,20,5" BorderThickness="0"/>
-            <MenuItem Name="Delete_Btn" Click="Delete_Btn_Click" Header="Delete" FontSize="16" Padding="20,5,20,5" BorderThickness="0"/>
+            <MenuItem Name="Add_Btn" PreviewMouseLeftButtonUp="Add_Btn_Click" Header="Add" FontSize="16" Padding="20,5,20,5" BorderThickness="0"/>
+            <MenuItem Name="Delete_Btn" PreviewMouseLeftButtonUp="Delete_Btn_Click" Header="Delete" FontSize="16" Padding="20,5,20,5" BorderThickness="0"/>
         </Menu>
 
     </Grid>

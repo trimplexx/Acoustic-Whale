@@ -6,7 +6,7 @@
              mc:Ignorable="d"
              d:DesignHeight="15" d:DesignWidth="15">
 
-    <Button Width="15" Height="15" x:Name="btnMaximize" Click="btnMaximize_Click">
+    <Button Width="15" Height="15" x:Name="btnMaximize" PreviewMouseLeftButtonUp="btnMaximize_Click">
         <Button.Template>
             <ControlTemplate TargetType="Button">
                 <Viewbox>

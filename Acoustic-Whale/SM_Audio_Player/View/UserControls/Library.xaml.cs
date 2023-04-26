@@ -31,6 +31,8 @@ public partial class Library
     * w trakcie używania aplikacji mogła by ona wyrzucić wyjątek)
     */
     public delegate void ResetEverythingEventHandler(object sender, EventArgs e);
+    public delegate void RefreshSelectedItemEventHandler(object sender, EventArgs e);
+
 
     public const string JsonPath = @"MusicTrackList.json";
     private string? _prevColumnSorted;
@@ -51,6 +53,7 @@ public partial class Library
             ButtonPlay.RefreshList += RefreshTrackList;
             ButtonNext.RefreshList += RefreshTrackList;
             ButtonPrevious.RefreshList += RefreshTrackList;
+            MainWindow.AddTrack += Add_Btn_Click;
             RefreshTrackListViewAndId();
         }
         catch (Exception ex)
@@ -65,6 +68,7 @@ public partial class Library
     public static event ResetEverythingEventHandler? ResetEverything;
     
     public static event OnDeleteTrackEventHandler? OnDeleteTrack;
+    public static event ResetEverythingEventHandler? ResetSelected;
 
     /*
      * Istotne odświeżanie listy gdyby scieżka do pliku się zmieniła w trakcie odtwarzania, track z złą ściażka z pliku
@@ -202,7 +206,7 @@ public partial class Library
     }
 
     // Metoda odpowiadająca za dodawanie utworów do biblioteki utworów w programie wraz ze wszystkimi metadanymi
-    private void Add_Btn_Click(object sender, RoutedEventArgs e)
+    private void Add_Btn_Click(object sender, EventArgs e)
     {
         try
         {
@@ -393,6 +397,7 @@ public partial class Library
             {
                 var elementId = lv.SelectedIndex;
                 TracksProperties.SelectedTrack = TracksProperties.TracksList?.ElementAt(elementId);
+                ResetSelected?.Invoke(this, EventArgs.Empty);
             }
         }
         catch (Exception ex)
@@ -475,6 +480,22 @@ public partial class Library
         {
             MessageBox.Show($"On double click track {ex.Message}");
             throw;
+        }
+    }
+
+    private void KeyDownEvent(object sender, KeyEventArgs e)
+    {
+        if (e.Key == Key.Delete)
+        {
+            Delete_Btn_Click(sender,e);
+        }
+
+        if (Keyboard.IsKeyDown(Key.LeftCtrl))
+        {
+            if (e.Key == Key.A)
+            {
+                lv.SelectAll();
+            }
         }
     }
 }

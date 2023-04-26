@@ -6,7 +6,7 @@
              mc:Ignorable="d"
              d:DesignHeight="30" d:DesignWidth="30">
 
-    <Button Width="30" Height="30" x:Name="btnLoop" Click="btnLoop_Click">
+    <Button Width="30" Height="30" x:Name="btnLoop" PreviewMouseLeftButtonUp="btnLoop_Click">
         <Button.Template>
             <ControlTemplate TargetType="Button">
                 <Viewbox>
@@ -19,7 +19,7 @@
                     <Trigger Property="IsMouseOver" Value="True">
                         <Setter TargetName="loop" Property="Fill" Value="{Binding LoopMouseColor}" />
                     </Trigger>
-                    <EventTrigger RoutedEvent="Button.Click">
+                    <EventTrigger RoutedEvent="Button.PreviewMouseLeftButtonUp">
                         <BeginStoryboard>
                             <Storyboard>
                                 <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(Button.Width)">

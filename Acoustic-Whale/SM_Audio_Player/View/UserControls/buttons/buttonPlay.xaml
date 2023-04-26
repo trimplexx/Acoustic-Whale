@@ -6,7 +6,7 @@
              mc:Ignorable="d"
              d:DesignHeight="50" d:DesignWidth="50">
 
-    <Button Width="50" Height="50" x:Name="btnPlay" Click="btnPlay_Click">
+    <Button Width="50" Height="50" x:Name="btnPlay" PreviewMouseLeftButtonUp="btnPlay_Click">
         <Button.Template>
             <ControlTemplate>
                 <Viewbox>
@@ -21,7 +21,7 @@
                     <Trigger Property="IsMouseOver" Value="True">
                         <Setter TargetName="test" Property="Fill" Value="#2FC7E9" />
                     </Trigger>
-                    <EventTrigger RoutedEvent="Button.Click">
+                    <EventTrigger RoutedEvent="Button.PreviewMouseLeftButtonUp">
                         <BeginStoryboard>
                             <Storyboard>
                                 <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(Button.Width)">

@@ -35,6 +35,7 @@ public partial class ButtonNext
     public ButtonNext()
     {
         InitializeComponent();
+        MainWindow.NextTrack += btnNext_Click;
     }
 
     public static event NextButtonClickedEventHandler? NextButtonClicked;
@@ -46,7 +47,7 @@ public partial class ButtonNext
     public static event SelectedTrackNullEventHandler? NextSelectedNull;
 
     /*Włącz następny utwór*/
-    private void btnNext_Click(object sender, RoutedEventArgs e)
+    private void btnNext_Click(object sender, EventArgs e)
     {
         try
         {

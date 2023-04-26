@@ -1,16 +1,35 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Input;
+using SM_Audio_Player.Music;
+using SM_Audio_Player.View.UserControls.buttons;
 
 namespace SM_Audio_Player;
 
 public partial class MainWindow
 {
+    public delegate void PlayMusicBySpaceEvent(object sender, EventArgs e);
+    public static event PlayMusicBySpaceEvent? PlayMusic;
+    public delegate void AddTrackBySpaceEvent(object sender, EventArgs e);
+    public static event AddTrackBySpaceEvent? AddTrack;
+    public delegate void OnSchuffleEvent(object sender, EventArgs e);
+    public static event OnSchuffleEvent? OnSchuffle;
+    public delegate void OnLoopEvent(object sender, EventArgs e);
+    public static event OnLoopEvent? OnLoop;
+    public delegate void PrevTrackEvent(object sender, EventArgs e);
+    public static event PrevTrackEvent? PrevTrack;
+    public delegate void NextTrackEvent(object sender, EventArgs e);
+    public static event NextTrackEvent? NextTrack;
+    public delegate void ForwardSongEvent(object sender, EventArgs e);
+    public static event ForwardSongEvent? ForwardSong;
+    public delegate void RewindSongEvent(object sender, EventArgs e);
+    public static event RewindSongEvent? RewindSong;
     public MainWindow()
     {
         InitializeComponent();
         MaxHeight = SystemParameters.MaximizedPrimaryScreenHeight;
         MaxWidth = SystemParameters.MaximizedPrimaryScreenWidth;
+        Focus();
     }
 
     /*Reakcja okna na użycie LMB na pasek menu*/
@@ -71,5 +90,106 @@ public partial class MainWindow
     {
         Eq.Visibility = Visibility.Hidden;
         Lib.Visibility = Visibility.Visible;
+    }
+
+    private void KeyDown_event(object sender, KeyEventArgs e)
+    {
+        if (Keyboard.IsKeyDown(Key.LeftCtrl))
+        {
+            if (!Keyboard.IsKeyDown(Key.LeftShift))
+            {
+                if (e.Key == Key.Left)
+                    PrevTrack?.Invoke(this, EventArgs.Empty);
+            }
+        }
+        
+        if (Keyboard.IsKeyDown(Key.LeftCtrl))
+        {
+            if (!Keyboard.IsKeyDown(Key.LeftShift))
+            {
+                if (e.Key == Key.Right)
+                    NextTrack?.Invoke(this, EventArgs.Empty);
+            }
+        }
+        
+        if (Keyboard.IsKeyDown(Key.LeftCtrl))
+        {
+            if (Keyboard.IsKeyDown(Key.LeftShift))
+            {
+                if (e.Key == Key.Left)
+                {
+                    RewindSong?.Invoke(this, EventArgs.Empty);
+                    if (TracksProperties.AudioFileReader != null)
+                        TracksProperties.AudioFileReader.Volume = 0;
+                    if(TracksProperties.SecAudioFileReader != null)
+                        TracksProperties.SecAudioFileReader.Volume = 0;
+                }
+            }
+        }
+        
+        if (Keyboard.IsKeyDown(Key.LeftCtrl))
+        {
+            if (Keyboard.IsKeyDown(Key.LeftShift))
+            {
+                if (e.Key == Key.Right)
+                {
+                    ForwardSong?.Invoke(this, EventArgs.Empty);
+                    if (TracksProperties.AudioFileReader != null)
+                        TracksProperties.AudioFileReader.Volume = 0;
+                    if(TracksProperties.SecAudioFileReader != null)
+                        TracksProperties.SecAudioFileReader.Volume = 0;
+                }
+                   
+            }
+        }
+    }
+
+    private void KeyUp_event(object sender, KeyEventArgs e)
+    {
+        if (Keyboard.IsKeyUp(Key.LeftCtrl))
+        {
+            if (Keyboard.IsKeyUp(Key.LeftShift))
+            {
+
+                if (TracksProperties.AudioFileReader != null)
+                    TracksProperties.AudioFileReader.Volume = (float)TracksProperties.Volume/100;
+                if(TracksProperties.SecAudioFileReader != null)
+                    TracksProperties.SecAudioFileReader.Volume = (float)TracksProperties.Volume/100;
+            }
+        }
+        
+        if (e.Key == Key.Space)
+        {
+            TracksProperties.SpaceFlag = true;
+            
+            if (TracksProperties.SpaceFlag)
+                PlayMusic?.Invoke(this, EventArgs.Empty);
+            
+            TracksProperties.SpaceFlag = true;
+        }
+
+        if (Keyboard.IsKeyDown(Key.LeftCtrl))
+        {
+            if(e.Key == Key.Insert)
+                AddTrack?.Invoke(this, EventArgs.Empty);
+        }
+
+        if (Keyboard.IsKeyDown(Key.LeftCtrl))
+        {
+            if(e.Key == Key.S)
+                OnSchuffle?.Invoke(this, EventArgs.Empty);
+        }
+        
+        if (Keyboard.IsKeyDown(Key.LeftCtrl))
+        {
+            if(e.Key == Key.L)
+                OnLoop?.Invoke(this, EventArgs.Empty);
+        }
+        
+    }
+
+    private void FlagReset(object sender, MouseButtonEventArgs e)
+    {
+        TracksProperties.SpaceFlag = true;
     }
 }

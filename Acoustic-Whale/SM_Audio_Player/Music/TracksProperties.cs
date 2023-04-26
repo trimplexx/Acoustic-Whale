@@ -9,6 +9,9 @@ namespace SM_Audio_Player.Music;
  */
 public static class TracksProperties
 {
+    public static bool SpaceFlag = true;
+
+    public static double Volume;
     // Lista z utworami
     public static List<Tracks>? TracksList = new();
 

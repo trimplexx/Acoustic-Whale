@@ -98,25 +98,25 @@
         <Border Grid.RowSpan="3" Grid.Column="1" BorderThickness="0,0,3,0" BorderBrush="#45a7bc" Margin="0,5,0,5" />
 
         <StackPanel Grid.Row="1" Grid.Column="1" Margin="10">
-            <CheckBox Template="{DynamicResource CheckBoxTemplate1}" Name="Delay_Box" Click="OnOffDelay">
+            <CheckBox Template="{DynamicResource CheckBoxTemplate1}" Name="Delay_Box" PreviewMouseLeftButtonUp="OnOffDelay">
                 <CheckBox.LayoutTransform>
                     <ScaleTransform ScaleX="1.5" ScaleY="1.5" />
                 </CheckBox.LayoutTransform>
                 Delay
             </CheckBox>
-            <CheckBox Template="{DynamicResource CheckBoxTemplate1}" Name="Chorus_Box" Click="OnOffChorus">
+            <CheckBox Template="{DynamicResource CheckBoxTemplate1}" Name="Chorus_Box" PreviewMouseLeftButtonUp="OnOffChorus">
                 <CheckBox.LayoutTransform>
                     <ScaleTransform ScaleX="1.5" ScaleY="1.5" />
                 </CheckBox.LayoutTransform>
                 Chorus
             </CheckBox>
-            <CheckBox Template="{DynamicResource CheckBoxTemplate1}" Name="Distortion_Box" Click="OnOffDistortion">
+            <CheckBox Template="{DynamicResource CheckBoxTemplate1}" Name="Distortion_Box" PreviewMouseLeftButtonUp="OnOffDistortion">
                 <CheckBox.LayoutTransform>
                     <ScaleTransform ScaleX="1.5" ScaleY="1.5" />
                 </CheckBox.LayoutTransform>
                 Distortion
             </CheckBox>
-            <CheckBox Template="{DynamicResource CheckBoxTemplate1}" Name="Nightcore_Box" Click="OnOffNightcore">
+            <CheckBox Template="{DynamicResource CheckBoxTemplate1}" Name="Nightcore_Box" PreviewMouseLeftButtonUp="OnOffNightcore">
                 <CheckBox.LayoutTransform>
                     <ScaleTransform ScaleX="1.5" ScaleY="1.5" />
                 </CheckBox.LayoutTransform>
@@ -132,13 +132,13 @@
         </StackPanel>
 
         <StackPanel Grid.Row="1" Grid.Column="2" Margin="10">
-            <CheckBox Template="{DynamicResource CheckBoxTemplate1}" Name="Fade_box" Click="Fade_CheckBoxClick" >
+            <CheckBox Template="{DynamicResource CheckBoxTemplate1}" Name="Fade_box" PreviewMouseLeftButtonUp="Fade_CheckBoxClick" >
                 <CheckBox.LayoutTransform>
                     <ScaleTransform ScaleX="1.5" ScaleY="1.5" />
                 </CheckBox.LayoutTransform>
                 Fade In/Out
             </CheckBox>
-            <CheckBox Template="{DynamicResource CheckBoxTemplate1}" Name="StereoToMono_Box" Click="OnOffStereoToMono">
+            <CheckBox Template="{DynamicResource CheckBoxTemplate1}" Name="StereoToMono_Box" PreviewMouseLeftButtonUp="OnOffStereoToMono">
                 <CheckBox.LayoutTransform>
                     <ScaleTransform ScaleX="1.5" ScaleY="1.5" />
                 </CheckBox.LayoutTransform>
@@ -149,8 +149,8 @@
 
         <StackPanel Grid.Row="2" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
             <!-- zmieniane na przycisk (desi chciał) -->
-            <Button Style="{DynamicResource ButtonStyle1}" Name="Equalizer_Btn" Click="OnOffEqualizer" Content="Equalizer On" FontSize="16" Padding="5" Background="Transparent" Foreground="#45a7bc" BorderThickness="0" Margin="5,0,5,5" VerticalContentAlignment="Center"/>
-            <Button Style="{DynamicResource ButtonStyle1}" Name="Reset_Btn" Click="Reset_Btn_Click" Content="Reset" FontSize="16" Padding="5" Background="Transparent" Foreground="#45a7bc" BorderThickness="0" Margin="5,0,5,5" VerticalContentAlignment="Center"/>
+            <Button Style="{DynamicResource ButtonStyle1}" Name="Equalizer_Btn" PreviewMouseDown="OnOffEqualizer" Content="Equalizer On" FontSize="16" Padding="5" Background="Transparent" Foreground="#45a7bc" BorderThickness="0" Margin="5,0,5,5" VerticalContentAlignment="Center"/>
+            <Button Style="{DynamicResource ButtonStyle1}" Name="Reset_Btn" PreviewMouseDown="Reset_Btn_Click" Content="Reset" FontSize="16" Padding="5" Background="Transparent" Foreground="#45a7bc" BorderThickness="0" Margin="5,0,5,5" VerticalContentAlignment="Center"/>
         </StackPanel>
 
     </Grid>

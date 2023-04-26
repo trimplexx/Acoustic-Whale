@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
+using System.Windows.Input;
 using NAudio.Wave;
 using SM_Audio_Player.Music;
 
@@ -59,6 +60,8 @@ public partial class ButtonPlay : INotifyPropertyChanged
             Equalizer.FadeInEvent += NextTrackEvent;
             Equalizer.FadeOffOn += NextTrackEvent;
             Library.OnDeleteTrack += NextTrackEvent;
+            MainWindow.PlayMusic += btnPlay_Click;
+            MainWindow.PlayMusic += NextTrackEvent;
         }
         catch (Exception ex)
         {
@@ -88,11 +91,11 @@ public partial class ButtonPlay : INotifyPropertyChanged
     public static event ButtonPlayEventToEqualizer? ButtonPlayEvent;
 
 
-    public void btnPlay_Click(object sender, RoutedEventArgs e)
+    public void btnPlay_Click(object sender, EventArgs e)
     {
         try
         {
-            if (TracksProperties.TracksList != null && TracksProperties.TracksList.Count != 0)
+            if (TracksProperties.TracksList != null && TracksProperties.TracksList.Count != 0 && TracksProperties.SpaceFlag)
             {
                 /*
                  * Przepiswanie w momencie zatrzymania muzyki utworu odtwarzanego z drugiego źródła dźwięku, na
@@ -136,8 +139,8 @@ public partial class ButtonPlay : INotifyPropertyChanged
                 else
                 {
                     /*
-                * Brak wybranego tracku powoduje odpalenie pierwszego dostępnego z listy.
-                */
+                    * Brak wybranego tracku powoduje odpalenie pierwszego dostępnego z listy.
+                    */
                     if (TracksProperties.SelectedTrack == null)
                         TracksProperties.SelectedTrack = TracksProperties.TracksList.ElementAt(0);
 
@@ -192,6 +195,8 @@ public partial class ButtonPlay : INotifyPropertyChanged
                 }
 
                 if (_isPlaying) ButtonPlayEvent?.Invoke(this, EventArgs.Empty);
+                
+                TracksProperties.SpaceFlag = false;
             }
         }
         catch (Exception ex)

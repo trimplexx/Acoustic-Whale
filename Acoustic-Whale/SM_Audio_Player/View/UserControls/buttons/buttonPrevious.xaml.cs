@@ -33,6 +33,7 @@ public partial class ButtonPrevious
     public ButtonPrevious()
     {
         InitializeComponent();
+        MainWindow.PrevTrack += btnPrevious_Click;
     }
 
     public static event PreviousButtonClickedEventHandler? PreviousButtonClicked;
@@ -42,7 +43,7 @@ public partial class ButtonPrevious
     public static event ResetEverythingEventHandler? ResetEverything;
 
     /*Włącz pooprzedni utwór*/
-    private void btnPrevious_Click(object sender, RoutedEventArgs e)
+    private void btnPrevious_Click(object sender, EventArgs e)
     {
         try
         {
