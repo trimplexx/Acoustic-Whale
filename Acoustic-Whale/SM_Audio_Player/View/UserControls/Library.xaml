@@ -5,51 +5,46 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d"
              d:DesignHeight="570" d:DesignWidth="1000">
+    
+    <UserControl.Resources>
+
+    </UserControl.Resources>
+    
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition />
             <RowDefinition Height="60" />
         </Grid.RowDefinitions>
-
-        <!-- Główna biblioteka (List View) -->
-        <ListView x:Name='lv' Background="Transparent" BorderThickness="0" Foreground="#45a7bc"
-                  GridViewColumnHeader.Click="GridViewColumnHeaderClickedHandler"
-                  SelectionChanged="Lv_OnSelectionChanged" KeyDown="KeyDownEvent" FontSize="16" AlternationCount="2">
-
-            <ListView.View>
-                <GridView AllowsColumnReorder="False"
-                          ColumnHeaderContainerStyle="{StaticResource GridViewColumnHeaderStyle1}">
-                    <GridViewColumn Header="Id" Width="30" DisplayMemberBinding="{Binding Id}" />
-                    <GridViewColumn Header="Title" Width="300" DisplayMemberBinding="{Binding Title}" />
-                    <GridViewColumn Header="Author" Width="100" DisplayMemberBinding="{Binding Author}" />
-                    <GridViewColumn Header="Album" Width="100" DisplayMemberBinding="{Binding Album}" />
-                    <GridViewColumn Header="Duration" Width="100" DisplayMemberBinding="{Binding Time}" />
-                </GridView>
-            </ListView.View>
-            <ListView.ItemContainerStyle>
-                <Style TargetType="ListViewItem">
-                    <EventSetter Event="MouseDoubleClick" Handler="OnMouseDoubleClick" />
+        
+        <!-- Główna biblioteka (Data Grid) -->
+        <DataGrid x:Name="lv"  Background="Transparent" BorderThickness="0" Foreground="#45a7bc"
+                  SelectionChanged="Lv_OnSelectionChanged" KeyDown="KeyDownEvent" MouseDoubleClick="OnMouseDoubleClick" FontSize="16" AlternationCount="2"
+                  CanUserResizeColumns="False" HeadersVisibility="Column" IsReadOnly="True" CanUserReorderColumns="false" >
+            
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Id" Binding="{Binding Id}" Width="60" CanUserSort="False"/>
+                <DataGridTextColumn Header="Title" Binding="{Binding Title}" Width="*" CanUserSort="False"/>
+                <DataGridTextColumn Header="Author" Binding="{Binding Author}" Width="*" CanUserSort="False"/>
+                <DataGridTextColumn Header="Album" Binding="{Binding Album}" Width="*" CanUserSort="False"/>
+                <DataGridTextColumn Header="Duration" Binding="{Binding Time}" Width="100" CanUserSort="False"/>
+            </DataGrid.Columns>
+            
+            <DataGrid.ColumnHeaderStyle>
+                <Style TargetType="DataGridColumnHeader">
+                    <EventSetter Event="Click" Handler="GridViewColumnHeaderClickedHandler"/>
+                    <Setter Property="Background" Value="#292929" />
+                    <Setter Property="Foreground" Value="#45a7bc" />
+                    <Setter Property="Padding" Value="5" />
+                    <Setter Property="HorizontalContentAlignment" Value="Center" />
+                </Style>
+            </DataGrid.ColumnHeaderStyle>
+            
+            <DataGrid.ItemContainerStyle>
+                <Style TargetType="DataGridRow">
                     <Setter Property="Background" Value="Transparent" />
                     <Setter Property="Padding" Value="0" />
                     <Setter Property="Margin" Value="0" />
                     <Setter Property="VerticalContentAlignment" Value="Center" />
-                    <!-- Ten template usuwa domyślny efekt gradientu -->
-                    <Setter Property="Template">
-                        <Setter.Value>
-                            <ControlTemplate TargetType="{x:Type ListViewItem}">
-                                <Border Padding="{TemplateBinding Padding}"
-                                        Background="{TemplateBinding Background}"
-                                        BorderBrush="{TemplateBinding BorderBrush}"
-                                        BorderThickness="{TemplateBinding BorderThickness}"
-                                        SnapsToDevicePixels="true">
-                                    <GridViewRowPresenter
-                                        HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                        VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                                        SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
-                                </Border>
-                            </ControlTemplate>
-                        </Setter.Value>
-                    </Setter>
                     <Style.Triggers>
                         <Trigger Property="ItemsControl.AlternationIndex" Value="1">
                             <Setter Property="Background" Value="#292929" />
@@ -64,8 +59,8 @@
                         </Trigger>
                     </Style.Triggers>
                 </Style>
-            </ListView.ItemContainerStyle>
-        </ListView>
+            </DataGrid.ItemContainerStyle>
+        </DataGrid>
 
         <!-- Menu na dole układu -->
         <Menu VerticalAlignment="Center" Background="Transparent" Foreground="#45a7bc" Grid.Row="1">

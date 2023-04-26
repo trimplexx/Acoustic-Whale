@@ -4,14 +4,19 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
+using System.Windows.Controls.Primitives;
+using System.Windows.Forms;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using Microsoft.Win32;
 using NAudio.Wave;
 using Newtonsoft.Json;
 using SM_Audio_Player.Music;
 using SM_Audio_Player.View.UserControls.buttons;
+using Binding = System.Windows.Data.Binding;
+using KeyEventArgs = System.Windows.Input.KeyEventArgs;
+using MessageBox = System.Windows.MessageBox;
+using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
 
 namespace SM_Audio_Player.View.UserControls;
 
@@ -68,7 +73,7 @@ public partial class Library
     public static event ResetEverythingEventHandler? ResetEverything;
     
     public static event OnDeleteTrackEventHandler? OnDeleteTrack;
-    public static event ResetEverythingEventHandler? ResetSelected;
+    public static event RefreshSelectedItemEventHandler? ResetSelected;
 
     /*
      * Istotne odświeżanie listy gdyby scieżka do pliku się zmieniła w trakcie odtwarzania, track z złą ściażka z pliku
@@ -148,60 +153,52 @@ public partial class Library
             throw;
         }
     }
-
+    
+    
+    
     // Metoda odpowiadająca za kliknięcie nagłówka, po którym następuje sortowanie elementów w liście oraz na listview
     private void GridViewColumnHeaderClickedHandler(object sender, RoutedEventArgs e)
     {
-        try
+        var headerClicked = e.OriginalSource as DataGridColumnHeader;
+        if (headerClicked?.Column is DataGridBoundColumn column)
         {
-            // Pobierz kliknięty nagłówek kolumny
-            var headerClicked = e.OriginalSource as GridViewColumnHeader;
-            if (headerClicked?.Column != null)
+            // Pobierz powiązanie danych z kolumny
+            var binding = column.Binding as Binding;
+            if (binding != null)
             {
-                // Pobierz powiązanie danych z kolumny
-                var binding = headerClicked.Column.DisplayMemberBinding as Binding;
-                if (binding != null)
+                var bindingPath = binding.Path.Path;
+
+                // Jeśli ta sama kolumna została kliknięta ponownie, zmień kierunek sortowania
+                if (_prevColumnSorted == bindingPath && bindingPath != "Id")
                 {
-                    var bindingPath = binding.Path.Path;
-
-                    // Jeśli ta sama kolumna została kliknięta ponownie, zmień kierunek sortowania
-                    if (_prevColumnSorted == bindingPath && bindingPath != "Id")
+                    if (!_sortingtype)
                     {
-                        if (!_sortingtype)
-                        {
-                            SortTracksList(false, bindingPath);
-                            _sortingtype = true;
-                        }
-                        else
-                        {
-                            SortTracksList(true, bindingPath);
-                            _sortingtype = false;
-                        }
-
-                        _prevColumnSorted = bindingPath;
+                        SortTracksList(false, bindingPath);
+                        _sortingtype = true;
                     }
-                    // Jeśli inna kolumna została kliknięta, posortuj listę w kolejności rosnącej i ustaw kierunek sortowania na malejący
-                    else if (_prevColumnSorted != bindingPath && bindingPath != "Id")
+                    else
                     {
                         SortTracksList(true, bindingPath);
                         _sortingtype = false;
-                        _prevColumnSorted = bindingPath;
                     }
-                }
 
-                // Odśwież ListView i ustaw zaznaczenie na aktualnie odtwarzanym utworze
-                RefreshTrackListViewAndId();
-                if (TracksProperties.TracksList != null && TracksProperties.SelectedTrack != null)
-                    foreach (var track in TracksProperties.TracksList)
-                        if (TracksProperties.SelectedTrack.Title == track.Title)
-                            lv.SelectedIndex = track.Id - 1;
+                    _prevColumnSorted = bindingPath;
+                }
+                // Jeśli inna kolumna została kliknięta, posortuj listę w kolejności rosnącej i ustaw kierunek sortowania na malejący
+                else if (_prevColumnSorted != bindingPath && bindingPath != "Id")
+                {
+                    SortTracksList(true, bindingPath);
+                    _sortingtype = false;
+                    _prevColumnSorted = bindingPath;
+                }
             }
-        }
-        catch (Exception ex)
-        {
-            // Obsłuż i wyświetl wszystkie wyjątki, które mogą wystąpić podczas kliknięcia nagłówka kolumny w ListView
-            MessageBox.Show($"ListView header click exception: {ex.Message}");
-            throw;
+
+            // Odśwież ListView i ustaw zaznaczenie na aktualnie odtwarzanym utworze
+            RefreshTrackListViewAndId();
+            if (TracksProperties.TracksList != null && TracksProperties.SelectedTrack != null)
+                foreach (var track in TracksProperties.TracksList)
+                    if (TracksProperties.SelectedTrack.Title == track.Title)
+                        lv.SelectedIndex = track.Id - 1;
         }
     }
 
@@ -438,6 +435,18 @@ public partial class Library
             */
             if (TracksProperties.TracksList != null)
             {
+                DataGrid? dg = sender as DataGrid;
+                if (dg != null && dg.SelectedItems.Count == 1)
+                {
+                    DataGridRow? dgr = dg.ItemContainerGenerator.ContainerFromItem(dg.SelectedItem) as DataGridRow;
+                    if (dgr != null)
+                    {
+                        // Zmień styl wiersza na taki sam jak dla właściwości IsSelected
+                        dgr.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#45a7bc"));
+                        dgr.Foreground = Brushes.White;
+                    }
+                }
+                
                 if (TracksProperties.SecWaveOut != null &&
                     TracksProperties.SecWaveOut.PlaybackState == PlaybackState.Playing)
                 {
