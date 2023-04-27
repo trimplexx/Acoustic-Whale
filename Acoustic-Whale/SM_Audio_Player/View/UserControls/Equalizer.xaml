@@ -138,7 +138,7 @@
                 </CheckBox.LayoutTransform>
                 <CheckBox.ToolTip>
                     <ToolTip Background="#333333" BorderBrush="#45a7bc" BorderThickness="1" Foreground="#45a7bc" FontSize="14">
-                        Smooth transition between tracks
+                        Smooth transition between tracks (Only for 7+ seconds track)
                     </ToolTip>
                 </CheckBox.ToolTip>
                 Fade In/Out
