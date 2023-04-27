@@ -49,10 +49,10 @@
                                             <Thumb>
                                                 <Thumb.Template>
                                                     <ControlTemplate TargetType="{x:Type Thumb}">
-                                                        <Rectangle x:Name="rectangle" Fill="#2FC7E9" RadiusX="10" RadiusY="10"/>
+                                                        <Rectangle x:Name="rectangle" Fill="#45a7bc" RadiusX="10" RadiusY="10"/>
                                                         <ControlTemplate.Triggers>
                                                             <Trigger Property="IsMouseOver" Value="True">
-                                                                <Setter TargetName="rectangle" Property="Fill" Value="#45a7bc"/>
+                                                                <Setter TargetName="rectangle" Property="Fill" Value="#2FC7E9"/>
                                                             </Trigger>
                                                         </ControlTemplate.Triggers>
                                                     </ControlTemplate>
