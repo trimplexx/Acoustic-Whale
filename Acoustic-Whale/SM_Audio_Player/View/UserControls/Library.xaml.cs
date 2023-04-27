@@ -42,7 +42,8 @@ public partial class Library
     public const string JsonPath = @"MusicTrackList.json";
     private string? _prevColumnSorted;
 
-    private bool _sortingtype = true;
+    private int _sortingtype;
+    private List<object> originalHeaders;
 
     public Library()
     {
@@ -60,6 +61,9 @@ public partial class Library
             ButtonPrevious.RefreshList += RefreshTrackList;
             MainWindow.AddTrack += Add_Btn_Click;
             RefreshTrackListViewAndId();
+            SortTracksList(true, "IdByAdd");
+            RefreshTrackListViewAndId();
+            originalHeaders = lv.Columns.Select(c => c.Header).ToList();
         }
         catch (Exception ex)
         {
@@ -167,19 +171,35 @@ public partial class Library
             if (binding != null)
             {
                 var bindingPath = binding.Path.Path;
+                
+                for (int i = 0; i < lv.Columns.Count; i++)
+                {
+                    lv.Columns[i].Header = originalHeaders[i];
+                }
 
                 // Jeśli ta sama kolumna została kliknięta ponownie, zmień kierunek sortowania
                 if (_prevColumnSorted == bindingPath && bindingPath != "Id")
                 {
-                    if (!_sortingtype)
-                    {
-                        SortTracksList(false, bindingPath);
-                        _sortingtype = true;
-                    }
-                    else
+                    if (_sortingtype == 0)
                     {
                         SortTracksList(true, bindingPath);
-                        _sortingtype = false;
+                        string downArrow = char.ConvertFromUtf32(0x25BC);
+                        headerClicked.Column.Header = bindingPath + "  " + downArrow;
+                        _sortingtype = 1;
+                    }
+                    else if (_sortingtype == 1)
+                    {
+                        SortTracksList(false, bindingPath);
+                        string upArrow = char.ConvertFromUtf32(0x25B2);
+                        headerClicked.Column.Header = bindingPath + "  " +upArrow;
+                        _sortingtype = 2;
+                    }
+                    else if (_sortingtype == 2)
+                    {
+                        headerClicked.Column.Header = bindingPath;
+                        bindingPath = "IdByAdd";
+                        SortTracksList(true, bindingPath);
+                        _sortingtype = 0;
                     }
 
                     _prevColumnSorted = bindingPath;
@@ -188,7 +208,9 @@ public partial class Library
                 else if (_prevColumnSorted != bindingPath && bindingPath != "Id")
                 {
                     SortTracksList(true, bindingPath);
-                    _sortingtype = false;
+                    string downArrow = char.ConvertFromUtf32(0x25BC);
+                    headerClicked.Column.Header = bindingPath + "  " +downArrow;
+                    _sortingtype = 1;
                     _prevColumnSorted = bindingPath;
                 }
             }
@@ -286,7 +308,7 @@ public partial class Library
                     {
                         var newId = TracksProperties.TracksList.Count + 1;
                         var newTrack = new Tracks(newId, newTitle, newAuthor, newAlbum, newPath, formattedTime,
-                            albumCoverPath);
+                            albumCoverPath, newId);
                         TracksProperties.TracksList.Add(newTrack);
                         addedToTheList = true;
                     }

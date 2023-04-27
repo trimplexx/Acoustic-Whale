@@ -18,7 +18,7 @@
         
         <!-- Główna biblioteka (Data Grid) -->
         <DataGrid x:Name="lv"  Background="Transparent" BorderThickness="0" Foreground="#45a7bc"
-                  SelectionChanged="Lv_OnSelectionChanged" KeyDown="KeyDownEvent" MouseDoubleClick="OnMouseDoubleClick" FontSize="16" AlternationCount="2"
+                  SelectionChanged="Lv_OnSelectionChanged" KeyDown="KeyDownEvent" FontSize="16" AlternationCount="2"
                   CanUserResizeColumns="False" HeadersVisibility="Column" IsReadOnly="True" CanUserReorderColumns="false" >
             
             <DataGrid.Columns>
@@ -26,7 +26,7 @@
                 <DataGridTextColumn Header="Title" Binding="{Binding Title}" Width="*" CanUserSort="False"/>
                 <DataGridTextColumn Header="Author" Binding="{Binding Author}" Width="*" CanUserSort="False"/>
                 <DataGridTextColumn Header="Album" Binding="{Binding Album}" Width="*" CanUserSort="False"/>
-                <DataGridTextColumn Header="Duration" Binding="{Binding Time}" Width="100" CanUserSort="False"/>
+                <DataGridTextColumn Header="Duration" Binding="{Binding Duration}" Width="100" CanUserSort="False"/>
             </DataGrid.Columns>
             
             <DataGrid.ColumnHeaderStyle>
@@ -41,6 +41,7 @@
             
             <DataGrid.ItemContainerStyle>
                 <Style TargetType="DataGridRow">
+                    <EventSetter Event="MouseDoubleClick" Handler="OnMouseDoubleClick"/>
                     <Setter Property="Background" Value="Transparent" />
                     <Setter Property="Padding" Value="0" />
                     <Setter Property="Margin" Value="0" />
