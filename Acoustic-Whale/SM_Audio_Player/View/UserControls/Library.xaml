@@ -16,7 +16,6 @@
         <DataGrid x:Name="lv"  Background="Transparent" BorderThickness="0" Foreground="#45a7bc"
                   SelectionChanged="Lv_OnSelectionChanged" KeyDown="KeyDownEvent" FontSize="16" AlternationCount="2"
                   CanUserResizeColumns="False" HeadersVisibility="Column" IsReadOnly="True" CanUserReorderColumns="false" >
-            
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Id" Binding="{Binding Id}" Width="60" CanUserSort="False"/>
                 <DataGridTextColumn Header="Title" Binding="{Binding Title}" Width="*" CanUserSort="False"/>
@@ -24,7 +23,6 @@
                 <DataGridTextColumn Header="Album" Binding="{Binding Album}" Width="*" CanUserSort="False"/>
                 <DataGridTextColumn Header="Duration" Binding="{Binding Duration}" Width="100" CanUserSort="False"/>
             </DataGrid.Columns>
-            
             <DataGrid.ColumnHeaderStyle>
                 <Style TargetType="DataGridColumnHeader">
                     <EventSetter Event="Click" Handler="GridViewColumnHeaderClickedHandler"/>
@@ -34,7 +32,6 @@
                     <Setter Property="HorizontalContentAlignment" Value="Center" />
                 </Style>
             </DataGrid.ColumnHeaderStyle>
-            
             <DataGrid.Resources>
                 <Style TargetType="{x:Type ScrollBar}">
                     <Setter Property="Background" Value="Transparent"/>
@@ -62,14 +59,30 @@
                                     </Track>
                                 </Border>
                             </ControlTemplate>
-                            
                         </Setter.Value>
                     </Setter>
                 </Style>
             </DataGrid.Resources>
-            
-            <DataGrid.ItemContainerStyle>
+            <DataGrid.RowStyle>
                 <Style TargetType="DataGridRow">
+                    <EventSetter Event="MouseDoubleClick" Handler="OnMouseDoubleClick"/>
+                    <Setter Property="Background" Value="Transparent" />
+                    <Setter Property="Padding" Value="0" />
+                    <Setter Property="Margin" Value="0" />
+                    <Setter Property="VerticalContentAlignment" Value="Center" />
+                    <Style.Triggers>
+                        <Trigger Property="ItemsControl.AlternationIndex" Value="1">
+                            <Setter Property="Background" Value="#292929" />
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="#424242" />
+                            <Setter Property="Foreground" Value="White" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </DataGrid.RowStyle>
+            <DataGrid.CellStyle>
+                <Style TargetType="DataGridCell">
                     <EventSetter Event="MouseDoubleClick" Handler="OnMouseDoubleClick"/>
                     <Setter Property="Background" Value="Transparent" />
                     <Setter Property="Padding" Value="0" />
@@ -81,17 +94,12 @@
                         </Trigger>
                         <Trigger Property="IsSelected" Value="True">
                             <Setter Property="Background" Value="#2FC7E9" />
-                            <Setter Property="Foreground" Value="White" />
-                        </Trigger>
-                        <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="Background" Value="#424242" />
-                            <Setter Property="Foreground" Value="White" />
+                            <Setter Property="Foreground" Value="#292929" />
+                            <Setter Property="BorderThickness" Value="0"/>
                         </Trigger>
                     </Style.Triggers>
                 </Style>
-            </DataGrid.ItemContainerStyle>
-            
-            
+            </DataGrid.CellStyle>
         </DataGrid>
 
         <!-- Menu na dole układu -->

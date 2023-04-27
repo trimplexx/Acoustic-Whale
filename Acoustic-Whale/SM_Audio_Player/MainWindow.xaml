@@ -6,7 +6,7 @@
         Background="Transparent"
         xmlns:UC="clr-namespace:SM_Audio_Player.View.UserControls"
         xmlns:BTN="clr-namespace:SM_Audio_Player.View.UserControls.buttons"
-        xmlns:LOGO="clr-namespace:SM_Audio_Player.assets"
+        xmlns:assets="clr-namespace:SM_Audio_Player.assets"
         mc:Ignorable="d" WindowStyle="None"
         Title="Acoustic Whale" Height="800" Width="1000"
         MinHeight="600" MinWidth="800"
@@ -18,7 +18,14 @@
     </WindowChrome.WindowChrome>
     
     <!-- Główne okno -->
-    <Grid x:Name="world" Background="#333333" PreviewMouseDown="FlagReset"> 
+    <Grid x:Name="world" PreviewMouseDown="FlagReset">
+        <Grid.Background>
+            <VisualBrush Stretch="UniformToFill">
+                <VisualBrush.Visual>
+                    <assets:BACKGROUND/>
+                </VisualBrush.Visual>
+            </VisualBrush>
+        </Grid.Background> 
         <Grid.RowDefinitions>
             <RowDefinition Height="30"  /> 
             <RowDefinition Height="30*" />
@@ -26,7 +33,7 @@
             <RowDefinition Height="70*" /> 
         </Grid.RowDefinitions>
         <Rectangle Fill="#222222" MouseMove="Window_MouseDown" />
-        <LOGO:LOGO Height="30" Width="30" HorizontalAlignment="Left" Margin="10, 0, 0, 0" MouseMove="Window_MouseDown" />
+        <assets:LOGO Height="30" Width="30" HorizontalAlignment="Left" Margin="10, 0, 0, 0" MouseMove="Window_MouseDown" />
         <TextBlock Text="Acoustic Whale" FontSize="18" Foreground="#45a7bc" HorizontalAlignment="Left"
                    VerticalAlignment="Center" Margin="45, 0, 0, 0" MouseMove="Window_MouseDown" />
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0, 3, 10, 0"

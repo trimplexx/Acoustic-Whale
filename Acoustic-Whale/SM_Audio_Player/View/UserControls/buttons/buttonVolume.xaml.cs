@@ -10,7 +10,7 @@ namespace SM_Audio_Player.View.UserControls.buttons;
 
 public partial class ButtonVolume : INotifyPropertyChanged
 {
-    private const string JsonPath = @"MusicVolumeJSON.json";
+    public const string JsonPath = @"MusicVolumeJSON.json";
     private bool _isMuted;
     private double _savedVolumeValue;
     private string? _volumeIcon;
