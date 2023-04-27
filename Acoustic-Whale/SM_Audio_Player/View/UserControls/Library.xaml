@@ -64,8 +64,20 @@
 
         <!-- Menu na dole układu -->
         <Menu VerticalAlignment="Center" Background="Transparent" Foreground="#45a7bc" Grid.Row="1">
-            <MenuItem Name="Add_Btn" PreviewMouseLeftButtonUp="Add_Btn_Click" Header="Add" FontSize="16" Padding="20,5,20,5" BorderThickness="0"/>
-            <MenuItem Name="Delete_Btn" PreviewMouseLeftButtonUp="Delete_Btn_Click" Header="Delete" FontSize="16" Padding="20,5,20,5" BorderThickness="0"/>
+            <MenuItem Name="Add_Btn" PreviewMouseLeftButtonUp="Add_Btn_Click" Header="Add" FontSize="16" Padding="20,5,20,5" BorderThickness="0">
+                <MenuItem.ToolTip>
+                    <ToolTip Background="#333333" BorderBrush="#45a7bc" BorderThickness="1" Foreground="#45a7bc" FontSize="14">
+                        ctrl+insert
+                    </ToolTip>
+                </MenuItem.ToolTip>
+            </MenuItem>
+            <MenuItem Name="Delete_Btn" PreviewMouseLeftButtonUp="Delete_Btn_Click" Header="Delete" FontSize="16" Padding="20,5,20,5" BorderThickness="0">
+                <MenuItem.ToolTip>
+                    <ToolTip Background="#333333" BorderBrush="#45a7bc" BorderThickness="1" Foreground="#45a7bc" FontSize="14">
+                        ctrl+delete
+                    </ToolTip>
+                </MenuItem.ToolTip>
+            </MenuItem>
         </Menu>
 
     </Grid>

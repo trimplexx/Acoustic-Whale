@@ -76,14 +76,14 @@
                     HorizontalAlignment="Center" Margin="0,30,0,30" PreviewMouseLeftButtonUp="OnSliderValueChange" ValueChanged="DynamicEqualizerValueChaning"
                     Minimum="-15" Maximum="15" Value="0" IsMoveToPointEnabled="True" IsSelectionRangeEnabled="True" SelectionStart="-15" SelectionEnd="{Binding ElementName=sld8,Path=Value}"/>
 
-            <TextBlock Text="100 Hz" FontSize="14" VerticalAlignment="Bottom" Margin="0,5,0,15"/>
-            <TextBlock Grid.Column="1" Text="200 Hz" VerticalAlignment="Bottom" Margin="0,5,0,15"/>
-            <TextBlock Grid.Column="2" Text="400 Hz" VerticalAlignment="Bottom" Margin="0,5,0,15"/>
-            <TextBlock Grid.Column="3" Text="800 Hz" VerticalAlignment="Bottom" Margin="0,5,0,15"/>
-            <TextBlock Grid.Column="4" Text="1.2k Hz" VerticalAlignment="Bottom" Margin="0,5,0,15"/>
-            <TextBlock Grid.Column="5" Text="2.4k Hz" VerticalAlignment="Bottom" Margin="0,5,0,15"/>
-            <TextBlock Grid.Column="6" Text="4.0k Hz" VerticalAlignment="Bottom" Margin="0,5,0,15"/>
-            <TextBlock Grid.Column="7" Text="6.0k Hz" VerticalAlignment="Bottom" Margin="0,5,0,15"/>
+            <TextBlock Text="100" FontSize="14" VerticalAlignment="Bottom" Margin="0,5,0,15"/>
+            <TextBlock Grid.Column="1" Text="200" VerticalAlignment="Bottom" Margin="0,5,0,15"/>
+            <TextBlock Grid.Column="2" Text="400" VerticalAlignment="Bottom" Margin="0,5,0,15"/>
+            <TextBlock Grid.Column="3" Text="800" VerticalAlignment="Bottom" Margin="0,5,0,15"/>
+            <TextBlock Grid.Column="4" Text="1.2k" VerticalAlignment="Bottom" Margin="0,5,0,15"/>
+            <TextBlock Grid.Column="5" Text="2.4k" VerticalAlignment="Bottom" Margin="0,5,0,15"/>
+            <TextBlock Grid.Column="6" Text="4.0k" VerticalAlignment="Bottom" Margin="0,5,0,15"/>
+            <TextBlock Grid.Column="7" Text="6.0k" VerticalAlignment="Bottom" Margin="0,5,0,15"/>
             <TextBlock Name="Slider_Value1" Text="0" VerticalAlignment="Top" Margin="0,15,0,5"/>
             <TextBlock Name="Slider_Value2" Grid.Column="1" Text="0" VerticalAlignment="Top" Margin="0,15,0,5"/>
             <TextBlock Name="Slider_Value3" Grid.Column="2" Text="0" VerticalAlignment="Top" Margin="0,15,0,5"/>
@@ -142,7 +142,7 @@
                 <CheckBox.LayoutTransform>
                     <ScaleTransform ScaleX="1.5" ScaleY="1.5" />
                 </CheckBox.LayoutTransform>
-                Stereo To Mono
+                Stereo/Mono
             </CheckBox>
 
         </StackPanel>
