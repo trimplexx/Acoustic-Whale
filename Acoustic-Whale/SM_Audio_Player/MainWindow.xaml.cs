@@ -192,4 +192,16 @@ public partial class MainWindow
     {
         TracksProperties.SpaceFlag = true;
     }
+
+    private void Help_Btn_Click(object sender, RoutedEventArgs e)
+    {
+        if(Help.Visibility == Visibility.Visible)
+        {
+            Help.Visibility = Visibility.Hidden;
+        }
+        else
+        {
+            Help.Visibility = Visibility.Visible;
+        }
+    }
 }
