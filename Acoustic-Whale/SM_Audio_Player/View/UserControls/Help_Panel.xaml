@@ -22,13 +22,15 @@
             <ColumnDefinition Width="50*"/>
             <ColumnDefinition Width="25*"/>
         </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="10*"/>
+            <RowDefinition Height="80*"/>
+            <RowDefinition Height="10*"/>
+        </Grid.RowDefinitions>
 
-        <Grid Background="#304d5b" Opacity="0.1"/>
-        <Grid Background="#304d5b" Opacity="0.1" Grid.Column="2"/>
+        <Grid Background="#041014" Opacity="0.5" Grid.RowSpan="3" Grid.ColumnSpan="3"/>
 
-        <Border Grid.RowSpan="2" Grid.Column="1" BorderThickness="1" BorderBrush="#45a7bc" />
-
-        <Grid Grid.Row="1" Grid.Column="1" Background="#333333" Opacity="0.9">
+        <Grid Grid.Row="1" Grid.Column="1" Background="#333333" Opacity="0.95">
             <Grid.RowDefinitions>
                 <RowDefinition Height="50"/>
                 <RowDefinition/>
@@ -37,10 +39,11 @@
                 <ColumnDefinition Width="3*"/>
                 <ColumnDefinition Width="7*"/>
             </Grid.ColumnDefinitions>
+            <Border Grid.RowSpan="2" Grid.ColumnSpan="2" BorderThickness="1" BorderBrush="#45a7bc" />
             <TextBlock Text="Skróty klawiszowe" Grid.ColumnSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="22"/>
             <StackPanel HorizontalAlignment="Right" Grid.Column="1">
-                <TextBlock Text="Wychodzisz stąd" Grid.ColumnSpan="2" HorizontalAlignment="Right" VerticalAlignment="Top" FontSize="9"/>
-                <TextBlock Text="klikając Help" Grid.ColumnSpan="2" HorizontalAlignment="Right" VerticalAlignment="Top" FontSize="9" Margin="0,0,5,0"/>
+                <TextBlock Text="Wychodzisz stąd" Grid.ColumnSpan="2" HorizontalAlignment="Right" VerticalAlignment="Top" FontSize="10"/>
+                <TextBlock Text="klikając Help" Grid.ColumnSpan="2" HorizontalAlignment="Right" VerticalAlignment="Top" FontSize="10" Margin="0,0,5,0"/>
             </StackPanel>
             
             <Border Grid.ColumnSpan="2" BorderThickness="0,0,0,2" BorderBrush="#45a7bc" Margin="5,0,5,0" />
