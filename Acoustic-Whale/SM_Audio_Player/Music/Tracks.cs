@@ -6,15 +6,17 @@
  */
 public class Tracks
 {
-    public Tracks(int id, string ti, string auth, string alb, string pa, string tim, string imageFilePath)
+    public Tracks(int id, string ti, string auth, string alb, string pa, string tim, string imageFilePath,int idByAdd  )
     {
         Id = id;
         Title = ti;
         Author = auth;
         Album = alb;
         Path = pa;
-        Time = tim;
+        Duration = tim;
         AlbumCoverPath = imageFilePath;
+        IdByAdd = idByAdd;
+
     }
 
     public int Id { get; set; }
@@ -22,6 +24,7 @@ public class Tracks
     public string Author { get; set; }
     public string Album { get; set; }
     public string Path { get; set; }
-    public string Time { get; set; }
+    public string Duration { get; set; }
     public string AlbumCoverPath { get; set; }
+    public int IdByAdd { get; set; }
 }

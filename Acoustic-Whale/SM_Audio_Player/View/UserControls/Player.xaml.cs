@@ -132,23 +132,23 @@ public partial class Player : INotifyPropertyChanged
                             {
                                 _result = TracksProperties.SecAudioFileReader.TotalTime - TimeSpan.FromSeconds(7);
                             }
-                            TracksProperties.SelectedTrack.Time = _result.TotalHours >= 1 ? _result.ToString(@"hh\:mm\:ss") : _result.ToString(@"mm\:ss"); 
+                            TracksProperties.SelectedTrack.Duration = _result.TotalHours >= 1 ? _result.ToString(@"hh\:mm\:ss") : _result.ToString(@"mm\:ss"); 
                         }
                     }
                     /*
                      * Przypisanie czasu do wybranego utworu, a następnie wyświetlenie go w widoku.
                      */
-                    TracksProperties.SelectedTrack.Time = _result.TotalHours >= 1 ? _result.ToString(@"hh\:mm\:ss") : _result.ToString(@"mm\:ss"); 
+                    TracksProperties.SelectedTrack.Duration = _result.TotalHours >= 1 ? _result.ToString(@"hh\:mm\:ss") : _result.ToString(@"mm\:ss"); 
                 }
                 else
                 {
                     if (TracksProperties.AudioFileReader != null)
                     {
                         _result = TracksProperties.AudioFileReader.TotalTime;
-                        TracksProperties.SelectedTrack.Time = _result.TotalHours >= 1 ? _result.ToString(@"hh\:mm\:ss") : _result.ToString(@"mm\:ss"); 
+                        TracksProperties.SelectedTrack.Duration = _result.TotalHours >= 1 ? _result.ToString(@"hh\:mm\:ss") : _result.ToString(@"mm\:ss"); 
                     }
                 }
-                tbTime.Text = TracksProperties.SelectedTrack.Time;
+                tbTime.Text = TracksProperties.SelectedTrack.Duration;
             }
             TracksProperties.Timer.Start();
         }
