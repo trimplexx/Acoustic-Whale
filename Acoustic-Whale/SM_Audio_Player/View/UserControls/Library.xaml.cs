@@ -394,7 +394,8 @@ public partial class Library
             {
                 var elementId = lv.SelectedIndex;
                 TracksProperties.SelectedTrack = TracksProperties.TracksList?.ElementAt(elementId);
-                ResetSelected?.Invoke(this, EventArgs.Empty);
+                if(TracksProperties.AudioFileReader == null)
+                    ResetSelected?.Invoke(this, EventArgs.Empty);
             }
         }
         catch (Exception ex)
