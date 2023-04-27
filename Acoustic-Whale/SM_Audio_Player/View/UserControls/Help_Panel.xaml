@@ -36,25 +36,40 @@
                 <RowDefinition/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="3*"/>
+                <ColumnDefinition Width="5*"/>
                 <ColumnDefinition Width="7*"/>
             </Grid.ColumnDefinitions>
             <Border Grid.RowSpan="2" Grid.ColumnSpan="2" BorderThickness="1" BorderBrush="#45a7bc" />
-            <TextBlock Text="Skróty klawiszowe" Grid.ColumnSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="22"/>
+            <TextBlock Text="Hotkeys" Grid.ColumnSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="22"/>
             <StackPanel HorizontalAlignment="Right" Grid.Column="1">
-                <TextBlock Text="Wychodzisz stąd" Grid.ColumnSpan="2" HorizontalAlignment="Right" VerticalAlignment="Top" FontSize="10"/>
-                <TextBlock Text="klikając Help" Grid.ColumnSpan="2" HorizontalAlignment="Right" VerticalAlignment="Top" FontSize="10" Margin="0,0,5,0"/>
+                <TextBlock Text="To Exit click Help/Esc" Grid.ColumnSpan="2" HorizontalAlignment="Right" VerticalAlignment="Top" FontSize="12"/>
             </StackPanel>
             
             <Border Grid.ColumnSpan="2" BorderThickness="0,0,0,2" BorderBrush="#45a7bc" Margin="5,0,5,0" />
             <StackPanel Grid.Row="1" Margin="5">
-                <TextBlock Text="Skrót 1"/>
-                <TextBlock Text="Skrót 2"/>
+                <TextBlock Text="Space" FontSize="13"/>
+                <TextBlock Text="Double mouse click on track" FontSize="13"/>
+                <TextBlock Text="LeftCtrl + Insert" FontSize="13"/>
+                <TextBlock Text="LeftCtrl + Delete" FontSize="13"/>
+                <TextBlock Text="LeftCtrl + S" FontSize="13"/>
+                <TextBlock Text="LeftCtrl + L" FontSize="13"/>
+                <TextBlock Text="LeftCtrl + Right" FontSize="13"/>
+                <TextBlock Text="LeftCtrl + Left" FontSize="13"/>
+                <TextBlock Text="LeftCtrl + LeftShift + Right" FontSize="13"/>
+                <TextBlock Text="LeftCtrl + LeftShift + Left" FontSize="13"/>
 
             </StackPanel>
             <StackPanel Grid.Row="1" Grid.Column="1" Margin="5">
-                <TextBlock Text="Opis działania 1"/>
-                <TextBlock Text="Opis działania 2"/>
+                <TextBlock Text="Play/Pause music" FontSize="13"/>
+                <TextBlock Text="Play clicked track" FontSize="13"/>
+                <TextBlock Text="Opening the window with adding music" FontSize="13"/>
+                <TextBlock Text="Delete selected tracks" FontSize="13"/>
+                <TextBlock Text="Switch loop mode" FontSize="13"/>
+                <TextBlock Text="Turn off/on schuffle" FontSize="13"/>
+                <TextBlock Text="Play next track" FontSize="13"/>
+                <TextBlock Text="Play previous track" FontSize="13"/>
+                <TextBlock Text="Forward scrolling of the music being played" FontSize="13"/>
+                <TextBlock Text="Rewind the music being played" FontSize="13"/>
             </StackPanel>
         </Grid>
 

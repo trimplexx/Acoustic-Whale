@@ -136,12 +136,22 @@
                 <CheckBox.LayoutTransform>
                     <ScaleTransform ScaleX="1.5" ScaleY="1.5" />
                 </CheckBox.LayoutTransform>
+                <CheckBox.ToolTip>
+                    <ToolTip Background="#333333" BorderBrush="#45a7bc" BorderThickness="1" Foreground="#45a7bc" FontSize="14">
+                        Smooth transition between tracks
+                    </ToolTip>
+                </CheckBox.ToolTip>
                 Fade In/Out
             </CheckBox>
             <CheckBox Template="{DynamicResource CheckBoxTemplate1}" Name="StereoToMono_Box" PreviewMouseLeftButtonUp="OnOffStereoToMono">
                 <CheckBox.LayoutTransform>
                     <ScaleTransform ScaleX="1.5" ScaleY="1.5" />
                 </CheckBox.LayoutTransform>
+                <CheckBox.ToolTip>
+                    <ToolTip Background="#333333" BorderBrush="#45a7bc" BorderThickness="1" Foreground="#45a7bc" FontSize="14">
+                        Converting stereo to mono audio
+                    </ToolTip>
+                </CheckBox.ToolTip>
                 Stereo/Mono
             </CheckBox>
 
@@ -149,8 +159,22 @@
 
         <StackPanel Grid.Row="2" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
             <!-- zmieniane na przycisk (desi chciał) -->
-            <Button Style="{DynamicResource ButtonStyle1}" Name="Equalizer_Btn" PreviewMouseDown="OnOffEqualizer" Content="Equalizer On" FontSize="16" Padding="5" Background="Transparent" Foreground="#45a7bc" BorderThickness="0" Margin="5,0,5,5" VerticalContentAlignment="Center"/>
-            <Button Style="{DynamicResource ButtonStyle1}" Name="Reset_Btn" PreviewMouseDown="Reset_Btn_Click" Content="Reset" FontSize="16" Padding="5" Background="Transparent" Foreground="#45a7bc" BorderThickness="0" Margin="5,0,5,5" VerticalContentAlignment="Center"/>
+            <Button Style="{DynamicResource ButtonStyle1}" Name="Equalizer_Btn" PreviewMouseDown="OnOffEqualizer" 
+                    Content="Equalizer On" FontSize="16" Padding="5" Background="Transparent" Foreground="#45a7bc" BorderThickness="0" Margin="5,0,5,5">
+                <Button.ToolTip>
+                    <ToolTip Background="#333333" BorderBrush="#45a7bc" BorderThickness="1" Foreground="#45a7bc" FontSize="14">
+                        Turn off/on equalizer
+                    </ToolTip>
+                </Button.ToolTip>
+            </Button>
+            <Button Style="{DynamicResource ButtonStyle1}" Name="Reset_Btn" PreviewMouseDown="Reset_Btn_Click" 
+                    Content="Reset" FontSize="16" Padding="5" Background="Transparent" Foreground="#45a7bc" BorderThickness="0" Margin="5,0,5,5">
+                <Button.ToolTip>
+                    <ToolTip Background="#333333" BorderBrush="#45a7bc" BorderThickness="1" Foreground="#45a7bc" FontSize="14">
+                        Set all equalizer values to 0
+                    </ToolTip>
+                </Button.ToolTip>
+            </Button>
         </StackPanel>
 
     </Grid>

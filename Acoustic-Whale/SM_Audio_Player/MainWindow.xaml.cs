@@ -204,4 +204,15 @@ public partial class MainWindow
             Help.Visibility = Visibility.Visible;
         }
     }
+
+    private void EscFromHelp(object sender, KeyEventArgs e)
+    {
+        if (e.Key == Key.Escape)
+        {
+            if (Help.Visibility == Visibility.Visible)
+            {
+                Help.Visibility = Visibility.Hidden;
+            }
+        }
+    }
 }

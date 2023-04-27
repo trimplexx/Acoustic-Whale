@@ -107,14 +107,14 @@
             <MenuItem Name="Add_Btn" PreviewMouseLeftButtonUp="Add_Btn_Click" Header="Add" FontSize="16" Padding="20,5,20,5" BorderThickness="0">
                 <MenuItem.ToolTip>
                     <ToolTip Background="#333333" BorderBrush="#45a7bc" BorderThickness="1" Foreground="#45a7bc" FontSize="14">
-                        ctrl+insert
+                        Add tracks to playlist
                     </ToolTip>
                 </MenuItem.ToolTip>
             </MenuItem>
             <MenuItem Name="Delete_Btn" PreviewMouseLeftButtonUp="Delete_Btn_Click" Header="Delete" FontSize="16" Padding="20,5,20,5" BorderThickness="0">
                 <MenuItem.ToolTip>
                     <ToolTip Background="#333333" BorderBrush="#45a7bc" BorderThickness="1" Foreground="#45a7bc" FontSize="14">
-                        ctrl+delete
+                        Delete selected tracks playlist
                     </ToolTip>
                 </MenuItem.ToolTip>
             </MenuItem>
