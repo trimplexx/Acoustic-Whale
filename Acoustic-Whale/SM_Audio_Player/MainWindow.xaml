@@ -44,8 +44,8 @@
         </StackPanel>
         <UC:Library x:Name="Lib" Grid.Row="3" Margin="15, 0, 15, 0" Visibility="Visible" />
         <UC:Equalizer x:Name="Eq" Grid.Row="3" Margin="15, 0, 15, 0" Visibility="Hidden" />
-        <UC:Help_Panel x:Name="Help" Grid.Row="2" Grid.RowSpan="2" Margin="0, -60, 0, 0" Visibility="Hidden" />
-        <Button Style="{DynamicResource ButtonStyle1}" Grid.Row="5" Name="Help_Btn" Content="Help" Click="Help_Btn_Click"  FontSize="16" Background="Transparent" Foreground="#45a7bc" BorderThickness="0" Padding="5" Margin="15" HorizontalAlignment="Right" VerticalAlignment="Bottom"/>
+        <UC:Help_Panel x:Name="Help" Grid.Row="1" Grid.RowSpan="3" Margin="0" Visibility="Hidden" />
+        <Button Style="{DynamicResource ButtonStyle1}" Grid.Row="5" Name="Help_Btn" Content="Help" Click="Help_Btn_Click"  FontSize="16" Background="#333333" Foreground="#45a7bc" BorderThickness="0" Padding="5" Margin="15" HorizontalAlignment="Right" VerticalAlignment="Bottom"/>
     </Grid>
 
 </Window>
