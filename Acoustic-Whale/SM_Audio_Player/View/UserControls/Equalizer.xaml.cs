@@ -351,8 +351,8 @@ public partial class Equalizer
             {
                 if (_secWaveFade != null)
                 {
-                    var distortionEffect = new DistortionSampleProvider(_secWaveFade) { Gain = (float)SliderFirst.Value, Mix = (float)SliderSec.Value };
-                    TracksProperties.SecWaveOut.Init(distortionEffect);
+                    _secDistortionEffect = new DistortionSampleProvider(_secWaveFade) { Gain = (float)SliderFirst.Value, Mix = (float)SliderSec.Value };
+                    TracksProperties.SecWaveOut.Init(_secDistortionEffect);
                 }
             }
             else
@@ -437,8 +437,8 @@ public partial class Equalizer
             {
                 if (_firstWaveFade != null)
                 {
-                    var distortionEffect = new DistortionSampleProvider(_firstWaveFade) { Gain = (float)SliderFirst.Value, Mix = (float)SliderSec.Value };
-                    TracksProperties.WaveOut.Init(distortionEffect);
+                    _firstDistortionEffect = new DistortionSampleProvider(_firstWaveFade) { Gain = (float)SliderFirst.Value, Mix = (float)SliderSec.Value };
+                    TracksProperties.WaveOut.Init(_firstDistortionEffect);
                 }
             }
             else
@@ -882,9 +882,9 @@ public partial class Equalizer
         {
             if (_firstWaveFade != null)
             {
-                var distortionEffect = new DistortionSampleProvider(_firstWaveFade) { Gain = (float)SliderFirst.Value, Mix = (float)SliderSec.Value };
+                _firstDistortionEffect = new DistortionSampleProvider(_firstWaveFade) { Gain = (float)SliderFirst.Value, Mix = (float)SliderSec.Value };
                 TracksProperties.WaveOut?.Stop();
-                TracksProperties.WaveOut?.Init(distortionEffect);
+                TracksProperties.WaveOut?.Init(_firstDistortionEffect);
             }
         }
     }
@@ -1082,8 +1082,8 @@ public partial class Equalizer
                 SliderFirstPanel.Visibility = Visibility.Visible;
                 
                 SliderFirst.Value = 1.5f;
-                SliderFirst.Maximum = 20f;
-                SliderFirst.Minimum = 0.1f;
+                SliderFirst.Maximum = 8f;
+                SliderFirst.Minimum = 1f;
                 SliderFirstText.Text = "Gain";
                 
                 SliderSec.Value = 7f;
