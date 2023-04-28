@@ -6,7 +6,7 @@ namespace SM_Audio_Player.SoundTouch;
 public class ChorusEffect : ISampleProvider
 {
     private readonly ISampleProvider _source;
-    private readonly Queue<float> _buffer;
+    private  Queue<float> _buffer;
     private int _delayInSamples;
     private float _depth;
 
@@ -37,6 +37,9 @@ public class ChorusEffect : ISampleProvider
     public void SetDelay(int delayInMilliseconds)
     {
         _delayInSamples = (int)(delayInMilliseconds / 1000.0 * _source.WaveFormat.SampleRate);
+        _buffer = new Queue<float>(_delayInSamples);
+        for (int i = 0; i < _delayInSamples; i++)
+            _buffer.Enqueue(0);
     }
 
     public void SetDepth(float depth)

@@ -29,6 +29,17 @@ public partial class Equalizer
     private StereoToMonoSampleProvider? _firstStereoToMono;
     private StereoToMonoSampleProvider? _secStereoToMono;
     private bool _equalizerOn = true;
+    
+    // Effects
+    private DelayEffect? _firstDelayEffect;
+    private DelayEffect? _secDelayEffect;
+    private ChorusEffect? _firstChorusEffect;
+    private ChorusEffect? _secChorusEffect;
+    private DistortionSampleProvider? _firstDistortionEffect;
+    private DistortionSampleProvider? _secDistortionEffect;
+    private VarispeedSampleProvider? _firstNightcoreEffect;
+    private VarispeedSampleProvider? _secNightcoreEffect;
+
 
     public Equalizer()
     {
@@ -315,32 +326,32 @@ public partial class Equalizer
             {
                 if (_secWaveFade != null)
                 {
-                    var secSpeedControl = new VarispeedSampleProvider(_secWaveFade, 100, new SoundTouchProfile(false, false));
-                    secSpeedControl.PlaybackRate = 1.4f;
-                    TracksProperties.SecWaveOut.Init(secSpeedControl);
+                    _secNightcoreEffect = new VarispeedSampleProvider(_secWaveFade, 100, new SoundTouchProfile(false, false));
+                    _secNightcoreEffect.PlaybackRate = (float)SliderFirst.Value;
+                    TracksProperties.SecWaveOut.Init(_secNightcoreEffect);
                 }
             }
             else if (Delay_Box.IsChecked == true)
             {
                 if (_secWaveFade != null)
                 {
-                    var secDelayEffect = new DelayEffect(_secWaveFade, 300, 0.5f);
-                    TracksProperties.SecWaveOut.Init(secDelayEffect);
+                    _secDelayEffect = new DelayEffect(_secWaveFade, (int)SliderFirst.Value, (float)SliderSec.Value);
+                    TracksProperties.SecWaveOut.Init(_secDelayEffect);
                 }
             }
             else if (Chorus_Box.IsChecked == true)
             {
                 if (_secWaveFade != null)
                 {
-                    var secChorusEffect = new ChorusEffect(_secWaveFade, 160, 0.4f);
-                    TracksProperties.SecWaveOut.Init(secChorusEffect);
+                    _secChorusEffect = new ChorusEffect(_secWaveFade, 160, 0.4f);
+                    TracksProperties.SecWaveOut.Init(_secChorusEffect);
                 }
             }
             else if (Distortion_Box.IsChecked == true)
             {
                 if (_secWaveFade != null)
                 {
-                    var distortionEffect = new DistortionSampleProvider(_secWaveFade) { Gain = 1.5f, Mix = 7f };
+                    var distortionEffect = new DistortionSampleProvider(_secWaveFade) { Gain = (float)SliderFirst.Value, Mix = (float)SliderSec.Value };
                     TracksProperties.SecWaveOut.Init(distortionEffect);
                 }
             }
@@ -401,32 +412,32 @@ public partial class Equalizer
             {
                 if (_firstWaveFade != null)
                 {
-                    var speedControl = new VarispeedSampleProvider(_firstWaveFade, 100, new SoundTouchProfile(false, false));
-                    speedControl.PlaybackRate = 1.4f;
-                    TracksProperties.WaveOut.Init(speedControl);
+                    _firstNightcoreEffect = new VarispeedSampleProvider(_firstWaveFade, 100, new SoundTouchProfile(false, false));
+                    _firstNightcoreEffect.PlaybackRate = (float)SliderFirst.Value;
+                    TracksProperties.WaveOut.Init(_firstNightcoreEffect);
                 }
             }
             else if (Delay_Box.IsChecked == true)
             {
                 if (_firstWaveFade != null)
                 {
-                    var delayEffect = new DelayEffect(_firstWaveFade, 300, 0.5f);
-                    TracksProperties.WaveOut.Init(delayEffect);
+                    _firstDelayEffect = new DelayEffect(_firstWaveFade, (int)SliderFirst.Value, (float)SliderSec.Value);
+                    TracksProperties.WaveOut.Init(_firstDelayEffect);
                 }
             }
             else if (Chorus_Box.IsChecked == true)
             {
                 if (_firstWaveFade != null)
                 {
-                    var chorusEffect = new ChorusEffect(_firstWaveFade, 160, 0.4f);
-                    TracksProperties.WaveOut.Init(chorusEffect);
+                    _firstChorusEffect = new ChorusEffect(_firstWaveFade, (int)SliderFirst.Value, (float)SliderSec.Value);
+                    TracksProperties.WaveOut.Init(_firstChorusEffect);
                 }
             }
             else if (Distortion_Box.IsChecked == true)
             {
                 if (_firstWaveFade != null)
                 {
-                    var distortionEffect = new DistortionSampleProvider(_firstWaveFade) { Gain = 1.5f, Mix = 7f };
+                    var distortionEffect = new DistortionSampleProvider(_firstWaveFade) { Gain = (float)SliderFirst.Value, Mix = (float)SliderSec.Value };
                     TracksProperties.WaveOut.Init(distortionEffect);
                 }
             }
@@ -822,10 +833,10 @@ public partial class Equalizer
         {
             if (_firstWaveFade != null)
             {
-                var nightcoreEffect = new VarispeedSampleProvider(_firstWaveFade, 100, new SoundTouchProfile(false, false));
-                nightcoreEffect.PlaybackRate = 1.4f;
+                _firstNightcoreEffect = new VarispeedSampleProvider(_firstWaveFade, 100, new SoundTouchProfile(false, false));
+                _firstNightcoreEffect.PlaybackRate = (float)SliderFirst.Value;
                 TracksProperties.WaveOut?.Stop();
-                TracksProperties.WaveOut?.Init(nightcoreEffect);
+                TracksProperties.WaveOut?.Init(_firstNightcoreEffect);
             }
         }
     }
@@ -839,9 +850,9 @@ public partial class Equalizer
         {
             if (_firstWaveFade != null)
             {
-                var delayEffect = new DelayEffect(_firstWaveFade, 300, 0.5f);
+                _firstDelayEffect = new DelayEffect(_firstWaveFade, (int)SliderFirst.Value, (float)SliderSec.Value);
                 TracksProperties.WaveOut?.Stop();
-                TracksProperties.WaveOut?.Init(delayEffect);
+                TracksProperties.WaveOut?.Init(_firstDelayEffect);
             }
         }
     }
@@ -855,9 +866,9 @@ public partial class Equalizer
         {
             if (_firstWaveFade != null)
             {
-                var chorusEffect = new ChorusEffect(_firstWaveFade, 200, 0.5f);
+                _firstChorusEffect = new ChorusEffect(_firstWaveFade, (int)SliderFirst.Value, (float)SliderSec.Value);
                 TracksProperties.WaveOut?.Stop();
-                TracksProperties.WaveOut?.Init(chorusEffect);
+                TracksProperties.WaveOut?.Init(_firstChorusEffect);
             }
         }
     }
@@ -871,7 +882,7 @@ public partial class Equalizer
         {
             if (_firstWaveFade != null)
             {
-                var distortionEffect = new DistortionSampleProvider(_firstWaveFade) {Gain = 1.5f, Mix = 7f};
+                var distortionEffect = new DistortionSampleProvider(_firstWaveFade) { Gain = (float)SliderFirst.Value, Mix = (float)SliderSec.Value };
                 TracksProperties.WaveOut?.Stop();
                 TracksProperties.WaveOut?.Init(distortionEffect);
             }
@@ -915,24 +926,38 @@ public partial class Equalizer
             */
             if (_firstWaveFade != null)
             {
-                var firstDelayEffect = new DelayEffect(_firstWaveFade, 300, 0.5f);
+                _firstDelayEffect = new DelayEffect(_firstWaveFade, 300, 0.5f);
 
+                SliderSecPanel.Visibility = Visibility.Visible;
+                SliderFirstPanel.Visibility = Visibility.Visible;
+                
+                SliderFirst.Value = 300;
+                SliderFirst.Maximum = 1400;
+                SliderFirst.Minimum = 100;
+                SliderFirstText.Text = "Delay [ms]";
+                
+                SliderSec.Value = 0.5f;
+                SliderSec.Maximum = 0.8f;
+                SliderSec.Minimum = 0f;
+                SliderSecText.Text = "Decay";
+                
                 if (TracksProperties.WaveOut?.PlaybackState == PlaybackState.Playing)
                 {
                     TracksProperties.WaveOut.Stop();
-                    TracksProperties.WaveOut.Init(firstDelayEffect);
+                    TracksProperties.WaveOut.Init(_firstDelayEffect);
                     TracksProperties.WaveOut.Play();
                 }
                 else
                 {
                     TracksProperties.WaveOut?.Stop();
-                    TracksProperties.WaveOut.Init(firstDelayEffect);
+                    TracksProperties.WaveOut.Init(_firstDelayEffect);
                 }
             }
             if (_secWaveFade != null)
             {
-                var secDelayEffect = new DelayEffect(_secWaveFade, 300, 0.5f);
+                _secDelayEffect = new DelayEffect(_secWaveFade, (int)SliderFirst.Value, (float)SliderSec.Value);
 
+                
                 /*
                  * Sprawdzenie tylko i wyłączenie czy druga śceiżka dźwiękowa w danym momencie była grana, poniważ
                  * z założenia, gdy utwór zostaje zatrzymany automatycznie zmieniana jest ścieżka na bazowe
@@ -941,14 +966,17 @@ public partial class Equalizer
                 if (TracksProperties.SecWaveOut?.PlaybackState == PlaybackState.Playing)
                 {
                     TracksProperties.SecWaveOut.Stop();
-                    TracksProperties.SecWaveOut.Init(secDelayEffect);
+                    TracksProperties.SecWaveOut.Init(_secDelayEffect);
                     TracksProperties.SecWaveOut.Play();
                 }
             }
         }
         else
+        {
             ImplementBaseWave();
-        
+            SliderSecPanel.Visibility = Visibility.Hidden;
+            SliderFirstPanel.Visibility = Visibility.Hidden;
+        }
     }
     
     /*
@@ -972,23 +1000,36 @@ public partial class Equalizer
             */
             if (_firstWaveFade != null)
             {
-                var firstChorusEffect = new ChorusEffect(_firstWaveFade, 160, 0.5f);
-
+                _firstChorusEffect = new ChorusEffect(_firstWaveFade, 160, 0.5f);
+                
+                SliderSecPanel.Visibility = Visibility.Visible;
+                SliderFirstPanel.Visibility = Visibility.Visible;
+                
+                SliderFirst.Value = 160;
+                SliderFirst.Maximum = 1200;
+                SliderFirst.Minimum = 10;
+                SliderFirstText.Text = "Delay [ms]";
+                
+                SliderSec.Value = 0.5f;
+                SliderSec.Maximum = 0.8f;
+                SliderSec.Minimum = 0f;
+                SliderSecText.Text = "Depth";
+                
                 if (TracksProperties.WaveOut?.PlaybackState == PlaybackState.Playing)
                 {
                     TracksProperties.WaveOut.Stop();
-                    TracksProperties.WaveOut.Init(firstChorusEffect);
+                    TracksProperties.WaveOut.Init(_firstChorusEffect);
                     TracksProperties.WaveOut.Play();
                 }
                 else
                 {
                     TracksProperties.WaveOut?.Stop();
-                    TracksProperties.WaveOut.Init(firstChorusEffect);
+                    TracksProperties.WaveOut.Init(_firstChorusEffect);
                 }
             }
             if (_secWaveFade != null)
             {
-                var secChorusEffect = new ChorusEffect(_secWaveFade, 160, 0.5f);
+                _secChorusEffect = new ChorusEffect(_secWaveFade, (int)SliderFirst.Value, (float)SliderSec.Value);
 
                 /*
                 * Sprawdzenie tylko i wyłączenie czy druga śceiżka dźwiękowa w danym momencie była grana, poniważ
@@ -998,13 +1039,18 @@ public partial class Equalizer
                 if (TracksProperties.SecWaveOut?.PlaybackState == PlaybackState.Playing)
                 {
                     TracksProperties.SecWaveOut.Stop();
-                    TracksProperties.SecWaveOut.Init(secChorusEffect);
+                    TracksProperties.SecWaveOut.Init(_secChorusEffect);
                     TracksProperties.SecWaveOut.Play();
                 }
             }
         }
         else
+        {
+            SliderSecPanel.Visibility = Visibility.Hidden;
+            SliderFirstPanel.Visibility = Visibility.Hidden;
             ImplementBaseWave();
+        }
+            
     }
 
     // Włączenie bądź wyłączenie zniekształcenia za pomocą check boxa.
@@ -1027,26 +1073,39 @@ public partial class Equalizer
             if (_firstWaveFade != null)
             {
                 /*
-                 * Utworzenie obiektu klasy VarispeedSampleProvider w celu uzyskania efektu Nightcore poprzez
-                 * przyśpieszenie granego utworu.
+                 * Utworzenie obiektu klasy Distortion effect
                  */
-                var distortionEffect = new DistortionSampleProvider(_firstWaveFade) {Gain = 1.5f, Mix = 7f};
+                _firstDistortionEffect = new DistortionSampleProvider(_firstWaveFade) { Gain = 1.5f, Mix = 7f };
 
+
+                SliderSecPanel.Visibility = Visibility.Visible;
+                SliderFirstPanel.Visibility = Visibility.Visible;
+                
+                SliderFirst.Value = 1.5f;
+                SliderFirst.Maximum = 20f;
+                SliderFirst.Minimum = 0.1f;
+                SliderFirstText.Text = "Gain";
+                
+                SliderSec.Value = 7f;
+                SliderSec.Maximum = 35f;
+                SliderSec.Minimum = 1f;
+                SliderSecText.Text = "Mix";
+                
                 if (TracksProperties.WaveOut?.PlaybackState == PlaybackState.Playing)
                 {
                     TracksProperties.WaveOut.Stop();
-                    TracksProperties.WaveOut.Init(distortionEffect);
+                    TracksProperties.WaveOut.Init(_firstDistortionEffect);
                     TracksProperties.WaveOut.Play();
                 }
                 else
                 {
                     TracksProperties.WaveOut?.Stop();
-                    TracksProperties.WaveOut.Init(distortionEffect);
+                    TracksProperties.WaveOut.Init(_firstDistortionEffect);
                 }
             }
             if (_secWaveFade != null)
             {
-                var distortionEffect = new DistortionSampleProvider(_secWaveFade) {Gain = 1.5f, Mix = 7f};
+                _secDistortionEffect = new DistortionSampleProvider(_secWaveFade) { Gain = (float)SliderFirst.Value, Mix = (float)SliderSec.Value };
 
                 /*
                 * Sprawdzenie tylko i wyłączenie czy druga śceiżka dźwiękowa w danym momencie była grana, poniważ
@@ -1056,13 +1115,18 @@ public partial class Equalizer
                 if (TracksProperties.SecWaveOut?.PlaybackState == PlaybackState.Playing)
                 {
                     TracksProperties.SecWaveOut.Stop();
-                    TracksProperties.SecWaveOut.Init(distortionEffect);
+                    TracksProperties.SecWaveOut.Init(_secDistortionEffect);
                     TracksProperties.SecWaveOut.Play();
                 }
             }
         }
         else
+        {
+            SliderSecPanel.Visibility = Visibility.Hidden;
+            SliderFirstPanel.Visibility = Visibility.Hidden;
             ImplementBaseWave();
+        }
+            
     }
 
     /*
@@ -1090,26 +1154,36 @@ public partial class Equalizer
                  * Utworzenie obiektu klasy VarispeedSampleProvider w celu uzyskania efektu Nightcore poprzez
                  * przyśpieszenie granego utworu.
                  */
-                var speedControl = new VarispeedSampleProvider(_firstWaveFade, 50, new SoundTouchProfile(false, true));
+                
                 // Wartość przyśpieszenia utworu.
-                speedControl.PlaybackRate = 1.4f;
+                _firstNightcoreEffect = new VarispeedSampleProvider(_firstWaveFade, 50, new SoundTouchProfile(false, true));
+                _firstNightcoreEffect.PlaybackRate = 1.4f;
+
+                SliderSecPanel.Visibility = Visibility.Hidden;
+                SliderFirstPanel.Visibility = Visibility.Visible;
+
+                SliderFirst.Value = 1.4f;
+                SliderFirst.Maximum = 2.2f;
+                SliderFirst.Minimum = 1.0f;
+                SliderFirstText.Text = "Speed";
+                
                 
                 if (TracksProperties.WaveOut?.PlaybackState == PlaybackState.Playing)
                 {
                     TracksProperties.WaveOut.Stop();
-                    TracksProperties.WaveOut.Init(speedControl);
+                    TracksProperties.WaveOut.Init(_firstNightcoreEffect);
                     TracksProperties.WaveOut.Play();
                 }
                 else
                 {
                     TracksProperties.WaveOut?.Stop();
-                    TracksProperties.WaveOut.Init(speedControl);
+                    TracksProperties.WaveOut.Init(_firstNightcoreEffect);
                 }
             }
             if (_secWaveFade != null)
             {
-                var secSpeedControl = new VarispeedSampleProvider(_secWaveFade, 50, new SoundTouchProfile(false, true));
-                secSpeedControl.PlaybackRate = 1.4f;
+                _secNightcoreEffect = new VarispeedSampleProvider(_secWaveFade, 50, new SoundTouchProfile(false, true));
+                _secNightcoreEffect.PlaybackRate = (float)SliderFirst.Value;
                 
                 /*
                 * Sprawdzenie tylko i wyłączenie czy druga śceiżka dźwiękowa w danym momencie była grana, poniważ
@@ -1119,13 +1193,17 @@ public partial class Equalizer
                 if (TracksProperties.SecWaveOut?.PlaybackState == PlaybackState.Playing)
                 {
                     TracksProperties.SecWaveOut.Stop();
-                    TracksProperties.SecWaveOut.Init(secSpeedControl);
+                    TracksProperties.SecWaveOut.Init(_secNightcoreEffect);
                     TracksProperties.SecWaveOut.Play();
                 }
             }
         }
         else
+        {
             ImplementBaseWave();
+            SliderFirstPanel.Visibility = Visibility.Hidden;
+        }
+            
     }
     
     private void OnOffStereoToMono(object sender, RoutedEventArgs e)
@@ -1219,5 +1297,57 @@ public partial class Equalizer
     }
     
     #endregion
-    
+
+    private void ValueChangeSlider_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+    {
+        if (Delay_Box.IsChecked == true)
+        {
+            _firstDelayEffect?.SetDelay((int)SliderFirst.Value);
+            _firstDelayEffect?.SetDecay((float)SliderSec.Value);
+            
+            if (_secDelayEffect != null)
+            {
+                _secDelayEffect.SetDelay((int)SliderFirst.Value);
+                _secDelayEffect.SetDecay((float)SliderSec.Value);
+            }
+        }
+        else if (Chorus_Box.IsChecked == true)
+        {
+            _firstChorusEffect?.SetDelay((int)SliderFirst.Value);
+            _firstChorusEffect?.SetDepth((float)SliderSec.Value);
+            
+            if (_secChorusEffect != null)
+            {
+                _secChorusEffect.SetDelay((int)SliderFirst.Value);
+                _secChorusEffect.SetDepth((float)SliderSec.Value);
+            }
+        }
+        else if (Distortion_Box.IsChecked == true)
+        {
+            if (_firstDistortionEffect != null)
+            {
+                _firstDistortionEffect.Gain = (float)SliderFirst.Value;
+                _firstDistortionEffect.Mix = (float)SliderSec.Value;
+            }
+
+            if (_secDistortionEffect != null)
+            {
+                _secDistortionEffect.Gain = (float)SliderFirst.Value;
+                _secDistortionEffect.Mix = (float)SliderSec.Value;
+            }
+        }
+        else if (Nightcore_Box.IsChecked == true)
+        {
+            if (_firstNightcoreEffect != null) _firstNightcoreEffect.PlaybackRate = (float)SliderFirst.Value;
+
+            if(_secNightcoreEffect != null)
+                _secNightcoreEffect.PlaybackRate = (float)SliderFirst.Value;
+        }
+    }
+
+    private void DynamicSliderEffectValueChaning(object sender, RoutedPropertyChangedEventArgs<double> e)
+    {
+        SliderFirstValueText.Text = Math.Round(SliderFirst.Value, 1).ToString();
+        SliderSecValueText.Text = Math.Round(SliderSec.Value, 1).ToString();
+    }
 }

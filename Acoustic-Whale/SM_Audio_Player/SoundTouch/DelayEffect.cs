@@ -1,4 +1,5 @@
-﻿using NAudio.Wave;
+﻿using System;
+using NAudio.Wave;
 
 namespace SM_Audio_Player.SoundTouch;
 
@@ -19,8 +20,13 @@ public class DelayEffect : ISampleProvider
 
     public void SetDelay(int delayMilliseconds)
     {
+        if (_delayBuffer != null)
+        {
+            Array.Clear(_delayBuffer, 0, _delayBuffer.Length);
+        }
         _delayBufferSize = (int)(delayMilliseconds / 1000.0 * _source.WaveFormat.SampleRate) * _source.WaveFormat.Channels;
         _delayBuffer = new float[_delayBufferSize];
+        _delayBufferIndex = 0;
     }
 
     public void SetDecay(float decay)

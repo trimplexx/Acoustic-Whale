@@ -122,12 +122,21 @@
                 </CheckBox.LayoutTransform>
                 Nightcore
             </CheckBox>
-            <StackPanel Visibility="Hidden">
-                <Slider Style="{DynamicResource SliderStyle1}" Margin="5" x:Name="Slider_Decay" IsMoveToPointEnabled="True" IsSelectionRangeEnabled="True"/>
-                <TextBlock Name="Slider_Decay_Txt" Grid.Column="5" Text="decay [ms]" VerticalAlignment="Top" Margin="0,-10,0,0"/>
-
-                <Slider Style="{DynamicResource SliderStyle1}" Margin="5" x:Name="Slider_Delay" IsMoveToPointEnabled="True" IsSelectionRangeEnabled="True"/>
-                <TextBlock Name="Slider_Delay_Txt" Grid.Column="5" Text="delay " VerticalAlignment="Top" Margin="0,-10,0,0"/>
+            <StackPanel x:Name = "SliderFirstPanel" Visibility="Hidden">
+                <Slider Style="{DynamicResource SliderStyle1}" Margin="5" x:Name="SliderFirst" IsMoveToPointEnabled="True" IsSelectionRangeEnabled="True" PreviewMouseLeftButtonUp="ValueChangeSlider_PreviewMouseLeftButtonUp" 
+                        ValueChanged="DynamicSliderEffectValueChaning"/>
+                <Grid>
+                    <TextBlock Name="SliderFirstText" Grid.Column="5" Text="slider1" VerticalAlignment="Top" Margin="0,-3,0,0"/>
+                    <TextBlock Name="SliderFirstValueText" Grid.Column="5" Text="0" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,-3,15,0"/>
+                </Grid>
+            </StackPanel>
+            <StackPanel x:Name = "SliderSecPanel" Visibility="Hidden">
+                <Slider Style="{DynamicResource SliderStyle1}" Margin="5" x:Name="SliderSec" IsMoveToPointEnabled="True" IsSelectionRangeEnabled="True" PreviewMouseLeftButtonUp="ValueChangeSlider_PreviewMouseLeftButtonUp"
+                        ValueChanged="DynamicSliderEffectValueChaning" />
+                <Grid>
+                    <TextBlock Name="SliderSecValueText" Grid.Column="5" Text="0" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,-3,15,0"/>
+                    <TextBlock Name="SliderSecText" Grid.Column="5" Text="slider2 " VerticalAlignment="Top" Margin="0,-3,0,0"/>
+                </Grid>
             </StackPanel>
         </StackPanel>
 

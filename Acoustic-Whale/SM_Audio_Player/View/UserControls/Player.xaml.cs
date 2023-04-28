@@ -49,7 +49,7 @@ public partial class Player : INotifyPropertyChanged
             // Przypisanie metody na tick timera
             TracksProperties.Timer.Tick += Timer_Tick;
             // Usatwienie co ile odświeża sie timer
-            TracksProperties.Timer.Interval = new TimeSpan(0, 0, 0, 0, 600);
+            TracksProperties.Timer.Interval = new TimeSpan(0, 0, 0, 0, 400);
         }
         catch (Exception ex)
         {
