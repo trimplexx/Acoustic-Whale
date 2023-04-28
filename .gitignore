@@ -1,0 +1,7 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/SM_Audio_Player/obj/Debug/net6.0-windows
+/.vs/Acoustic-Whale/v17
+/.vs/VSWorkspaceState.json
