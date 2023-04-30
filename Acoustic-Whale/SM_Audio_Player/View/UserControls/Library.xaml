@@ -13,9 +13,9 @@
         </Grid.RowDefinitions>
         
         <!-- Główna biblioteka (Data Grid) -->
-        <DataGrid x:Name="lv"  Background="Transparent" BorderThickness="0" Foreground="#45a7bc"
+        <DataGrid x:Name="lv" BorderThickness="0" Background="Transparent" Foreground="#45a7bc"
                   SelectionChanged="Lv_OnSelectionChanged" KeyDown="KeyDownEvent" FontSize="16" AlternationCount="2"
-                  CanUserResizeColumns="False" HeadersVisibility="Column" IsReadOnly="True" CanUserReorderColumns="false" >
+                  CanUserResizeColumns="False" HeadersVisibility="Column" IsReadOnly="True" CanUserReorderColumns="false">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Id" Binding="{Binding Id}" Width="60" CanUserSort="False"/>
                 <DataGridTextColumn Header="Title" Binding="{Binding Title}" Width="*" CanUserSort="False"/>
@@ -27,9 +27,16 @@
                 <Style TargetType="DataGridColumnHeader">
                     <EventSetter Event="Click" Handler="GridViewColumnHeaderClickedHandler"/>
                     <Setter Property="Background" Value="#292929" />
-                    <Setter Property="Foreground" Value="#2FC7E9" />
-                    <Setter Property="Padding" Value="5" />
+                    <Setter Property="Foreground" Value="#45a7bc" />
+                    <Setter Property="BorderBrush" Value="Black"/>
+                    <Setter Property="BorderThickness" Value="0.5"/>
                     <Setter Property="HorizontalContentAlignment" Value="Center" />
+                    <Style.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Foreground" Value="#2FC7E9" />
+                            <Setter Property="Background" Value="#304d5b"/>
+                        </Trigger>
+                    </Style.Triggers>
                 </Style>
             </DataGrid.ColumnHeaderStyle>
             <DataGrid.Resources>
