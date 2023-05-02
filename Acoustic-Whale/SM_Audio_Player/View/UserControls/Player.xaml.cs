@@ -1,9 +1,14 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Globalization;
+using System.Threading;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Animation;
 using NAudio.Wave;
+using SM_Audio_Player.Helper;
 using SM_Audio_Player.Music;
 using SM_Audio_Player.View.UserControls.buttons;
 
@@ -96,8 +101,11 @@ public partial class Player : INotifyPropertyChanged
             if (TracksProperties.SelectedTrack != null)
             {
                 title.Text = TracksProperties.SelectedTrack.Title;
+                TextAnimationHelper.TextAnimation(title.Text.Length, title, 16, canTitle);
                 author.Text = TracksProperties.SelectedTrack.Author;
+                TextAnimationHelper.TextAnimation(author.Text.Length, author, 21, canAuthor);
                 CD.Text = TracksProperties.SelectedTrack.Album;
+                TextAnimationHelper.TextAnimation(CD.Text.Length, CD, 20, canCD);
                 AlbumImg = TracksProperties.SelectedTrack.AlbumCoverPath;
 
                 /*
@@ -404,5 +412,4 @@ public partial class Player : INotifyPropertyChanged
             throw;
         }
     }
-
 }

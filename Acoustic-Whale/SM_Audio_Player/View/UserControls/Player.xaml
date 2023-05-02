@@ -36,12 +36,16 @@
                     <RowDefinition Height="30*" />
                     <RowDefinition Height="30*" />
                 </Grid.RowDefinitions>
-                <TextBlock x:Name="title" Text="Title" VerticalAlignment="Center" Foreground="#45a7bc"
-                           Margin="8, 10, 5, 0" FontSize="17" />
-                <TextBlock Grid.Row="1" x:Name="author" Text="Author" VerticalAlignment="Center" Foreground="#45a7bc"
-                           Margin="8, 0, 5, 0" />
-                <TextBlock Grid.Row="2" x:Name="CD" Text="Album" VerticalAlignment="Center" Foreground="#45a7bc"
-                           Margin="8, 0, 5, 0" />
+                <Canvas x:Name="canTitle" Margin="8, 10, 5, 0" ClipToBounds="True">
+                    <TextBlock x:Name="title" Text="Title" VerticalAlignment="Center" Foreground="#45a7bc"
+                               FontSize="17" />
+                </Canvas>
+                <Canvas Grid.Row="1" x:Name="canAuthor" Margin="8, 0, 5, 0" ClipToBounds="True">
+                    <TextBlock  x:Name="author" Text="Author" VerticalAlignment="Center" Foreground="#45a7bc"/>
+                </Canvas>
+                <Canvas Grid.Row="2" x:Name="canCD" Margin="8, 0, 5, 0" ClipToBounds="True">
+                    <TextBlock  x:Name="CD" Text="Album" VerticalAlignment="Center" Foreground="#45a7bc"/>
+                </Canvas>
             </Grid>
 
             <!-- Główne menu playera -->
