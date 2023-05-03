@@ -13,7 +13,7 @@ public partial class MessageBoxOk : INotifyPropertyChanged
     public MessageBoxOk()
     {
         DataContext = this;
-        WarningOK.Text = "Tutej domyślny tekst konstruktora";
+        //WarningOK.Text = "Tutej domyślny tekst konstruktora";
         InitializeComponent();
     }
     

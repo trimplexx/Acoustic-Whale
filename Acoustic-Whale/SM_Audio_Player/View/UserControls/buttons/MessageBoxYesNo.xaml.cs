@@ -12,7 +12,7 @@ public partial class MessageBoxYesNo : INotifyPropertyChanged
     public MessageBoxYesNo()
     {
         DataContext = this;
-        WarningYesNo.Text = "Tutej domyślny tekst konstruktora";
+        //WarningYesNo.Text = "Tutej domyślny tekst konstruktora";
         InitializeComponent();
     }
     

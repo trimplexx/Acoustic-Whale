@@ -7,14 +7,14 @@
              mc:Ignorable="d"
              Background="Transparent"
              d:DesignHeight="300" d:DesignWidth="300">
-    
-    <Border CornerRadius="25" Background="#333333">
+
+    <Border CornerRadius="25" Background="#333333" BorderBrush="#45a7bc" BorderThickness="2">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="80*"/>
                 <RowDefinition Height="20*"/>
             </Grid.RowDefinitions>
-            <TextBlock x:Name="WarningOK" Text="{Binding Message}" TextAlignment="Center" VerticalAlignment="Center" FontSize="25"/>
+            <TextBlock x:Name="WarningOK" Text="{Binding Message}" TextAlignment="Center" VerticalAlignment="Center" FontSize="25" Foreground="#45a7bc"/>
             <Button Grid.Row="1" Style="{DynamicResource ButtonStyle1}" x:Name="OK" Click="OK_OnClick" Margin="50, 0, 50, 20" Content="Ok" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
                     FontSize="20" Background="Transparent" Foreground="#45a7bc" BorderThickness="0"/>
         </Grid>
