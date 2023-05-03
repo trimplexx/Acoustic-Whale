@@ -908,10 +908,9 @@ public partial class Equalizer
                 if (TracksProperties.AudioFileReader.WaveFormat.Channels == 2)
                 {
                     _firstStereoToMono = new StereoToMonoSampleProvider(TracksProperties.AudioFileReader);
+                    TracksProperties.WaveOut?.Stop();
+                    TracksProperties.WaveOut?.Init(_firstStereoToMono);
                 }
-
-                TracksProperties.WaveOut?.Stop();
-                TracksProperties.WaveOut?.Init(_firstStereoToMono);
             }
         }
     }
@@ -931,6 +930,19 @@ public partial class Equalizer
 
         if (Delay_Box.IsChecked == false)
         {
+            SliderSecPanel.Visibility = Visibility.Visible;
+            SliderFirstPanel.Visibility = Visibility.Visible;
+                
+            SliderFirst.Value = 300;
+            SliderFirst.Maximum = 1400;
+            SliderFirst.Minimum = 100;
+            SliderFirstText.Text = "Delay [ms]";
+                
+            SliderSec.Value = 0.5f;
+            SliderSec.Maximum = 0.8f;
+            SliderSec.Minimum = 0f;
+            SliderSecText.Text = "Decay";
+            
             /*
             * Sprawdzanie czy, któryś z zadeklarowanych obiektów nie jest równy null, oraz przypisanie do obu
             * nowego ISampleProvidera z efektem delay.
@@ -938,19 +950,6 @@ public partial class Equalizer
             if (_firstWaveFade != null)
             {
                 _firstDelayEffect = new DelayEffect(_firstWaveFade, 300, 0.5f);
-
-                SliderSecPanel.Visibility = Visibility.Visible;
-                SliderFirstPanel.Visibility = Visibility.Visible;
-                
-                SliderFirst.Value = 300;
-                SliderFirst.Maximum = 1400;
-                SliderFirst.Minimum = 100;
-                SliderFirstText.Text = "Delay [ms]";
-                
-                SliderSec.Value = 0.5f;
-                SliderSec.Maximum = 0.8f;
-                SliderSec.Minimum = 0f;
-                SliderSecText.Text = "Decay";
                 
                 if (TracksProperties.WaveOut?.PlaybackState == PlaybackState.Playing)
                 {
@@ -1005,6 +1004,19 @@ public partial class Equalizer
 
         if (Chorus_Box.IsChecked == false)
         {
+            SliderSecPanel.Visibility = Visibility.Visible;
+            SliderFirstPanel.Visibility = Visibility.Visible;
+                
+            SliderFirst.Value = 160;
+            SliderFirst.Maximum = 1200;
+            SliderFirst.Minimum = 10;
+            SliderFirstText.Text = "Delay [ms]";
+                
+            SliderSec.Value = 0.5f;
+            SliderSec.Maximum = 0.8f;
+            SliderSec.Minimum = 0f;
+            SliderSecText.Text = "Depth";
+            
             /*
             * Sprawdzanie czy, któryś z zadeklarowanych obiektów nie jest równy null, oraz przypisanie do obu
             * nowego ISampleProvidera z efektem chorus.
@@ -1012,19 +1024,6 @@ public partial class Equalizer
             if (_firstWaveFade != null)
             {
                 _firstChorusEffect = new ChorusEffect(_firstWaveFade, 160, 0.5f);
-                
-                SliderSecPanel.Visibility = Visibility.Visible;
-                SliderFirstPanel.Visibility = Visibility.Visible;
-                
-                SliderFirst.Value = 160;
-                SliderFirst.Maximum = 1200;
-                SliderFirst.Minimum = 10;
-                SliderFirstText.Text = "Delay [ms]";
-                
-                SliderSec.Value = 0.5f;
-                SliderSec.Maximum = 0.8f;
-                SliderSec.Minimum = 0f;
-                SliderSecText.Text = "Depth";
                 
                 if (TracksProperties.WaveOut?.PlaybackState == PlaybackState.Playing)
                 {
@@ -1061,7 +1060,6 @@ public partial class Equalizer
             SliderFirstPanel.Visibility = Visibility.Hidden;
             ImplementBaseWave();
         }
-            
     }
 
     // Włączenie bądź wyłączenie zniekształcenia za pomocą check boxa.
@@ -1077,6 +1075,19 @@ public partial class Equalizer
 
         if (Distortion_Box.IsChecked == false)
         {
+            SliderSecPanel.Visibility = Visibility.Visible;
+            SliderFirstPanel.Visibility = Visibility.Visible;
+                
+            SliderFirst.Value = 1.5f;
+            SliderFirst.Maximum = 8f;
+            SliderFirst.Minimum = 1f;
+            SliderFirstText.Text = "Gain";
+                
+            SliderSec.Value = 7f;
+            SliderSec.Maximum = 35f;
+            SliderSec.Minimum = 1f;
+            SliderSecText.Text = "Mix";
+            
             /*
              * Sprawdzanie czy, któryś z zadeklarowanych obiektów nie jest równy null, oraz przypisanie do obu
              * nowego ISampleProvidera z efektem nightcore.
@@ -1087,20 +1098,6 @@ public partial class Equalizer
                  * Utworzenie obiektu klasy Distortion effect
                  */
                 _firstDistortionEffect = new DistortionSampleProvider(_firstWaveFade) { Gain = 1.5f, Mix = 7f };
-
-
-                SliderSecPanel.Visibility = Visibility.Visible;
-                SliderFirstPanel.Visibility = Visibility.Visible;
-                
-                SliderFirst.Value = 1.5f;
-                SliderFirst.Maximum = 8f;
-                SliderFirst.Minimum = 1f;
-                SliderFirstText.Text = "Gain";
-                
-                SliderSec.Value = 7f;
-                SliderSec.Maximum = 35f;
-                SliderSec.Minimum = 1f;
-                SliderSecText.Text = "Mix";
                 
                 if (TracksProperties.WaveOut?.PlaybackState == PlaybackState.Playing)
                 {
@@ -1137,7 +1134,6 @@ public partial class Equalizer
             SliderFirstPanel.Visibility = Visibility.Hidden;
             ImplementBaseWave();
         }
-            
     }
 
     /*
@@ -1155,6 +1151,14 @@ public partial class Equalizer
 
         if (Nightcore_Box.IsChecked == false)
         {
+            SliderSecPanel.Visibility = Visibility.Hidden;
+            SliderFirstPanel.Visibility = Visibility.Visible;
+
+            SliderFirst.Value = 1.4f;
+            SliderFirst.Maximum = 2.2f;
+            SliderFirst.Minimum = 1.0f;
+            SliderFirstText.Text = "Speed";
+            
             /*
              * Sprawdzanie czy, któryś z zadeklarowanych obiektów nie jest równy null, oraz przypisanie do obu
              * nowego ISampleProvidera z efektem nightcore.
@@ -1169,15 +1173,6 @@ public partial class Equalizer
                 // Wartość przyśpieszenia utworu.
                 _firstNightcoreEffect = new VarispeedSampleProvider(_firstWaveFade, 50, new SoundTouchProfile(false, true));
                 _firstNightcoreEffect.PlaybackRate = 1.4f;
-
-                SliderSecPanel.Visibility = Visibility.Hidden;
-                SliderFirstPanel.Visibility = Visibility.Visible;
-
-                SliderFirst.Value = 1.4f;
-                SliderFirst.Maximum = 2.2f;
-                SliderFirst.Minimum = 1.0f;
-                SliderFirstText.Text = "Speed";
-                
                 
                 if (TracksProperties.WaveOut?.PlaybackState == PlaybackState.Playing)
                 {
@@ -1214,7 +1209,6 @@ public partial class Equalizer
             ImplementBaseWave();
             SliderFirstPanel.Visibility = Visibility.Hidden;
         }
-            
     }
     
     private void OnOffStereoToMono(object sender, RoutedEventArgs e)
