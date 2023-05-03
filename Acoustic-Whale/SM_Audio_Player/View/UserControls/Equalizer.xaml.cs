@@ -292,7 +292,11 @@ public partial class Equalizer
             {
                 if (TracksProperties.SecAudioFileReader != null)
                 {
-                    _secStereoToMono = new StereoToMonoSampleProvider(TracksProperties.SecAudioFileReader);
+                    if (TracksProperties.SecAudioFileReader.WaveFormat.Channels == 2)
+                    {
+                        _secStereoToMono = new StereoToMonoSampleProvider(TracksProperties.AudioFileReader);
+                    }
+                    
                 }
             }
             
@@ -381,7 +385,10 @@ public partial class Equalizer
             {
                 if (TracksProperties.AudioFileReader != null)
                 {
-                    _firstStereoToMono = new StereoToMonoSampleProvider(TracksProperties.AudioFileReader);
+                    if (TracksProperties.AudioFileReader.WaveFormat.Channels == 2)
+                    {
+                        _firstStereoToMono = new StereoToMonoSampleProvider(TracksProperties.AudioFileReader);
+                    }
                 }
             }
             
@@ -898,7 +905,11 @@ public partial class Equalizer
         {
             if (TracksProperties.AudioFileReader != null)
             {
-               _firstStereoToMono = new StereoToMonoSampleProvider(TracksProperties.AudioFileReader);
+                if (TracksProperties.AudioFileReader.WaveFormat.Channels == 2)
+                {
+                    _firstStereoToMono = new StereoToMonoSampleProvider(TracksProperties.AudioFileReader);
+                }
+
                 TracksProperties.WaveOut?.Stop();
                 TracksProperties.WaveOut?.Init(_firstStereoToMono);
             }
