@@ -13,6 +13,7 @@ using NAudio.Wave;
 using Newtonsoft.Json;
 using SM_Audio_Player.Music;
 using SM_Audio_Player.View.UserControls.buttons;
+using SM_Audio_Player.View.Window;
 using Binding = System.Windows.Data.Binding;
 using KeyEventArgs = System.Windows.Input.KeyEventArgs;
 using MessageBox = System.Windows.MessageBox;
@@ -227,6 +228,7 @@ public partial class Library
     // Metoda odpowiadająca za dodawanie utworów do biblioteki utworów w programie wraz ze wszystkimi metadanymi
     private void Add_Btn_Click(object sender, EventArgs e)
     {
+
         try
         {
             // Utworzenie okna dialogowego umożliwiającego wybór plików muzycznych
@@ -250,12 +252,8 @@ public partial class Library
                         TracksProperties.TracksList.Any(track => track.Path == newPath))
                     {
                         var duplicateTrack = Path.GetFileNameWithoutExtension(newPath);
-                        var result = MessageBox.Show(
-                            $"The track '{duplicateTrack}' is already in the list. Do you want to add it again?",
-                            "Duplicate Music",
-                            MessageBoxButton.YesNo);
-
-                        if (result == MessageBoxResult.No) continue;
+                        System.Windows.Forms.DialogResult result = MessageBoxYesNo.Show(MessageBoxYesNo.addTxt + duplicateTrack);
+                        if (result == DialogResult.No) continue;
                     }
 
                     // Pobranie metadanych z pliku muzycznego
@@ -318,8 +316,6 @@ public partial class Library
                     File.WriteAllText(JsonPath, newJsonData);
                     RefreshTrackListViewAndId();
                 }
-                // Wyświetlenie komunikatu o pomyślnym dodaniu utworów do biblioteki
-                if (addedToTheList) MessageBox.Show("Successfully added to the list.", "Add Music");
             }
 
             if (lv.SelectedIndex != -1)
@@ -344,12 +340,10 @@ public partial class Library
             if (lv.SelectedItems.Count > 0)
             {
                 // Wyświetlenie okna dialogowe z potwierdzeniem usunięcia wybranych utworów
-                var result = MessageBox.Show(
-                    $"Are you sure you want to delete {lv.SelectedItems.Count} track(s)?",
-                    "Confirm Delete", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                System.Windows.Forms.DialogResult result = MessageBoxYesNo.Show(MessageBoxYesNo.delTxt + lv.SelectedItems.Count);
 
                 // Jeśli użytkownik potwierdzi, usuń wybrane utwory
-                if (result == MessageBoxResult.Yes)
+                if (result == DialogResult.Yes)
                 {
                     var selectedIndices = new List<int>();
                     foreach (var item in lv.SelectedItems) selectedIndices.Add(lv.Items.IndexOf(item));
@@ -531,3 +525,4 @@ public partial class Library
         }
     }
 }
+
