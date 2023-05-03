@@ -17,11 +17,41 @@
                   SelectionChanged="Lv_OnSelectionChanged" KeyDown="KeyDownEvent" FontSize="16" AlternationCount="2"
                   CanUserResizeColumns="False" HeadersVisibility="Column" IsReadOnly="True" CanUserReorderColumns="false">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Id" Binding="{Binding Id}" Width="60" CanUserSort="False"/>
-                <DataGridTextColumn Header="Title" Binding="{Binding Title}" Width="*" CanUserSort="False"/>
-                <DataGridTextColumn Header="Author" Binding="{Binding Author}" Width="*" CanUserSort="False"/>
-                <DataGridTextColumn Header="Album" Binding="{Binding Album}" Width="*" CanUserSort="False"/>
-                <DataGridTextColumn Header="Duration" Binding="{Binding Duration}" Width="100" CanUserSort="False"/>
+                <DataGridTextColumn Header="Id" Binding="{Binding Id}" Width="60" CanUserSort="False" >
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="HorizontalAlignment" Value="Center" />
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+                <DataGridTextColumn Header="Title" Binding="{Binding Title}" Width="*" CanUserSort="False">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="HorizontalAlignment" Value="Center" />
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+                <DataGridTextColumn Header="Author" Binding="{Binding Author}" Width="*" CanUserSort="False">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="HorizontalAlignment" Value="Center" />
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+                <DataGridTextColumn Header="Album" Binding="{Binding Album}" Width="*" CanUserSort="False">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="HorizontalAlignment" Value="Center" />
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+                <DataGridTextColumn Header="Duration" Binding="{Binding Duration}" Width="100" CanUserSort="False">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="HorizontalAlignment" Value="Center" />
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
             </DataGrid.Columns>
             <DataGrid.ColumnHeaderStyle>
                 <Style TargetType="DataGridColumnHeader">
