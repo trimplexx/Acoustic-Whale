@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:BTN="clr-namespace:SM_Audio_Player.View.UserControls.buttons"
+             xmlns:helper="clr-namespace:SM_Audio_Player.Helper"
              mc:Ignorable="d"
              d:DesignHeight="200" d:DesignWidth="1000">
     <Grid>
@@ -98,8 +99,8 @@
                            Margin="0,0,10,5" x:Name="tbTime" Height="21" VerticalAlignment="Bottom" />
             </Grid>
             <Slider Style="{DynamicResource SliderStyle1}" Margin="10, 10, 5, 0" x:Name="sldTime"
-                    IsMoveToPointEnabled="True"
-                    IsSelectionRangeEnabled="True" PreviewMouseLeftButtonDown="TimeSlider_PreviewMouseLeftButtonDown"
+                    IsMoveToPointEnabled="True" helper:SliderTools.MoveToPointOnDrag="True" 
+                    IsSelectionRangeEnabled="True"  PreviewMouseLeftButtonDown="TimeSlider_PreviewMouseLeftButtonDown"
                     PreviewMouseLeftButtonUp="TimeSlider_PreviewMouseLeftButtonUp" Minimum="0"
                     Maximum="{Binding TracksProperties.SelectedTrack.Duration.TotalSeconds}" Value="0"
                     SelectionEnd="{Binding ElementName=sldTime,Path=Value}" />

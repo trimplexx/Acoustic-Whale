@@ -12,6 +12,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using KeyEventArgs = System.Windows.Input.KeyEventArgs;
 
 namespace SM_Audio_Player.View.Window
 {
@@ -49,6 +50,20 @@ namespace SM_Audio_Player.View.Window
             _MessageBoxYesNo.Message.Text = message;
             _MessageBoxYesNo.ShowDialog();
             return result;
+        }
+
+        private void YESNO_OnKeys(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Escape)
+            {
+                result = System.Windows.Forms.DialogResult.No;
+                this.Close();
+            }
+            if (e.Key == Key.Enter)
+            {
+                result = System.Windows.Forms.DialogResult.Yes;
+                this.Close();
+            }
         }
     }
 }

@@ -450,7 +450,7 @@ public partial class Equalizer
             }
             else
             {
-                TracksProperties.WaveOut.Init(_secWaveFade);
+                TracksProperties.WaveOut.Init(_firstWaveFade);
             }
             
             TracksProperties.WaveOut?.Play();

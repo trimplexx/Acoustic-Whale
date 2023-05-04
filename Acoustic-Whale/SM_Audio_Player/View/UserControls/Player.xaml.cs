@@ -412,4 +412,59 @@ public partial class Player : INotifyPropertyChanged
             throw;
         }
     }
+
+    private void TimeSlider_ToPosition(object? sender, TouchEventArgs e)
+    {
+        try
+        {
+            var totalSeconds = _result.TotalSeconds;
+            var progress = sldTime.Value / sldTime.Maximum;
+            var newPosition = totalSeconds * progress;
+
+            if (TracksProperties.AudioFileReader != null)
+            {
+                if (TracksProperties.AudioFileReader.FileName == TracksProperties.SecAudioFileReader?.FileName
+                    && TracksProperties.SelectedTrack?.Path == TracksProperties.AudioFileReader.FileName)
+                {
+                    var currentPosition = TracksProperties.AudioFileReader.CurrentTime.TotalSeconds;
+                    var currentPositionSec = TracksProperties.SecAudioFileReader.CurrentTime.TotalSeconds;
+
+                    if (TracksProperties.WaveOut?.PlaybackState == PlaybackState.Playing
+                        && TracksProperties.SecWaveOut?.PlaybackState == PlaybackState.Playing)
+                    {
+                        if (currentPosition > currentPositionSec)
+                            TracksProperties.SecAudioFileReader.CurrentTime = TimeSpan.FromSeconds(newPosition);
+                        else
+                            TracksProperties.AudioFileReader.CurrentTime = TimeSpan.FromSeconds(newPosition);
+                    }
+                    else if (TracksProperties.WaveOut?.PlaybackState == PlaybackState.Playing)
+                    {
+                        TracksProperties.AudioFileReader.CurrentTime = TimeSpan.FromSeconds(newPosition);
+                    }
+                    else if (TracksProperties.SecWaveOut?.PlaybackState == PlaybackState.Playing)
+                    {
+                        TracksProperties.SecAudioFileReader.CurrentTime = TimeSpan.FromSeconds(newPosition);
+                    }
+                }
+                else if (TracksProperties.SelectedTrack?.Path == TracksProperties.AudioFileReader.FileName)
+                {
+                    TracksProperties.AudioFileReader.CurrentTime = TimeSpan.FromSeconds(newPosition);
+                }
+                else
+                {
+                    if (TracksProperties.SecAudioFileReader != null)
+                        TracksProperties.SecAudioFileReader.CurrentTime = TimeSpan.FromSeconds(newPosition);
+                }
+            }
+
+            TracksProperties.Timer.Start();
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Position change error: {ex.Message}");
+            throw;
+        }
+        
+    }
+
 }

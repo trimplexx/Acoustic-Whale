@@ -42,7 +42,7 @@
             <Border Grid.RowSpan="2" Grid.ColumnSpan="2" BorderThickness="1" BorderBrush="#45a7bc" />
             <TextBlock Text="Hotkeys" Grid.ColumnSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="22"/>
             <StackPanel HorizontalAlignment="Right" Grid.Column="1">
-                <TextBlock Text="To Exit click Help/Esc" Grid.ColumnSpan="2" HorizontalAlignment="Right" VerticalAlignment="Top" FontSize="12"/>
+                <TextBlock Text="To exit click Help/Esc" Grid.ColumnSpan="2" HorizontalAlignment="Right" VerticalAlignment="Top" FontSize="12"/>
             </StackPanel>
             
             <Border Grid.ColumnSpan="2" BorderThickness="0,0,0,2" BorderBrush="#45a7bc" Margin="5,0,5,0" />

@@ -3,17 +3,16 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:SM_Audio_Player.View.Window"
         mc:Ignorable="d"
         Background="Transparent"
         WindowStyle="None"
         WindowStartupLocation="CenterScreen" AllowsTransparency="True"
-        Title="MessageBoxYesNo" Height="300" Width="300">
-    <WindowChrome.WindowChrome>
+        Title="MessageBoxYesNo" Height="300" Width="300" PreviewKeyUp="YESNO_OnKeys">
+    <WindowChrome.WindowChrome >
             <WindowChrome GlassFrameThickness="0" CornerRadius="0" CaptionHeight="0"/>
         </WindowChrome.WindowChrome>
-    <Border CornerRadius="25" Background="#333333" BorderBrush="#45a7bc" BorderThickness="2">
-        <Grid>
+    <Border CornerRadius="25" Background="#333333" BorderBrush="#45a7bc" BorderThickness="2" >
+        <Grid> 
             <Grid.RowDefinitions>
                 <RowDefinition Height="80*"/>
                 <RowDefinition Height="20*"/>
