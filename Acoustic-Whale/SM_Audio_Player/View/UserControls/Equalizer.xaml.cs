@@ -1231,8 +1231,7 @@ public partial class Equalizer
             TracksProperties.AudioFileReader = TracksProperties.SecAudioFileReader;
 
         TracksProperties.SecAudioFileReader = null;
-        
-        InitStereoToMonoEffect();
+
         if (TracksProperties.AudioFileReader != null)
             _firstWaveEqualizer = new EqualizerSampleProvider(TracksProperties.AudioFileReader);
         
@@ -1240,7 +1239,20 @@ public partial class Equalizer
          * Sprawdzenie zaznaczenia opcji Stereo to mono
          */
         if (StereoToMono_Box.IsChecked == false && _firstStereoToMono != null)
+        {
+            if (TracksProperties.AudioFileReader != null)
+            {
+                if (TracksProperties.AudioFileReader.WaveFormat.Channels == 2)
+                {
+                    _firstStereoToMono = new StereoToMonoSampleProvider(TracksProperties.AudioFileReader);
+                    TracksProperties.WaveOut?.Stop();
+                    TracksProperties.WaveOut?.Init(_firstStereoToMono);
+                }
+            }
+            
             _firstWaveEqualizer = new EqualizerSampleProvider(_firstStereoToMono);
+        }
+            
 
         if (_equalizerOn)
             _firstWaveEqualizer?.UpdateEqualizer(sld1.Value, sld2.Value, sld3.Value, sld4.Value, sld5.Value,
