@@ -2,28 +2,43 @@
 using System.Windows;
 using System.Windows.Input;
 using SM_Audio_Player.Music;
-using SM_Audio_Player.View.UserControls.buttons;
 
 namespace SM_Audio_Player;
 
 public partial class MainWindow
 {
     public delegate void PlayMusicBySpaceEvent(object sender, EventArgs e);
+
     public static event PlayMusicBySpaceEvent? PlayMusic;
+
     public delegate void AddTrackBySpaceEvent(object sender, EventArgs e);
+
     public static event AddTrackBySpaceEvent? AddTrack;
+
     public delegate void OnSchuffleEvent(object sender, EventArgs e);
+
     public static event OnSchuffleEvent? OnSchuffle;
+
     public delegate void OnLoopEvent(object sender, EventArgs e);
+
     public static event OnLoopEvent? OnLoop;
+
     public delegate void PrevTrackEvent(object sender, EventArgs e);
+
     public static event PrevTrackEvent? PrevTrack;
+
     public delegate void NextTrackEvent(object sender, EventArgs e);
+
     public static event NextTrackEvent? NextTrack;
+
     public delegate void ForwardSongEvent(object sender, EventArgs e);
+
     public static event ForwardSongEvent? ForwardSong;
+
     public delegate void RewindSongEvent(object sender, EventArgs e);
+
     public static event RewindSongEvent? RewindSong;
+
     public MainWindow()
     {
         InitializeComponent();
@@ -45,8 +60,8 @@ public partial class MainWindow
                 Application.Current.MainWindow?.WindowState == WindowState.Maximized)
             {
                 Application.Current.MainWindow.WindowState = WindowState.Normal;
-                world.Margin = new Thickness(0);
-                btnMAX.MaximizeIcon =
+                World.Margin = new Thickness(0);
+                BtnMax.MaximizeIcon =
                     "M.3 89.5C.1 91.6 0 93.8 0 96V224 416c0 35.3 28.7 64 64 64l384 0c35.3 0 64-28.7 64-64V224 96c0-35.3-28.7-64-64-64H64c-2.2 0-4.4 .1-6.5 .3c-9.2 .9-17.8 3.8-25.5 8.2C21.8 46.5 13.4 55.1 7.7 65.5c-3.9 7.3-6.5 15.4-7.4 24zM48 224H464l0 192c0 8.8-7.2 16-16 16L64 432c-8.8 0-16-7.2-16-16l0-192z";
 
                 /*Pobieranie pozycji kursora*/
@@ -95,97 +110,70 @@ public partial class MainWindow
     private void KeyDown_event(object sender, KeyEventArgs e)
     {
         if (Keyboard.IsKeyDown(Key.LeftCtrl))
-        {
             if (!Keyboard.IsKeyDown(Key.LeftShift))
-            {
                 if (e.Key == Key.Left)
                     PrevTrack?.Invoke(this, EventArgs.Empty);
-            }
-        }
-        
+
         if (Keyboard.IsKeyDown(Key.LeftCtrl))
-        {
             if (!Keyboard.IsKeyDown(Key.LeftShift))
-            {
                 if (e.Key == Key.Right)
                     NextTrack?.Invoke(this, EventArgs.Empty);
-            }
-        }
-        
+
         if (Keyboard.IsKeyDown(Key.LeftCtrl))
-        {
             if (Keyboard.IsKeyDown(Key.LeftShift))
-            {
                 if (e.Key == Key.Left)
                 {
                     RewindSong?.Invoke(this, EventArgs.Empty);
                     if (TracksProperties.AudioFileReader != null)
                         TracksProperties.AudioFileReader.Volume = 0;
-                    if(TracksProperties.SecAudioFileReader != null)
+                    if (TracksProperties.SecAudioFileReader != null)
                         TracksProperties.SecAudioFileReader.Volume = 0;
                 }
-            }
-        }
-        
+
         if (Keyboard.IsKeyDown(Key.LeftCtrl))
-        {
             if (Keyboard.IsKeyDown(Key.LeftShift))
-            {
                 if (e.Key == Key.Right)
                 {
                     ForwardSong?.Invoke(this, EventArgs.Empty);
                     if (TracksProperties.AudioFileReader != null)
                         TracksProperties.AudioFileReader.Volume = 0;
-                    if(TracksProperties.SecAudioFileReader != null)
+                    if (TracksProperties.SecAudioFileReader != null)
                         TracksProperties.SecAudioFileReader.Volume = 0;
                 }
-                   
-            }
-        }
     }
 
     private void KeyUp_event(object sender, KeyEventArgs e)
     {
         if (Keyboard.IsKeyUp(Key.LeftCtrl))
-        {
             if (Keyboard.IsKeyUp(Key.LeftShift))
             {
-
                 if (TracksProperties.AudioFileReader != null)
-                    TracksProperties.AudioFileReader.Volume = (float)TracksProperties.Volume/100;
-                if(TracksProperties.SecAudioFileReader != null)
-                    TracksProperties.SecAudioFileReader.Volume = (float)TracksProperties.Volume/100;
+                    TracksProperties.AudioFileReader.Volume = (float)TracksProperties.Volume / 100;
+                if (TracksProperties.SecAudioFileReader != null)
+                    TracksProperties.SecAudioFileReader.Volume = (float)TracksProperties.Volume / 100;
             }
-        }
-        
+
         if (e.Key == Key.Space)
         {
             TracksProperties.SpaceFlag = true;
-            
+
             if (TracksProperties.SpaceFlag)
                 PlayMusic?.Invoke(this, EventArgs.Empty);
-            
+
             TracksProperties.SpaceFlag = true;
         }
 
         if (Keyboard.IsKeyDown(Key.LeftCtrl))
-        {
-            if(e.Key == Key.Insert)
+            if (e.Key == Key.Insert)
                 AddTrack?.Invoke(this, EventArgs.Empty);
-        }
 
         if (Keyboard.IsKeyDown(Key.LeftCtrl))
-        {
-            if(e.Key == Key.S)
+            if (e.Key == Key.S)
                 OnSchuffle?.Invoke(this, EventArgs.Empty);
-        }
-        
+
         if (Keyboard.IsKeyDown(Key.LeftCtrl))
-        {
-            if(e.Key == Key.L)
+            if (e.Key == Key.L)
                 OnLoop?.Invoke(this, EventArgs.Empty);
-        }
-        
     }
 
     private void FlagReset(object sender, MouseButtonEventArgs e)
@@ -195,24 +183,16 @@ public partial class MainWindow
 
     private void Help_Btn_Click(object sender, RoutedEventArgs e)
     {
-        if(Help.Visibility == Visibility.Visible)
-        {
+        if (Help.Visibility == Visibility.Visible)
             Help.Visibility = Visibility.Hidden;
-        }
         else
-        {
             Help.Visibility = Visibility.Visible;
-        }
     }
 
     private void EscFromHelp(object sender, KeyEventArgs e)
     {
         if (e.Key == Key.Escape)
-        {
             if (Help.Visibility == Visibility.Visible)
-            {
                 Help.Visibility = Visibility.Hidden;
-            }
-        }
     }
 }

@@ -1,12 +1,12 @@
 ﻿namespace SM_Audio_Player.Music;
 
-/*
- * Klasa przechowuje informacje na danego utwor, które później umieszczane zostają w liście
- * TrackProperties.TrackList.
- */
+/// <summary>
+/// Klasa przechowuje informacje na danego utwor, które później umieszczane zostają w liście
+/// TrackProperties.TrackList.
+/// </summary>
 public class Tracks
 {
-    public Tracks(int id, string ti, string auth, string alb, string pa, string tim, string imageFilePath,int idByAdd  )
+    public Tracks(int id, string ti, string auth, string alb, string pa, string tim, string imageFilePath, int idByAdd)
     {
         Id = id;
         Title = ti;
@@ -16,7 +16,6 @@ public class Tracks
         Duration = tim;
         AlbumCoverPath = imageFilePath;
         IdByAdd = idByAdd;
-
     }
 
     public int Id { get; set; }

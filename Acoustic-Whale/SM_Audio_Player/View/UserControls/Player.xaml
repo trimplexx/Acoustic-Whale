@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:BTN="clr-namespace:SM_Audio_Player.View.UserControls.buttons"
+             xmlns:btn="clr-namespace:SM_Audio_Player.View.UserControls.buttons"
              xmlns:helper="clr-namespace:SM_Audio_Player.Helper"
              mc:Ignorable="d"
              d:DesignHeight="200" d:DesignWidth="1000">
@@ -37,15 +37,15 @@
                     <RowDefinition Height="30*" />
                     <RowDefinition Height="30*" />
                 </Grid.RowDefinitions>
-                <Canvas x:Name="canTitle" Margin="8, 10, 5, 0" ClipToBounds="True">
-                    <TextBlock x:Name="title" Text="Title" VerticalAlignment="Center" Foreground="#45a7bc"
+                <Canvas x:Name="CanTitle" Margin="8, 10, 5, 0" ClipToBounds="True">
+                    <TextBlock x:Name="Title" Text="Title" VerticalAlignment="Center" Foreground="#45a7bc"
                                FontSize="17" />
                 </Canvas>
-                <Canvas Grid.Row="1" x:Name="canAuthor" Margin="8, 0, 5, 0" ClipToBounds="True">
-                    <TextBlock  x:Name="author" Text="Author" VerticalAlignment="Center" Foreground="#45a7bc"/>
+                <Canvas Grid.Row="1" x:Name="CanAuthor" Margin="8, 0, 5, 0" ClipToBounds="True">
+                    <TextBlock x:Name="Author" Text="Author" VerticalAlignment="Center" Foreground="#45a7bc" />
                 </Canvas>
-                <Canvas Grid.Row="2" x:Name="canCD" Margin="8, 0, 5, 0" ClipToBounds="True">
-                    <TextBlock  x:Name="CD" Text="Album" VerticalAlignment="Center" Foreground="#45a7bc"/>
+                <Canvas Grid.Row="2" x:Name="CanCd" Margin="8, 0, 5, 0" ClipToBounds="True">
+                    <TextBlock x:Name="Cd" Text="Album" VerticalAlignment="Center" Foreground="#45a7bc" />
                 </Canvas>
             </Grid>
 
@@ -58,32 +58,34 @@
 
                 <!-- Przyciski odpowiedzialne za odtwarzanie oraz przechodzenie do następnego lub poprzedniego utworu -->
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                    <BTN:ButtonPrevious Height="40" Width="40" />
-                    <BTN:ButtonPlay Height="55" Width="55" />
-                    <BTN:ButtonNext Height="40" Width="40" />
+                    <btn:ButtonPrevious Height="40" Width="40" />
+                    <btn:ButtonPlay Height="55" Width="55" />
+                    <btn:ButtonNext Height="40" Width="40" />
                 </StackPanel>
 
                 <!-- Przyciski odpowiedzialne za zapętlenie aktualnego utworu i losowe odtwarzanie -->
                 <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center">
-                    <BTN:ButtonShuffle Height="30" Width="30" Margin="0, 0, 10, 0">
-                        <BTN:ButtonShuffle.ToolTip>
-                            <ToolTip Background="#333333" BorderBrush="#45a7bc" BorderThickness="1" Foreground="#45a7bc" FontSize="14">
+                    <btn:ButtonShuffle Height="30" Width="30" Margin="0, 0, 10, 0">
+                        <btn:ButtonShuffle.ToolTip>
+                            <ToolTip Background="#333333" BorderBrush="#45a7bc" BorderThickness="1"
+                                     Foreground="#45a7bc" FontSize="14">
                                 Playing random tracks
                             </ToolTip>
-                        </BTN:ButtonShuffle.ToolTip>
-                    </BTN:ButtonShuffle>
-                    <BTN:ButtonLoop Height="30" Width="30" Margin="10, 0, 0, 0">
-                        <BTN:ButtonLoop.ToolTip>
-                            <ToolTip Background="#333333" BorderBrush="#45a7bc" BorderThickness="1" Foreground="#45a7bc" FontSize="14">
+                        </btn:ButtonShuffle.ToolTip>
+                    </btn:ButtonShuffle>
+                    <btn:ButtonLoop Height="30" Width="30" Margin="10, 0, 0, 0">
+                        <btn:ButtonLoop.ToolTip>
+                            <ToolTip Background="#333333" BorderBrush="#45a7bc" BorderThickness="1"
+                                     Foreground="#45a7bc" FontSize="14">
                                 Loop playlist/ one track
                             </ToolTip>
-                        </BTN:ButtonLoop.ToolTip>
-                    </BTN:ButtonLoop>
+                        </btn:ButtonLoop.ToolTip>
+                    </btn:ButtonLoop>
                 </StackPanel>
             </Grid>
 
             <!-- Ustawienie głośności (i jak będzie czas to FFT) -->
-            <BTN:ButtonVolume Grid.Column="3" Height="30" Width="185" Margin="50, 0, 0, 50" x:Name="btnVOL" />
+            <btn:ButtonVolume Grid.Column="3" Height="30" Width="185" Margin="50, 0, 0, 50" />
         </Grid>
 
         <!-- Dolna część playera zawierająca slider odpowiedzialny za odpowiednią minutę w utworze -->
@@ -94,17 +96,17 @@
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <TextBlock Grid.Column="0" Text="0:00" TextAlignment="Left" Foreground="#45a7bc"
-                           Margin="10, 5, 5, 5" x:Name="tbCurrTime" />
+                           Margin="10, 5, 5, 5" x:Name="TbCurrTime" />
                 <TextBlock Grid.Column="1" Text="0:00" HorizontalAlignment="Right" Foreground="#45a7bc"
-                           Margin="0,0,10,5" x:Name="tbTime" Height="21" VerticalAlignment="Bottom" />
+                           Margin="0,0,10,5" x:Name="TbTime" Height="21" VerticalAlignment="Bottom" />
             </Grid>
-            <Slider Style="{DynamicResource SliderStyle1}" Margin="10, 10, 5, 0" x:Name="sldTime"
-                    IsMoveToPointEnabled="True" helper:SliderTools.MoveToPointOnDrag="True" 
-                    IsSelectionRangeEnabled="True"  PreviewMouseLeftButtonDown="TimeSlider_PreviewMouseLeftButtonDown"
+            <Slider Style="{DynamicResource SliderStyle1}" Margin="10, 10, 5, 0" x:Name="SldTime"
+                    IsMoveToPointEnabled="True" helper:SliderTools.MoveToPointOnDrag="True"
+                    IsSelectionRangeEnabled="True" PreviewMouseLeftButtonDown="TimeSlider_PreviewMouseLeftButtonDown"
                     PreviewMouseLeftButtonUp="TimeSlider_PreviewMouseLeftButtonUp" Minimum="0"
                     Maximum="{Binding TracksProperties.SelectedTrack.Duration.TotalSeconds}" Value="0"
-                    SelectionEnd="{Binding ElementName=sldTime,Path=Value}" />
-            <Border BorderBrush="#45a7bc" BorderThickness="1" Margin="15, 30, 15, 0" CornerRadius="2.5"/>
+                    SelectionEnd="{Binding ElementName=SldTime,Path=Value}" />
+            <Border BorderBrush="#45a7bc" BorderThickness="1" Margin="15, 30, 15, 0" CornerRadius="2.5" />
 
         </StackPanel>
     </Grid>

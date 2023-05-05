@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
@@ -29,14 +30,14 @@ public partial class Equalizer
     private StereoToMonoSampleProvider? _firstStereoToMono;
     private StereoToMonoSampleProvider? _secStereoToMono;
     private bool _equalizerOn = true;
-    
+
     // Effects
     private DelayEffect? _firstDelayEffect;
     private DelayEffect? _secDelayEffect;
     private ChorusEffect? _firstChorusEffect;
     private ChorusEffect? _secChorusEffect;
-    private DistortionSampleProvider? _firstDistortionEffect;
-    private DistortionSampleProvider? _secDistortionEffect;
+    private DistortionEffect? _firstDistortionEffect;
+    private DistortionEffect? _secDistortionEffect;
     private VarispeedSampleProvider? _firstNightcoreEffect;
     private VarispeedSampleProvider? _secNightcoreEffect;
 
@@ -62,7 +63,7 @@ public partial class Equalizer
     public static event FadeOffOnEventHandler? FadeOffOn;
 
     #region ChangingTracksEvents
-    
+
     /*
      * Event odpowiadający za wybranie danej piosenki, która wiemy że będzie aktualie wymagana do odtworzenia, a nie będzie
      * możliwe, że użytkownik będzie chciał żeby była zatrzymana.
@@ -79,20 +80,20 @@ public partial class Equalizer
             InitStereoToMonoEffect();
             if (TracksProperties.AudioFileReader != null)
                 _firstWaveEqualizer = new EqualizerSampleProvider(TracksProperties.AudioFileReader);
-            
-            if (StereoToMono_Box.IsChecked == true && _firstStereoToMono != null)
+
+            if (StereoToMonoBox.IsChecked == true && _firstStereoToMono != null)
                 _firstWaveEqualizer = new EqualizerSampleProvider(_firstStereoToMono);
-            
+
             if (_equalizerOn)
-                _firstWaveEqualizer?.UpdateEqualizer(sld1.Value, sld2.Value, sld3.Value, sld4.Value, sld5.Value,
-                    sld6.Value, sld7.Value, sld8.Value);
+                _firstWaveEqualizer?.UpdateEqualizer(Sld1.Value, Sld2.Value, Sld3.Value, Sld4.Value, Sld5.Value,
+                    Sld6.Value, Sld7.Value, Sld8.Value);
             else
                 _firstWaveEqualizer?.UpdateEqualizer(0, 0, 0, 0, 0, 0, 0, 0);
 
             _firstWaveFade = new FadeInOutSampleProvider(_firstWaveEqualizer);
             TracksProperties.WaveOut?.Stop();
-             TracksProperties.WaveOut.Init(_firstWaveFade);
-            
+            TracksProperties.WaveOut.Init(_firstWaveFade);
+
             InitNightcoreEffect();
             InitDelayEffect();
             InitChorusEffect();
@@ -125,20 +126,20 @@ public partial class Equalizer
             InitStereoToMonoEffect();
             if (TracksProperties.AudioFileReader != null)
                 _firstWaveEqualizer = new EqualizerSampleProvider(TracksProperties.AudioFileReader);
-            
-            if (StereoToMono_Box.IsChecked == true && _firstStereoToMono != null)
+
+            if (StereoToMonoBox.IsChecked == true && _firstStereoToMono != null)
                 _firstWaveEqualizer = new EqualizerSampleProvider(_firstStereoToMono);
-            
+
             if (_equalizerOn)
-                _firstWaveEqualizer?.UpdateEqualizer(sld1.Value, sld2.Value, sld3.Value, sld4.Value, sld5.Value,
-                    sld6.Value, sld7.Value, sld8.Value);
+                _firstWaveEqualizer?.UpdateEqualizer(Sld1.Value, Sld2.Value, Sld3.Value, Sld4.Value, Sld5.Value,
+                    Sld6.Value, Sld7.Value, Sld8.Value);
             else
                 _firstWaveEqualizer?.UpdateEqualizer(0, 0, 0, 0, 0, 0, 0, 0);
 
             _firstWaveFade = new FadeInOutSampleProvider(_firstWaveEqualizer);
             TracksProperties.WaveOut?.Stop();
             TracksProperties.WaveOut.Init(_firstWaveFade);
-            
+
             /*
              * Sprawdzanie czy zainicjalizowana piosenka nie powinna zostać zatrzymana, w momencie, gdy przełączy się na 1
              * element z listy. Bądź gdy przełączy się na pierwszy utwór z opcją Schuffle. W przeciwnym wypadku piosenka
@@ -180,10 +181,11 @@ public partial class Equalizer
             throw;
         }
     }
+
     #endregion
-    
+
     #region EqualizerLogic
-    
+
     /*
      * Metoda odpowiada za aktualizacje wartości equalizerów służąca do wywołania w innych miejscach kodu.
      */
@@ -193,10 +195,12 @@ public partial class Equalizer
         {
             if (_equalizerOn)
             {
-                _firstWaveEqualizer?.UpdateEqualizer(sld1.Value, sld2.Value, sld3.Value, sld4.Value, sld5.Value, sld6.Value,
-                    sld7.Value, sld8.Value);
-                _secWaveEqualizer?.UpdateEqualizer(sld1.Value, sld2.Value, sld3.Value, sld4.Value, sld5.Value, sld6.Value,
-                    sld7.Value, sld8.Value);
+                _firstWaveEqualizer?.UpdateEqualizer(Sld1.Value, Sld2.Value, Sld3.Value, Sld4.Value, Sld5.Value,
+                    Sld6.Value,
+                    Sld7.Value, Sld8.Value);
+                _secWaveEqualizer?.UpdateEqualizer(Sld1.Value, Sld2.Value, Sld3.Value, Sld4.Value, Sld5.Value,
+                    Sld6.Value,
+                    Sld7.Value, Sld8.Value);
             }
             else
             {
@@ -210,23 +214,23 @@ public partial class Equalizer
             throw;
         }
     }
-    
+
     /*
      * Przycisk resetujący wartości sliderów oraz wartości equalizera.
      */
     private void Reset_Btn_Click(object sender, RoutedEventArgs e)
     {
-        sld1.Value = 0;
-        sld2.Value = 0;
-        sld3.Value = 0;
-        sld4.Value = 0;
-        sld5.Value = 0;
-        sld6.Value = 0;
-        sld7.Value = 0;
-        sld8.Value = 0;
+        Sld1.Value = 0;
+        Sld2.Value = 0;
+        Sld3.Value = 0;
+        Sld4.Value = 0;
+        Sld5.Value = 0;
+        Sld6.Value = 0;
+        Sld7.Value = 0;
+        Sld8.Value = 0;
         ChangeEqualizerValues();
     }
-    
+
     /*
      * Event odpowiadający za dynamiczne przypisywanie wartości do pól nad sliderami.
      */
@@ -234,14 +238,14 @@ public partial class Equalizer
     {
         try
         {
-            Slider_Value1.Text = ((int)sld1.Value).ToString();
-            Slider_Value2.Text = ((int)sld2.Value).ToString();
-            Slider_Value3.Text = ((int)sld3.Value).ToString();
-            Slider_Value4.Text = ((int)sld4.Value).ToString();
-            Slider_Value5.Text = ((int)sld5.Value).ToString();
-            Slider_Value6.Text = ((int)sld6.Value).ToString();
-            Slider_Value7.Text = ((int)sld7.Value).ToString();
-            Slider_Value8.Text = ((int)sld8.Value).ToString();
+            SliderValue1.Text = ((int)Sld1.Value).ToString();
+            SliderValue2.Text = ((int)Sld2.Value).ToString();
+            SliderValue3.Text = ((int)Sld3.Value).ToString();
+            SliderValue4.Text = ((int)Sld4.Value).ToString();
+            SliderValue5.Text = ((int)Sld5.Value).ToString();
+            SliderValue6.Text = ((int)Sld6.Value).ToString();
+            SliderValue7.Text = ((int)Sld7.Value).ToString();
+            SliderValue8.Text = ((int)Sld8.Value).ToString();
         }
         catch (Exception ex)
         {
@@ -249,7 +253,7 @@ public partial class Equalizer
             throw;
         }
     }
-    
+
     /*
  * Zmiana wartości equalizera w momencie puszczenia klawiszu myszki na sliderze.
  */
@@ -266,20 +270,21 @@ public partial class Equalizer
         if (_equalizerOn)
         {
             _equalizerOn = false;
-            Equalizer_Btn.Content = "Equalizer Off";
+            EqualizerBtn.Content = "Equalizer Off";
         }
         else
         {
             _equalizerOn = true;
-            Equalizer_Btn.Content = "Equalizer On";
+            EqualizerBtn.Content = "Equalizer On";
         }
+
         ChangeEqualizerValues();
     }
-    
+
     #endregion
 
     #region FadeInOutLogic
-    
+
     /*
      * Uniwersalna metoda użyta następnie w evencie zmiany muzyki pozwalająca na inicjalizacje drugiej ścieżki dźwiękowej
      * do równoczesnego odtworzenia aby uzyskać efekt Fade in/out
@@ -288,25 +293,18 @@ public partial class Equalizer
     {
         try
         {
-            if (StereoToMono_Box.IsChecked == true)
-            {
+            if (StereoToMonoBox.IsChecked == true)
                 if (TracksProperties.SecAudioFileReader != null)
-                {
                     if (TracksProperties.SecAudioFileReader.WaveFormat.Channels == 2)
-                    {
                         _secStereoToMono = new StereoToMonoSampleProvider(TracksProperties.AudioFileReader);
-                    }
-                    
-                }
-            }
-            
+
             if (TracksProperties.AudioFileReader != null)
                 if (TracksProperties.SecAudioFileReader != null)
                     _secWaveEqualizer = new EqualizerSampleProvider(TracksProperties.SecAudioFileReader);
 
-            if (StereoToMono_Box.IsChecked == true && _secStereoToMono != null)
+            if (StereoToMonoBox.IsChecked == true && _secStereoToMono != null)
                 _secWaveEqualizer = new EqualizerSampleProvider(_secStereoToMono);
-            
+
             ChangeEqualizerValues();
 
             /*
@@ -326,16 +324,17 @@ public partial class Equalizer
             /*
              * Sprawdzanie czy zostały nałożone jakiekolwiek inne efekty.
              */
-            if (Nightcore_Box.IsChecked == true)
+            if (NightcoreBox.IsChecked == true)
             {
                 if (_secWaveFade != null)
                 {
-                    _secNightcoreEffect = new VarispeedSampleProvider(_secWaveFade, 100, new SoundTouchProfile(false, false));
+                    _secNightcoreEffect =
+                        new VarispeedSampleProvider(_secWaveFade, 100, new SoundTouchProfile(false, false));
                     _secNightcoreEffect.PlaybackRate = (float)SliderFirst.Value;
                     TracksProperties.SecWaveOut.Init(_secNightcoreEffect);
                 }
             }
-            else if (Delay_Box.IsChecked == true)
+            else if (DelayBox.IsChecked == true)
             {
                 if (_secWaveFade != null)
                 {
@@ -343,7 +342,7 @@ public partial class Equalizer
                     TracksProperties.SecWaveOut.Init(_secDelayEffect);
                 }
             }
-            else if (Chorus_Box.IsChecked == true)
+            else if (ChorusBox.IsChecked == true)
             {
                 if (_secWaveFade != null)
                 {
@@ -351,11 +350,12 @@ public partial class Equalizer
                     TracksProperties.SecWaveOut.Init(_secChorusEffect);
                 }
             }
-            else if (Distortion_Box.IsChecked == true)
+            else if (DistortionBox.IsChecked == true)
             {
                 if (_secWaveFade != null)
                 {
-                    _secDistortionEffect = new DistortionSampleProvider(_secWaveFade) { Gain = (float)SliderFirst.Value, Mix = (float)SliderSec.Value };
+                    _secDistortionEffect = new DistortionEffect(_secWaveFade)
+                        { Gain = (float)SliderFirst.Value, Mix = (float)SliderSec.Value };
                     TracksProperties.SecWaveOut.Init(_secDistortionEffect);
                 }
             }
@@ -363,7 +363,7 @@ public partial class Equalizer
             {
                 TracksProperties.SecWaveOut.Init(_secWaveFade);
             }
-            
+
             TracksProperties.SecWaveOut.Play();
         }
         catch (Exception ex)
@@ -381,23 +381,17 @@ public partial class Equalizer
     {
         try
         {
-            if (StereoToMono_Box.IsChecked == true)
-            {
+            if (StereoToMonoBox.IsChecked == true)
                 if (TracksProperties.AudioFileReader != null)
-                {
                     if (TracksProperties.AudioFileReader.WaveFormat.Channels == 2)
-                    {
                         _firstStereoToMono = new StereoToMonoSampleProvider(TracksProperties.AudioFileReader);
-                    }
-                }
-            }
-            
+
             if (TracksProperties.AudioFileReader != null)
                 _firstWaveEqualizer = new EqualizerSampleProvider(TracksProperties.AudioFileReader);
-            
-            if (StereoToMono_Box.IsChecked == true && _firstStereoToMono != null)
+
+            if (StereoToMonoBox.IsChecked == true && _firstStereoToMono != null)
                 _firstWaveEqualizer = new EqualizerSampleProvider(_firstStereoToMono);
-            
+
             ChangeEqualizerValues();
 
             /*
@@ -408,23 +402,24 @@ public partial class Equalizer
                 _firstWaveFade = new FadeInOutSampleProvider(_firstWaveEqualizer, true);
                 _firstWaveFade?.BeginFadeIn(6000);
             }
-                
-            
+
+
             TracksProperties.WaveOut?.Stop();
-            
+
             /*
              * Sprawdzenie czy zostały nałożone jakieś inne efekty dźwiękowe.
              */
-            if (Nightcore_Box.IsChecked == true)
+            if (NightcoreBox.IsChecked == true)
             {
                 if (_firstWaveFade != null)
                 {
-                    _firstNightcoreEffect = new VarispeedSampleProvider(_firstWaveFade, 100, new SoundTouchProfile(false, false));
+                    _firstNightcoreEffect =
+                        new VarispeedSampleProvider(_firstWaveFade, 100, new SoundTouchProfile(false, false));
                     _firstNightcoreEffect.PlaybackRate = (float)SliderFirst.Value;
                     TracksProperties.WaveOut.Init(_firstNightcoreEffect);
                 }
             }
-            else if (Delay_Box.IsChecked == true)
+            else if (DelayBox.IsChecked == true)
             {
                 if (_firstWaveFade != null)
                 {
@@ -432,19 +427,21 @@ public partial class Equalizer
                     TracksProperties.WaveOut.Init(_firstDelayEffect);
                 }
             }
-            else if (Chorus_Box.IsChecked == true)
+            else if (ChorusBox.IsChecked == true)
             {
                 if (_firstWaveFade != null)
                 {
-                    _firstChorusEffect = new ChorusEffect(_firstWaveFade, (int)SliderFirst.Value, (float)SliderSec.Value);
+                    _firstChorusEffect =
+                        new ChorusEffect(_firstWaveFade, (int)SliderFirst.Value, (float)SliderSec.Value);
                     TracksProperties.WaveOut.Init(_firstChorusEffect);
                 }
             }
-            else if (Distortion_Box.IsChecked == true)
+            else if (DistortionBox.IsChecked == true)
             {
                 if (_firstWaveFade != null)
                 {
-                    _firstDistortionEffect = new DistortionSampleProvider(_firstWaveFade) { Gain = (float)SliderFirst.Value, Mix = (float)SliderSec.Value };
+                    _firstDistortionEffect = new DistortionEffect(_firstWaveFade)
+                        { Gain = (float)SliderFirst.Value, Mix = (float)SliderSec.Value };
                     TracksProperties.WaveOut.Init(_firstDistortionEffect);
                 }
             }
@@ -452,7 +449,7 @@ public partial class Equalizer
             {
                 TracksProperties.WaveOut.Init(_firstWaveFade);
             }
-            
+
             TracksProperties.WaveOut?.Play();
         }
         catch (Exception ex)
@@ -471,7 +468,7 @@ public partial class Equalizer
     {
         try
         {
-            if (Fade_box.IsChecked == true)
+            if (FadeBox.IsChecked == true)
             {
                 _firstWaveFade?.BeginFadeOut(7000);
 
@@ -600,7 +597,7 @@ public partial class Equalizer
         }
     }
 
-    
+
     /*
      * Podobnie jak w powyższym przypadku metoda wywoływana z klasy Player, odpowiada za płynną zamiane drugiej ścieżki
      * dźwiękowej na pierwszą, uzyskując w ten sposób efekt Fade in/out przy pomocy użycia FadeInOutSampleProvider.
@@ -610,7 +607,7 @@ public partial class Equalizer
     {
         try
         {
-            if (Fade_box.IsChecked == true)
+            if (FadeBox.IsChecked == true)
             {
                 _secWaveFade?.BeginFadeOut(7000);
 
@@ -746,7 +743,7 @@ public partial class Equalizer
     {
         try
         {
-            if (Fade_box.IsChecked == false)
+            if (FadeBox.IsChecked == false)
             {
                 /* Przypisanie wartości flagi przechowywanej w statycznej klasie w celu oznajmienia w innych
                  * miejscach kodu, że funckja została włączona.
@@ -755,7 +752,6 @@ public partial class Equalizer
             }
             else
             {
-
                 // Informacja o wyłączeniu funkcji Fade in/out
                 TracksProperties.IsFadeOn = false;
                 var isPlaying = false;
@@ -773,7 +769,8 @@ public partial class Equalizer
                  * Przepisanie wartości SecAudioFileReadera do bazowego obiektu będącego źródłem odtwarzanej muzyki w programie,
                  * jeżeli ten był w danym momencie głównym źródłem.
                  */
-                if (TracksProperties.SecAudioFileReader != null && TracksProperties.SelectedTrack?.Path == TracksProperties.SecAudioFileReader.FileName)
+                if (TracksProperties.SecAudioFileReader != null && TracksProperties.SelectedTrack?.Path ==
+                    TracksProperties.SecAudioFileReader.FileName)
                     TracksProperties.AudioFileReader = TracksProperties.SecAudioFileReader;
 
                 TracksProperties.SecAudioFileReader = null;
@@ -787,22 +784,22 @@ public partial class Equalizer
                 if (TracksProperties.AudioFileReader != null)
                 {
                     InitStereoToMonoEffect();
-                    
+
                     _firstWaveEqualizer = new EqualizerSampleProvider(TracksProperties.AudioFileReader);
-                    
-                    if (StereoToMono_Box.IsChecked == true && _firstStereoToMono != null)
+
+                    if (StereoToMonoBox.IsChecked == true && _firstStereoToMono != null)
                         _firstWaveEqualizer = new EqualizerSampleProvider(_firstStereoToMono);
-                    
+
                     if (_equalizerOn)
-                        _firstWaveEqualizer?.UpdateEqualizer(sld1.Value, sld2.Value, sld3.Value, sld4.Value, sld5.Value,
-                            sld6.Value, sld7.Value, sld8.Value);
+                        _firstWaveEqualizer?.UpdateEqualizer(Sld1.Value, Sld2.Value, Sld3.Value, Sld4.Value, Sld5.Value,
+                            Sld6.Value, Sld7.Value, Sld8.Value);
                     else
                         _firstWaveEqualizer?.UpdateEqualizer(0, 0, 0, 0, 0, 0, 0, 0);
 
                     _firstWaveFade = new FadeInOutSampleProvider(_firstWaveEqualizer);
                     TracksProperties.WaveOut?.Stop();
                     TracksProperties.WaveOut.Init(_firstWaveFade);
-                    
+
                     /*
                      * Sprawdzenie innych nałożonych efektów dźwiękowych.
                      */
@@ -828,24 +825,25 @@ public partial class Equalizer
             throw;
         }
     }
+
     #endregion
 
     #region OtherEffects
+
     /*
     * Sprawdzanie czy efekt nightcore nie został nałożony, aby aktualizować następną piosenkę o dodatkowy efekt.
     */
     private void InitNightcoreEffect()
     {
-        if (Nightcore_Box.IsChecked == true)
-        {
+        if (NightcoreBox.IsChecked == true)
             if (_firstWaveFade != null)
             {
-                _firstNightcoreEffect = new VarispeedSampleProvider(_firstWaveFade, 100, new SoundTouchProfile(false, false));
+                _firstNightcoreEffect =
+                    new VarispeedSampleProvider(_firstWaveFade, 100, new SoundTouchProfile(false, false));
                 _firstNightcoreEffect.PlaybackRate = (float)SliderFirst.Value;
                 TracksProperties.WaveOut?.Stop();
                 TracksProperties.WaveOut?.Init(_firstNightcoreEffect);
             }
-        }
     }
 
     /*
@@ -853,68 +851,59 @@ public partial class Equalizer
     */
     private void InitDelayEffect()
     {
-        if (Delay_Box.IsChecked == true)
-        {
+        if (DelayBox.IsChecked == true)
             if (_firstWaveFade != null)
             {
                 _firstDelayEffect = new DelayEffect(_firstWaveFade, (int)SliderFirst.Value, (float)SliderSec.Value);
                 TracksProperties.WaveOut?.Stop();
                 TracksProperties.WaveOut?.Init(_firstDelayEffect);
             }
-        }
     }
-    
+
     /*
     * Sprawdzanie czy efekt Chorus nie został nałożony, aby aktualizować następną piosenkę o dodatkowy efekt.
     */
     private void InitChorusEffect()
     {
-        if (Chorus_Box.IsChecked == true)
-        {
+        if (ChorusBox.IsChecked == true)
             if (_firstWaveFade != null)
             {
                 _firstChorusEffect = new ChorusEffect(_firstWaveFade, (int)SliderFirst.Value, (float)SliderSec.Value);
                 TracksProperties.WaveOut?.Stop();
                 TracksProperties.WaveOut?.Init(_firstChorusEffect);
             }
-        }
     }
-    
+
     /*
     * Sprawdzanie czy efekt Chorus nie został nałożony, aby aktualizować następną piosenkę o dodatkowy efekt.
     */
     private void InitDistortionEffect()
     {
-        if (Distortion_Box.IsChecked == true)
-        {
+        if (DistortionBox.IsChecked == true)
             if (_firstWaveFade != null)
             {
-                _firstDistortionEffect = new DistortionSampleProvider(_firstWaveFade) { Gain = (float)SliderFirst.Value, Mix = (float)SliderSec.Value };
+                _firstDistortionEffect = new DistortionEffect(_firstWaveFade)
+                    { Gain = (float)SliderFirst.Value, Mix = (float)SliderSec.Value };
                 TracksProperties.WaveOut?.Stop();
                 TracksProperties.WaveOut?.Init(_firstDistortionEffect);
             }
-        }
     }
-    
+
     /*
     * Sprawdzanie czy efekt Chorus nie został nałożony, aby aktualizować następną piosenkę o dodatkowy efekt.
     */
     private void InitStereoToMonoEffect()
     {
-        if (StereoToMono_Box.IsChecked == true)
-        {
+        if (StereoToMonoBox.IsChecked == true)
             if (TracksProperties.AudioFileReader != null)
-            {
                 if (TracksProperties.AudioFileReader.WaveFormat.Channels == 2)
                 {
                     _firstStereoToMono = new StereoToMonoSampleProvider(TracksProperties.AudioFileReader);
                     TracksProperties.WaveOut?.Stop();
                     TracksProperties.WaveOut?.Init(_firstStereoToMono);
                 }
-            }
-        }
     }
-    
+
     /*
      * Metoda odpowiadająca za event załączenia efektu Delay, poprzez naciśnięcie checkBoxa.
      */
@@ -924,25 +913,25 @@ public partial class Equalizer
         * Wyłączenie innych check boxów, ponieważ z założenia możemy nałożyć dodatkowo do opcji equalizera oraz
         * Fade in/out jeden z efektów na siebie.
         */
-        Nightcore_Box.IsChecked = false;
-        Chorus_Box.IsChecked = false;
-        Distortion_Box.IsChecked = false;
+        NightcoreBox.IsChecked = false;
+        ChorusBox.IsChecked = false;
+        DistortionBox.IsChecked = false;
 
-        if (Delay_Box.IsChecked == false)
+        if (DelayBox.IsChecked == false)
         {
             SliderSecPanel.Visibility = Visibility.Visible;
             SliderFirstPanel.Visibility = Visibility.Visible;
-                
+
             SliderFirst.Value = 300;
             SliderFirst.Maximum = 1400;
             SliderFirst.Minimum = 100;
             SliderFirstText.Text = "Delay [ms]";
-                
+
             SliderSec.Value = 0.5f;
             SliderSec.Maximum = 0.8f;
             SliderSec.Minimum = 0f;
             SliderSecText.Text = "Decay";
-            
+
             /*
             * Sprawdzanie czy, któryś z zadeklarowanych obiektów nie jest równy null, oraz przypisanie do obu
             * nowego ISampleProvidera z efektem delay.
@@ -950,7 +939,7 @@ public partial class Equalizer
             if (_firstWaveFade != null)
             {
                 _firstDelayEffect = new DelayEffect(_firstWaveFade, 300, 0.5f);
-                
+
                 if (TracksProperties.WaveOut?.PlaybackState == PlaybackState.Playing)
                 {
                     TracksProperties.WaveOut.Stop();
@@ -963,11 +952,12 @@ public partial class Equalizer
                     TracksProperties.WaveOut.Init(_firstDelayEffect);
                 }
             }
+
             if (_secWaveFade != null)
             {
                 _secDelayEffect = new DelayEffect(_secWaveFade, (int)SliderFirst.Value, (float)SliderSec.Value);
 
-                
+
                 /*
                  * Sprawdzenie tylko i wyłączenie czy druga śceiżka dźwiękowa w danym momencie była grana, poniważ
                  * z założenia, gdy utwór zostaje zatrzymany automatycznie zmieniana jest ścieżka na bazowe
@@ -988,7 +978,7 @@ public partial class Equalizer
             SliderFirstPanel.Visibility = Visibility.Hidden;
         }
     }
-    
+
     /*
     * Metoda odpowiadająca za event załączenia efektu Chorus, poprzez naciśnięcie checkBoxa.
     */
@@ -998,25 +988,25 @@ public partial class Equalizer
         * Wyłączenie innych check boxów, ponieważ z założenia możemy nałożyć dodatkowo do opcji equalizera oraz
         * Fade in/out jeden z efektów na siebie.
         */
-        Nightcore_Box.IsChecked = false;
-        Delay_Box.IsChecked = false;
-        Distortion_Box.IsChecked = false;
+        NightcoreBox.IsChecked = false;
+        DelayBox.IsChecked = false;
+        DistortionBox.IsChecked = false;
 
-        if (Chorus_Box.IsChecked == false)
+        if (ChorusBox.IsChecked == false)
         {
             SliderSecPanel.Visibility = Visibility.Visible;
             SliderFirstPanel.Visibility = Visibility.Visible;
-                
+
             SliderFirst.Value = 160;
             SliderFirst.Maximum = 1200;
             SliderFirst.Minimum = 10;
             SliderFirstText.Text = "Delay [ms]";
-                
+
             SliderSec.Value = 0.5f;
             SliderSec.Maximum = 0.8f;
             SliderSec.Minimum = 0f;
             SliderSecText.Text = "Depth";
-            
+
             /*
             * Sprawdzanie czy, któryś z zadeklarowanych obiektów nie jest równy null, oraz przypisanie do obu
             * nowego ISampleProvidera z efektem chorus.
@@ -1024,7 +1014,7 @@ public partial class Equalizer
             if (_firstWaveFade != null)
             {
                 _firstChorusEffect = new ChorusEffect(_firstWaveFade, 160, 0.5f);
-                
+
                 if (TracksProperties.WaveOut?.PlaybackState == PlaybackState.Playing)
                 {
                     TracksProperties.WaveOut.Stop();
@@ -1037,6 +1027,7 @@ public partial class Equalizer
                     TracksProperties.WaveOut.Init(_firstChorusEffect);
                 }
             }
+
             if (_secWaveFade != null)
             {
                 _secChorusEffect = new ChorusEffect(_secWaveFade, (int)SliderFirst.Value, (float)SliderSec.Value);
@@ -1069,25 +1060,25 @@ public partial class Equalizer
          * Wyłączenie innych check boxów, ponieważ z założenia możemy nałożyć dodatkowo do opcji equalizera oraz
          * Fade in/out jeden z efektów na siebie.
          */
-        Delay_Box.IsChecked = false;
-        Chorus_Box.IsChecked = false;
-        Nightcore_Box.IsChecked = false;
+        DelayBox.IsChecked = false;
+        ChorusBox.IsChecked = false;
+        NightcoreBox.IsChecked = false;
 
-        if (Distortion_Box.IsChecked == false)
+        if (DistortionBox.IsChecked == false)
         {
             SliderSecPanel.Visibility = Visibility.Visible;
             SliderFirstPanel.Visibility = Visibility.Visible;
-                
+
             SliderFirst.Value = 1.5f;
             SliderFirst.Maximum = 8f;
             SliderFirst.Minimum = 1f;
             SliderFirstText.Text = "Gain";
-                
+
             SliderSec.Value = 7f;
             SliderSec.Maximum = 35f;
             SliderSec.Minimum = 1f;
             SliderSecText.Text = "Mix";
-            
+
             /*
              * Sprawdzanie czy, któryś z zadeklarowanych obiektów nie jest równy null, oraz przypisanie do obu
              * nowego ISampleProvidera z efektem nightcore.
@@ -1097,8 +1088,8 @@ public partial class Equalizer
                 /*
                  * Utworzenie obiektu klasy Distortion effect
                  */
-                _firstDistortionEffect = new DistortionSampleProvider(_firstWaveFade) { Gain = 1.5f, Mix = 7f };
-                
+                _firstDistortionEffect = new DistortionEffect(_firstWaveFade) { Gain = 1.5f, Mix = 7f };
+
                 if (TracksProperties.WaveOut?.PlaybackState == PlaybackState.Playing)
                 {
                     TracksProperties.WaveOut.Stop();
@@ -1111,9 +1102,11 @@ public partial class Equalizer
                     TracksProperties.WaveOut.Init(_firstDistortionEffect);
                 }
             }
+
             if (_secWaveFade != null)
             {
-                _secDistortionEffect = new DistortionSampleProvider(_secWaveFade) { Gain = (float)SliderFirst.Value, Mix = (float)SliderSec.Value };
+                _secDistortionEffect = new DistortionEffect(_secWaveFade)
+                    { Gain = (float)SliderFirst.Value, Mix = (float)SliderSec.Value };
 
                 /*
                 * Sprawdzenie tylko i wyłączenie czy druga śceiżka dźwiękowa w danym momencie była grana, poniważ
@@ -1145,11 +1138,11 @@ public partial class Equalizer
          * Wyłączenie innych check boxów, ponieważ z założenia możemy nałożyć dodatkowo do opcji equalizera oraz
          * Fade in/out jeden z efektów na siebie.
          */
-        Delay_Box.IsChecked = false;
-        Chorus_Box.IsChecked = false;
-        Distortion_Box.IsChecked = false;
+        DelayBox.IsChecked = false;
+        ChorusBox.IsChecked = false;
+        DistortionBox.IsChecked = false;
 
-        if (Nightcore_Box.IsChecked == false)
+        if (NightcoreBox.IsChecked == false)
         {
             SliderSecPanel.Visibility = Visibility.Hidden;
             SliderFirstPanel.Visibility = Visibility.Visible;
@@ -1158,7 +1151,7 @@ public partial class Equalizer
             SliderFirst.Maximum = 2.2f;
             SliderFirst.Minimum = 1.0f;
             SliderFirstText.Text = "Speed";
-            
+
             /*
              * Sprawdzanie czy, któryś z zadeklarowanych obiektów nie jest równy null, oraz przypisanie do obu
              * nowego ISampleProvidera z efektem nightcore.
@@ -1169,11 +1162,12 @@ public partial class Equalizer
                  * Utworzenie obiektu klasy VarispeedSampleProvider w celu uzyskania efektu Nightcore poprzez
                  * przyśpieszenie granego utworu.
                  */
-                
+
                 // Wartość przyśpieszenia utworu.
-                _firstNightcoreEffect = new VarispeedSampleProvider(_firstWaveFade, 50, new SoundTouchProfile(false, true));
+                _firstNightcoreEffect =
+                    new VarispeedSampleProvider(_firstWaveFade, 50, new SoundTouchProfile(false, true));
                 _firstNightcoreEffect.PlaybackRate = 1.4f;
-                
+
                 if (TracksProperties.WaveOut?.PlaybackState == PlaybackState.Playing)
                 {
                     TracksProperties.WaveOut.Stop();
@@ -1186,11 +1180,12 @@ public partial class Equalizer
                     TracksProperties.WaveOut.Init(_firstNightcoreEffect);
                 }
             }
+
             if (_secWaveFade != null)
             {
                 _secNightcoreEffect = new VarispeedSampleProvider(_secWaveFade, 50, new SoundTouchProfile(false, true));
                 _secNightcoreEffect.PlaybackRate = (float)SliderFirst.Value;
-                
+
                 /*
                 * Sprawdzenie tylko i wyłączenie czy druga śceiżka dźwiękowa w danym momencie była grana, poniważ
                 * z założenia, gdy utwór zostaje zatrzymany automatycznie zmieniana jest ścieżka na bazowe
@@ -1210,7 +1205,7 @@ public partial class Equalizer
             SliderFirstPanel.Visibility = Visibility.Hidden;
         }
     }
-    
+
     private void OnOffStereoToMono(object sender, RoutedEventArgs e)
     {
         var isPlaying = false;
@@ -1222,61 +1217,57 @@ public partial class Equalizer
             isPlaying = true;
         else if (TracksProperties.SecWaveOut?.PlaybackState == PlaybackState.Playing)
             isPlaying = true;
-        
+
         /*
         * Przepisanie wartości SecAudioFileReadera do bazowego obiektu będącego źródłem odtwarzanej muzyki w programie,
         * jeżeli ten był w danym momencie głównym źródłem.
         */
-        if (TracksProperties.SecAudioFileReader != null && TracksProperties.SelectedTrack?.Path == TracksProperties.SecAudioFileReader.FileName)
+        if (TracksProperties.SecAudioFileReader != null &&
+            TracksProperties.SelectedTrack?.Path == TracksProperties.SecAudioFileReader.FileName)
             TracksProperties.AudioFileReader = TracksProperties.SecAudioFileReader;
 
         TracksProperties.SecAudioFileReader = null;
 
         if (TracksProperties.AudioFileReader != null)
             _firstWaveEqualizer = new EqualizerSampleProvider(TracksProperties.AudioFileReader);
-        
+
         /*
          * Sprawdzenie zaznaczenia opcji Stereo to mono
          */
-        if (StereoToMono_Box.IsChecked == false && _firstStereoToMono != null)
+        if (StereoToMonoBox.IsChecked == false && _firstStereoToMono != null)
         {
             if (TracksProperties.AudioFileReader != null)
-            {
                 if (TracksProperties.AudioFileReader.WaveFormat.Channels == 2)
                 {
                     _firstStereoToMono = new StereoToMonoSampleProvider(TracksProperties.AudioFileReader);
                     TracksProperties.WaveOut?.Stop();
                     TracksProperties.WaveOut?.Init(_firstStereoToMono);
                 }
-            }
-            
+
             _firstWaveEqualizer = new EqualizerSampleProvider(_firstStereoToMono);
         }
-            
+
 
         if (_equalizerOn)
-            _firstWaveEqualizer?.UpdateEqualizer(sld1.Value, sld2.Value, sld3.Value, sld4.Value, sld5.Value,
-                sld6.Value, sld7.Value, sld8.Value);
+            _firstWaveEqualizer?.UpdateEqualizer(Sld1.Value, Sld2.Value, Sld3.Value, Sld4.Value, Sld5.Value,
+                Sld6.Value, Sld7.Value, Sld8.Value);
         else
-            _firstWaveEqualizer?.UpdateEqualizer(0, 0, 0, 0, 0, 0, 0,0 );
-        
-        if(_firstWaveEqualizer != null)
+            _firstWaveEqualizer?.UpdateEqualizer(0, 0, 0, 0, 0, 0, 0, 0);
+
+        if (_firstWaveEqualizer != null)
             _firstWaveFade = new FadeInOutSampleProvider(_firstWaveEqualizer);
         TracksProperties.SecWaveOut?.Stop();
         TracksProperties.WaveOut?.Stop();
-        
-        if(_firstWaveFade != null)
+
+        if (_firstWaveFade != null)
             TracksProperties.WaveOut.Init(_firstWaveFade);
-        
+
         InitNightcoreEffect();
         InitDelayEffect();
         InitChorusEffect();
         InitDistortionEffect();
 
-        if (isPlaying)
-        {
-            TracksProperties.WaveOut?.Play();
-        }
+        if (isPlaying) TracksProperties.WaveOut?.Play();
     }
 
     /*
@@ -1291,7 +1282,7 @@ public partial class Equalizer
             {
                 TracksProperties.SecWaveOut.Stop();
                 TracksProperties.SecWaveOut.Init(_secWaveFade);
-                TracksProperties.SecWaveOut.Play();      
+                TracksProperties.SecWaveOut.Play();
             }
         }
         else if (TracksProperties.WaveOut?.PlaybackState == PlaybackState.Playing)
@@ -1312,34 +1303,34 @@ public partial class Equalizer
             }
         }
     }
-    
+
     #endregion
 
     private void ValueChangeSlider_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
     {
-        if (Delay_Box.IsChecked == true)
+        if (DelayBox.IsChecked == true)
         {
             _firstDelayEffect?.SetDelay((int)SliderFirst.Value);
             _firstDelayEffect?.SetDecay((float)SliderSec.Value);
-            
+
             if (_secDelayEffect != null)
             {
                 _secDelayEffect.SetDelay((int)SliderFirst.Value);
                 _secDelayEffect.SetDecay((float)SliderSec.Value);
             }
         }
-        else if (Chorus_Box.IsChecked == true)
+        else if (ChorusBox.IsChecked == true)
         {
             _firstChorusEffect?.SetDelay((int)SliderFirst.Value);
             _firstChorusEffect?.SetDepth((float)SliderSec.Value);
-            
+
             if (_secChorusEffect != null)
             {
                 _secChorusEffect.SetDelay((int)SliderFirst.Value);
                 _secChorusEffect.SetDepth((float)SliderSec.Value);
             }
         }
-        else if (Distortion_Box.IsChecked == true)
+        else if (DistortionBox.IsChecked == true)
         {
             if (_firstDistortionEffect != null)
             {
@@ -1353,18 +1344,18 @@ public partial class Equalizer
                 _secDistortionEffect.Mix = (float)SliderSec.Value;
             }
         }
-        else if (Nightcore_Box.IsChecked == true)
+        else if (NightcoreBox.IsChecked == true)
         {
             if (_firstNightcoreEffect != null) _firstNightcoreEffect.PlaybackRate = (float)SliderFirst.Value;
 
-            if(_secNightcoreEffect != null)
+            if (_secNightcoreEffect != null)
                 _secNightcoreEffect.PlaybackRate = (float)SliderFirst.Value;
         }
     }
 
     private void DynamicSliderEffectValueChaning(object sender, RoutedPropertyChangedEventArgs<double> e)
     {
-        SliderFirstValueText.Text = Math.Round(SliderFirst.Value, 1).ToString();
-        SliderSecValueText.Text = Math.Round(SliderSec.Value, 1).ToString();
+        SliderFirstValueText.Text = Math.Round(SliderFirst.Value, 1).ToString(CultureInfo.InvariantCulture);
+        SliderSecValueText.Text = Math.Round(SliderSec.Value, 1).ToString(CultureInfo.InvariantCulture);
     }
 }

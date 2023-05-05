@@ -6,7 +6,7 @@
              mc:Ignorable="d"
              d:DesignHeight="25" d:DesignWidth="25">
 
-    <Button Width="25" Height="25" x:Name="btnClose" PreviewMouseLeftButtonUp="btnClose_Click" BorderThickness="0"
+    <Button Width="25" Height="25" PreviewMouseLeftButtonUp="btnClose_Click" BorderThickness="0"
             BorderBrush="Transparent">
         <Button.Template>
             <ControlTemplate TargetType="Button">

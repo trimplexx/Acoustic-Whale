@@ -3,14 +3,23 @@ using System.Windows;
 
 namespace SM_Audio_Player.View.UserControls.buttons;
 
+///<summary>
+/// Klasa implementująca funkcjonalność przycisku zamykającego aplikację.
+///</summary>
 public partial class ButtonClose
 {
+    ///<summary>
+    /// Konstruktor klasy ButtonClose.
+    ///</summary>
     public ButtonClose()
     {
         InitializeComponent();
     }
 
-    /* Zamknięcie aplikacji */
+    ///<summary>
+    /// Metoda obsługująca zdarzenie kliknięcia przycisku zamykającego aplikację.
+    /// Wywołuje metodę Shutdown klasy Application, która zamyka aplikację.
+    ///</summary>
     private void btnClose_Click(object sender, RoutedEventArgs e)
     {
         try

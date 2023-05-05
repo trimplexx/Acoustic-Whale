@@ -114,7 +114,8 @@ public partial class ButtonPrevious
                              * Jezeli track, nie jest pierwszym, także jego numer zostanie zwrócony do listy dostępnych
                              * numerów, aby mógł być ponownie wybrany do odsłuchu
                              */
-                                if (TracksProperties.SelectedTrack != TracksProperties.FirstPlayed) TracksProperties.AvailableNumbers?.Add(TracksProperties.SelectedTrack.Id - 1);
+                                if (TracksProperties.SelectedTrack != TracksProperties.FirstPlayed)
+                                    TracksProperties.AvailableNumbers?.Add(TracksProperties.SelectedTrack.Id - 1);
 
                                 TracksProperties.SelectedTrack =
                                     TracksProperties.PrevTrack.ElementAt(TracksProperties.PrevTrack.Count - 1);
@@ -124,31 +125,26 @@ public partial class ButtonPrevious
                         }
                         else
                         {
-                            if (TracksProperties.SelectedTrack != null && TracksProperties.SelectedTrack.Id == 1 && TracksProperties.IsLoopOn == 1)
+                            if (TracksProperties.SelectedTrack.Id == 1 && TracksProperties.IsLoopOn == 1)
                             {
-                                TracksProperties.SelectedTrack = TracksProperties.TracksList[TracksProperties.TracksList.Count-1];
+                                TracksProperties.SelectedTrack =
+                                    TracksProperties.TracksList[TracksProperties.TracksList.Count - 1];
                                 _btnPlay.PlayNewTrack();
                             }
                             // Sprawdzanie czy to pierwszy utwór na liście, jeżeli tak odtworzony zostanie od nowa.
-                            else if (TracksProperties.SelectedTrack != null && TracksProperties.SelectedTrack.Id == 1 && TracksProperties.IsLoopOn == 0)
+                            else if (TracksProperties.SelectedTrack.Id == 1 && TracksProperties.IsLoopOn == 0)
                             {
                                 _btnPlay.PlayNewTrack();
                             }
                             else
                             {
                                 // W innym wypadku zostanie odtworzony poprzedni utwór.
-                                if (TracksProperties.SelectedTrack != null)
-                                {
-                                    if (TracksProperties.SelectedTrack.Id != 1)
-                                    {
-                                        TracksProperties.SelectedTrack =
+                                if (TracksProperties.SelectedTrack.Id != 1)
+                                    TracksProperties.SelectedTrack =
                                         TracksProperties.TracksList.ElementAt(TracksProperties.SelectedTrack.Id - 2);
-                                    }
-                                    else
-                                    {
-                                        TracksProperties.SelectedTrack = TracksProperties.TracksList[TracksProperties.TracksList.Count - 1];
-                                    }
-                                }
+                                else
+                                    TracksProperties.SelectedTrack =
+                                        TracksProperties.TracksList[TracksProperties.TracksList.Count - 1];
                                 _btnPlay.PlayNewTrack();
                             }
                         }

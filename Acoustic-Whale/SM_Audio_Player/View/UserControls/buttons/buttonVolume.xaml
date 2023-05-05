@@ -7,9 +7,10 @@
              d:DesignHeight="40" d:DesignWidth="185">
 
     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center" Height="40">
-        <Button Width="30" Height="30" x:Name="btnVolume" PreviewMouseLeftButtonUp="btnVolume_Click" Margin="0, 0, 0, 0">
+        <Button Width="30" Height="30" PreviewMouseLeftButtonUp="btnVolume_Click" Margin="0, 0, 0, 0">
             <Button.ToolTip>
-                <ToolTip Background="#333333" BorderBrush="#45a7bc" BorderThickness="1" Foreground="#45a7bc" FontSize="14">
+                <ToolTip Background="#333333" BorderBrush="#45a7bc" BorderThickness="1" Foreground="#45a7bc"
+                         FontSize="14">
                     Mute/ unmute
                 </ToolTip>
             </Button.ToolTip>
@@ -56,8 +57,8 @@
             </Button.Template>
         </Button>
         <Slider Style="{DynamicResource SliderStyle1}" Height="30" Width="140" IsSelectionRangeEnabled="True"
-                Margin="5, 6, 5, 3" Minimum="0" Maximum="100" x:Name="sldVolume" IsMoveToPointEnabled="True"
-                ValueChanged="sliderVolume_ValueChanged" SelectionEnd="{Binding ElementName=sldVolume, Path=Value}" />
+                Margin="5, 6, 5, 3" Minimum="0" Maximum="100" x:Name="SldVolume" IsMoveToPointEnabled="True"
+                ValueChanged="sliderVolume_ValueChanged" SelectionEnd="{Binding ElementName=SldVolume, Path=Value}" />
     </StackPanel>
 
 </UserControl>

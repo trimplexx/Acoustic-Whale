@@ -7,18 +7,25 @@ using System.Windows.Media.Animation;
 
 namespace SM_Audio_Player.Helper;
 
-public class TextAnimationHelper
+/// <summary>
+/// Klasa TextAnimationHelper odpowiada za przewijanie się tekstu tworząc animację, gdy ten do wyświetlenia nie mieści
+/// się w pożądanym rozmiarze na playerze aplikacji. 
+/// </summary>
+public abstract class TextAnimationHelper
 {
+    [Obsolete("Obsolete")]
     public static void TextAnimation(int textLength, TextBlock textBlock, int length, Canvas xName)
     {
         // Oblicz szerokość tekstu w pikselach
-        string text = textBlock.Text;
-        Typeface typeface = new Typeface(textBlock.FontFamily, textBlock.FontStyle, textBlock.FontWeight, textBlock.FontStretch);
-        FormattedText formattedText = new FormattedText(text, CultureInfo.CurrentCulture, FlowDirection.LeftToRight, typeface, textBlock.FontSize, Brushes.Black);
-        double textWidth = formattedText.Width;
-        if (textLength  > length)
+        var text = textBlock.Text;
+        var typeface = new Typeface(textBlock.FontFamily, textBlock.FontStyle, textBlock.FontWeight,
+            textBlock.FontStretch);
+        var formattedText = new FormattedText(text, CultureInfo.CurrentCulture, FlowDirection.LeftToRight, typeface,
+            textBlock.FontSize, Brushes.Black);
+        var textWidth = formattedText.Width;
+        if (textLength > length)
         {
-            DoubleAnimation doubleAnimation = new DoubleAnimation();
+            var doubleAnimation = new DoubleAnimation();
             doubleAnimation.From = xName.ActualWidth;
             doubleAnimation.To = -textWidth;
             doubleAnimation.AutoReverse = false;

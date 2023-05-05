@@ -2,35 +2,36 @@
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
-using System.Windows.Input;
 using NAudio.Wave;
 using SM_Audio_Player.Music;
 
 namespace SM_Audio_Player.View.UserControls.buttons;
 
+///<summary>
+/// Klasa ButtonPlay obsługuje przycisk odtwarzania muzyki w odtwarzaczu. Zawiera metody i eventy służące odświeżaniu
+/// listy, resetowaniu danych, zmianie ikony przycisku, obsłudze zdarzenia skończenia się granego utworu, czy też
+/// reakcji na kliknięcie przycisku odtwarzania.
+/// </summary>
 public partial class ButtonPlay : INotifyPropertyChanged
 {
     public delegate void ButtonPlayEventToEqualizer(object sender, EventArgs e);
 
-    /*
-     * Eventy służące odświeżaniu listy, aby wyrzucić piosenkę przed jej odtworzeniem, gdy jego ścieżka uległaby zmianie
-     * w trakcie odtwarzania. 
-     */
+    /// <summary>
+    /// Delegat służący odświeżaniu listy, aby wyrzucić piosenkę przed jej odtworzeniem, gdy jego ścieżka uległaby zmianie w trakcie odtwarzania. 
+    /// </summary>
     public delegate void RefreshListEventHandler(object sender, EventArgs e);
 
-    /*
-    * Akcja odpowiadająca za resetowanie danych w momencie, gdy odświeżona lista będzie zawierać mniej elementów
-    * niż ta wartość, która została zapisana przed jej odświeżeniem (Przykładowo, gdy ktoś zmieni ścieżkę do pliku
-    * w trakcie używania aplikacji mogła by ona wyrzucić wyjątek)
-    */
+
+    /// <summary>
+    /// Delegat eventu informujący o potrzebie resetu wszystkich danych w przypadku, gdy lista odtwarzania będzie zawierać mniej elementów
+    /// niż ta, która była zapamiętana przed odświeżeniem.
+    /// </summary>
     public delegate void ResetEverythingEventHandler(object sender, EventArgs e);
 
-    /*
-    * Zdarzenie odnoszące się do skończenia się granego utworu samoczynnie, dzięki któremu w innych miejscach
-    * kodu wyniknie reakcja. Utworzone zostało aby aktualizować poszczególne dane innych klas. 
-    */
+    /// <summary>
+    /// Delegat eventu informujący o skończeniu się granego utworu.
+    /// </summary>
     public delegate void TrackEndEventHandler(object sender, EventArgs e);
-
 
 
     // Zmienna sprawdzająca, czy muzyka już gra.
@@ -70,7 +71,9 @@ public partial class ButtonPlay : INotifyPropertyChanged
         }
     }
 
-    // Zmiana ikony Play.
+    /// <summary>
+    /// Zmiana ikony buttona Play
+    /// </summary>
     public string? PlayIcon
     {
         get => _playIcon;
@@ -90,12 +93,25 @@ public partial class ButtonPlay : INotifyPropertyChanged
     public static event ResetEverythingEventHandler? ResetEverything;
     public static event ButtonPlayEventToEqualizer? ButtonPlayEvent;
 
-
+    /// <summary>
+    /// Event handler dla przycisku Play.
+    /// <code>Sprawdza czy lista utworów istnieje, czy nie jest pusta oraz czy nie trwa już
+    /// żadne odtwarzanie utworu z innych źródeł dźwięku. Następnie dokonuje przepisywania na bazowy obiekt WaveOut, gdy
+    /// odtwarzany jest utwór z innego źródła dźwięku niż bazowy.
+    /// </code>
+    /// <code>Odświeża listę, sprawdza czy lista się zmieniła i porównuje ją z
+    /// poprzednią w celu zabezpieczenia przed zmianą ścieżki pliku jednego z utworów. Jeśli nastąpiła zmiana, to
+    /// czyszczone są wszelkie dane związane z poprzednim utworem i wyświetlany jest komunikat. Jeśli lista nie uległa
+    /// zmianie, to sprawdza czy wybrany jest już utwór, jeśli nie to odpala pierwszy utwór, jeśli tak to sprawdza czy
+    /// wybrany utwór różni się od tego, który jest aktualnie odtwarzany i odpowiednio go przestawia.
+    /// </code>
+    /// </summary>
     public void btnPlay_Click(object sender, EventArgs e)
     {
         try
         {
-            if (TracksProperties.TracksList != null && TracksProperties.TracksList.Count != 0 && TracksProperties.SpaceFlag)
+            if (TracksProperties.TracksList != null && TracksProperties.TracksList.Count != 0 &&
+                TracksProperties.SpaceFlag)
             {
                 /*
                  * Przepiswanie w momencie zatrzymania muzyki utworu odtwarzanego z drugiego źródła dźwięku, na
@@ -195,7 +211,7 @@ public partial class ButtonPlay : INotifyPropertyChanged
                 }
 
                 if (_isPlaying) ButtonPlayEvent?.Invoke(this, EventArgs.Empty);
-                
+
                 TracksProperties.SpaceFlag = false;
             }
         }
@@ -206,10 +222,17 @@ public partial class ButtonPlay : INotifyPropertyChanged
         }
     }
 
-    /*
-     * Uniwersalna metoda odpowiadająca za tworzenie nowego obiektu utworu oraz przekazywanie mu akcji odpowiadającej za
-     * jego zatrzymanie. 
-     */
+    ///<summary>
+    /// Metoda PlayNewTrack odtwarza nowy utwór muzyczny.
+    /// <code>
+    /// Jeśli opcja zanikania dźwięku jest włączona i istnieje drugi plik audio, to przypisuje go do głównego pliku audio.
+    /// W przeciwnym razie tworzy nowy obiekt AudioFileReader dla wybranego utworu.
+    /// </code>
+    /// <code>
+    /// Jeśli obiekt WaveOut istnieje, zatrzymuje odtwarzanie i dodaje zdarzenie PlaybackStopped.
+    /// W przeciwnym razie tworzy nowy obiekt WaveOutEvent i AudioFileReader dla wybranego utworu oraz dodaje zdarzenie PlaybackStopped.
+    /// </code>
+    /// </summary>
     public void PlayNewTrack()
     {
         try
@@ -248,6 +271,10 @@ public partial class ButtonPlay : INotifyPropertyChanged
         }
     }
 
+    /// <summary>
+    /// Metoda odpowiadająca za obsługę odtwarzania granej muzyki przy włączonej funkcji programu Schuffle,
+    /// która odpowiada za granie losowych utworów z podanej listy w aplikacji. 
+    /// </summary>
     public void SchuffleFun()
     {
         try
@@ -334,10 +361,12 @@ public partial class ButtonPlay : INotifyPropertyChanged
             throw;
         }
     }
-
-    /*  Metoda wykonywująca się w momencie zatrzymania muzyki służąca w głównej mierze do odtworzenia następnego
-     *   utowru, gdy dany się zakończył
-     */
+    
+    /// <summary>
+    /// Metoda wykonywująca się w momencie zatrzymania muzyki służąca do sprawdzania czy moment zatrzymania się utworu
+    /// wystąpił w chwili, gdzie wartość bieżącego czasu jest równa jemu końcowi. Dzięki czemu wystąpi odpowiednia instrukcja
+    /// pod względem sprawdzenia wszelkich dostepnych funkcji oraz odtworzy następny utwór samoczynnie.
+    /// </summary>
     public void WaveOut_PlaybackStopped(object? sender, StoppedEventArgs e)
     {
         try
@@ -396,11 +425,11 @@ public partial class ButtonPlay : INotifyPropertyChanged
             throw;
         }
     }
-
-    /*
-     * Event wykonany w momencie wykonania dwuklika na dany utwór, zmieni ona tylko i wyłącznie ikone odtwarzania
-     * a sama piosenką zostanie odtworzona poprzez wywołanie buttonPlay_click
-     */
+    
+    /// <summary>
+    /// Event wykonany w momencie wykonania dwuklika na dany utwór, zmieni ona tylko i wyłącznie ikone odtwarzania,
+    /// a sama piosenką zostanie odtworzona poprzez wywołanie buttonPlay_click
+    /// </summary>
     private void OnTrackDoubleClickSwitch(object sender, EventArgs e)
     {
         try
@@ -415,9 +444,10 @@ public partial class ButtonPlay : INotifyPropertyChanged
         }
     }
 
-    /*
-     * Metoda odnosząca sie do wykonania akcji kliknięcia przycisku następnej piosenki.
-     */
+
+    /// <summary>
+    /// Metoda odnosząca sie do wykonania akcji kliknięcia przycisku następnej piosenki.
+    /// </summary>
     private void NextTrackEvent(object sender, EventArgs e)
     {
         try
@@ -446,10 +476,10 @@ public partial class ButtonPlay : INotifyPropertyChanged
             throw;
         }
     }
-
-    /*
-    * Metoda odnosząca sie do wykonania akcji kliknięcia przycisku poprzedniej piosenki.
-    */
+    
+    /// <summary>
+    /// Metoda odnosząca sie do wykonania akcji kliknięcia przycisku poprzedniej piosenki.
+    /// </summary>
     private void PreviousTrackEvent(object sender, EventArgs e)
     {
         try

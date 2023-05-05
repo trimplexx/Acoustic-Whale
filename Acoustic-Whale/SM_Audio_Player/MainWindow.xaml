@@ -1,11 +1,12 @@
-﻿<Window x:Class="SM_Audio_Player.MainWindow" Focusable="True" PreviewKeyDown="KeyDown_event" PreviewMouseDown="FlagReset" PreviewKeyUp="KeyUp_event" 
+﻿<Window x:Class="SM_Audio_Player.MainWindow" Focusable="True" PreviewKeyDown="KeyDown_event"
+        PreviewMouseDown="FlagReset" PreviewKeyUp="KeyUp_event"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         Background="Transparent"
-        xmlns:UC="clr-namespace:SM_Audio_Player.View.UserControls"
-        xmlns:BTN="clr-namespace:SM_Audio_Player.View.UserControls.buttons"
+        xmlns:uc="clr-namespace:SM_Audio_Player.View.UserControls"
+        xmlns:btn="clr-namespace:SM_Audio_Player.View.UserControls.buttons"
         xmlns:assets="clr-namespace:SM_Audio_Player.assets"
         mc:Ignorable="d" WindowStyle="None"
         Title="Acoustic Whale" Height="800" Width="1000"
@@ -14,41 +15,45 @@
 
     <!-- Ukrycie domyślnego paska menu od windowsa -->
     <WindowChrome.WindowChrome>
-        <WindowChrome GlassFrameThickness="0" CornerRadius="0" CaptionHeight="0"/>
+        <WindowChrome GlassFrameThickness="0" CornerRadius="0" CaptionHeight="0" />
     </WindowChrome.WindowChrome>
-    
+
     <!-- Główne okno -->
-    <Grid x:Name="world" PreviewMouseDown="FlagReset" Background="#333333">
+    <Grid x:Name="World" PreviewMouseDown="FlagReset" Background="#333333">
         <Grid.RowDefinitions>
-            <RowDefinition Height="30"  /> 
+            <RowDefinition Height="30" />
             <RowDefinition Height="30*" />
             <RowDefinition Height="40" />
-            <RowDefinition Height="70*" /> 
+            <RowDefinition Height="70*" />
         </Grid.RowDefinitions>
         <Rectangle Fill="#222222" MouseMove="Window_MouseDown" />
-        <assets:LOGO Height="30" Width="30" HorizontalAlignment="Left" Margin="10, 0, 0, 0" MouseMove="Window_MouseDown" />
-        <TextBlock Text="Acoustic Whale" FontSize="18" Foreground="#45a7bc" HorizontalAlignment="Left"
+        <assets:LOGO Grid.Row="0" Height="30" Width="30" HorizontalAlignment="Left" Margin="10, 0, 0, 0"
+                     MouseMove="Window_MouseDown" />
+        <TextBlock Grid.Row="0" Text="Acoustic Whale" FontSize="18" Foreground="#45a7bc" HorizontalAlignment="Left"
                    VerticalAlignment="Center" Margin="45, 0, 0, 0" MouseMove="Window_MouseDown" />
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0, 3, 10, 0"
+        <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0, 3, 10, 0"
                     MouseMove="Window_MouseDown">
-            <BTN:ButtonMinimize Height="25" Width="25" Margin="0, 0, 10, 0" />
-            <BTN:ButtonMaximize x:Name="btnMAX" Height="25" Width="25" Margin="0, 0, 10, 0" />
-            <BTN:ButtonClose Height="25" Width="25" />
+            <btn:ButtonMinimize Height="25" Width="25" Margin="0, 0, 10, 0" />
+            <btn:ButtonMaximize x:Name="BtnMax" Height="25" Width="25" Margin="0, 0, 10, 0" />
+            <btn:ButtonClose Height="25" Width="25" />
         </StackPanel>
-        <UC:Player Grid.Row="1" Margin="15, 0, 15, 0" />
+        <uc:Player Grid.Row="1" Margin="15, 0, 15, 0" />
         <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Orientation="Horizontal" Grid.Row="2">
-            <Button Style="{DynamicResource ButtonStyle1}" Name="Playlist_Btn" Click="Playlist_Btn_Click" Content="Playlist" FontSize="16"
-                    Background="Transparent" Foreground="#45a7bc" BorderThickness="0" Padding="5" Margin="5,0,5,0"/>
-            <Button Style="{DynamicResource ButtonStyle1}" Name="Equalizer_Btn" Click="Equalizer_Btn_Click" Content="Settings" FontSize="16"
-                    Background="Transparent" Foreground="#45a7bc" BorderThickness="0" Padding="5" Margin="5,0,5,0"/>
+            <Button Style="{DynamicResource ButtonStyle1}" Click="Playlist_Btn_Click" Content="Playlist" FontSize="16"
+                    Background="Transparent" Foreground="#45a7bc" BorderThickness="0" Padding="5" Margin="5,0,5,0" />
+            <Button Style="{DynamicResource ButtonStyle1}" Click="Equalizer_Btn_Click" Content="Settings" FontSize="16"
+                    Background="Transparent" Foreground="#45a7bc" BorderThickness="0" Padding="5" Margin="5,0,5,0" />
         </StackPanel>
-        <UC:Library x:Name="Lib" Grid.Row="3" Margin="15, 0, 15, 0" Visibility="Visible" />
-        <UC:Equalizer x:Name="Eq" Grid.Row="3" Margin="15, 0, 15, 0" Visibility="Hidden" />
-        <UC:Help_Panel x:Name="Help" Grid.Row="1" Grid.RowSpan="3" Margin="0" Visibility="Hidden"/>
-        <Button Style="{DynamicResource ButtonStyle1}" Grid.Row="5" Name="Help_Btn" Content="Help" Click="Help_Btn_Click"  PreviewKeyUp="EscFromHelp" 
-                FontSize="16" Background="#333333" Foreground="#45a7bc" BorderThickness="0" Padding="5" Margin="15" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+        <uc:Library x:Name="Lib" Grid.Row="3" Margin="15, 0, 15, 0" Visibility="Visible" />
+        <uc:Equalizer x:Name="Eq" Grid.Row="3" Margin="15, 0, 15, 0" Visibility="Hidden" />
+        <uc:HelpPanel x:Name="Help" Grid.Row="1" Grid.RowSpan="3" Margin="0" Visibility="Hidden" />
+        <Button Style="{DynamicResource ButtonStyle1}" Grid.Row="5" Content="Help" Click="Help_Btn_Click"
+                PreviewKeyUp="EscFromHelp"
+                FontSize="16" Background="#333333" Foreground="#45a7bc" BorderThickness="0" Padding="5" Margin="15"
+                HorizontalAlignment="Right" VerticalAlignment="Bottom">
             <Button.ToolTip>
-                <ToolTip Background="#333333" BorderBrush="#45a7bc" BorderThickness="1" Foreground="#45a7bc" FontSize="14">
+                <ToolTip Background="#333333" BorderBrush="#45a7bc" BorderThickness="1" Foreground="#45a7bc"
+                         FontSize="14">
                     Show help window with hotkeys
                 </ToolTip>
             </Button.ToolTip>

@@ -5,6 +5,9 @@ using System.Windows.Controls;
 
 namespace SM_Audio_Player.View.UserControls.buttons;
 
+///<summary>
+/// Klasa reprezentująca przycisk do maksymalizacji okna odtwarzacza. Implementuje interfejs INotifyPropertyChanged.
+///</summary>
 public partial class ButtonMaximize : INotifyPropertyChanged
 {
     private string? _maximizeIcon;
@@ -14,7 +17,7 @@ public partial class ButtonMaximize : INotifyPropertyChanged
         try
         {
             DataContext = this;
-            MaximizeIcon = Icons.GetMaxIcon();
+            MaximizeIcon = Icons.GetMaxIcon(); // Przypisanie ikony maksymalizacji do właściwości MaximizeIcon
             InitializeComponent();
         }
         catch (Exception ex)
@@ -24,7 +27,9 @@ public partial class ButtonMaximize : INotifyPropertyChanged
         }
     }
 
-    /* PropertyChanged - pozwala na przekazywanie wartości do widoku */
+    ///<summary>
+    /// Właściwość reprezentująca ikonę przycisku maksymalizacji okna.
+    ///</summary>
     public string? MaximizeIcon
     {
         get => _maximizeIcon;
@@ -37,25 +42,28 @@ public partial class ButtonMaximize : INotifyPropertyChanged
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
-    /* Maxymalizacja okno playera */
+    ///<summary>
+    /// Obsługuje kliknięcie przycisku maksymalizacji okna.
+    ///</summary>
     private void btnMaximize_Click(object sender, RoutedEventArgs e)
     {
         try
         {
-            Grid world = (Grid)Application.Current.MainWindow.FindName("world");
+            // Znajdowanie elementu "world" na głównym oknie aplikacji
+            var world = (Grid)Application.Current.MainWindow.FindName("world");
             if (Application.Current.MainWindow != null &&
                 Application.Current.MainWindow.WindowState == WindowState.Normal)
             {
-                Application.Current.MainWindow.WindowState = WindowState.Maximized;
-                world.Margin = new Thickness(6);
-                MaximizeIcon = Icons.GetMinIcon();
+                Application.Current.MainWindow.WindowState = WindowState.Maximized; // Maksymalizacja okna
+                world.Margin = new Thickness(6); // Ustawienie marginesu elementu "world"
+                MaximizeIcon = Icons.GetMinIcon(); // Zmiana ikony na minimalizację
             }
             else if (Application.Current.MainWindow != null &&
                      Application.Current.MainWindow.WindowState == WindowState.Maximized)
             {
-                Application.Current.MainWindow.WindowState = WindowState.Normal;
-                world.Margin = new Thickness(0);
-                MaximizeIcon = Icons.GetMaxIcon();
+                Application.Current.MainWindow.WindowState = WindowState.Normal; // Przywrócenie normalnego stanu okna
+                world.Margin = new Thickness(0); // Usunięcie marginesu elementu "world"
+                MaximizeIcon = Icons.GetMaxIcon(); // Zmiana ikony na maksymalizację
             }
         }
         catch (Exception ex)

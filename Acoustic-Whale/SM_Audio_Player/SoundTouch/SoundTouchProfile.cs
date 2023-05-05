@@ -1,15 +1,14 @@
-namespace SM_Audio_Player.SoundTouch
-{
-    internal class SoundTouchProfile
-    {
-        public bool UseTempo { get; set; }
-        public bool UseAntiAliasing { get; set; }
-        public bool UseQuickSeek { get; set; }
+namespace SM_Audio_Player.SoundTouch;
 
-        public SoundTouchProfile(bool useTempo, bool useAntiAliasing)
-        {
-            UseTempo = useTempo;
-            UseAntiAliasing = useAntiAliasing;
-        }
+internal class SoundTouchProfile
+{
+    public bool UseTempo { get; set; }
+    public bool UseAntiAliasing { get; set; }
+    public bool UseQuickSeek { get; set; }
+
+    public SoundTouchProfile(bool useTempo, bool useAntiAliasing)
+    {
+        UseTempo = useTempo;
+        UseAntiAliasing = useAntiAliasing;
     }
 }

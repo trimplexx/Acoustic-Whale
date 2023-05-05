@@ -13,16 +13,15 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace SM_Audio_Player.View.UserControls
+namespace SM_Audio_Player.View.UserControls;
+
+/// <summary>
+/// Interaction logic for Help_Panel.xaml
+/// </summary>
+public partial class HelpPanel : UserControl
 {
-    /// <summary>
-    /// Interaction logic for Help_Panel.xaml
-    /// </summary>
-    public partial class Help_Panel : UserControl
+    public HelpPanel()
     {
-        public Help_Panel()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

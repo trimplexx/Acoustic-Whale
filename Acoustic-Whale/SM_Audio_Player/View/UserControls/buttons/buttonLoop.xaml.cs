@@ -5,6 +5,10 @@ using SM_Audio_Player.Music;
 
 namespace SM_Audio_Player.View.UserControls.buttons;
 
+///<summary>
+/// Klasa reprezentująca przycisk do obsługi funkcji loop odtwarzacza muzyki
+/// Implementuje interfejs INotifyPropertyChanged w celu informowania interfejsu użytkownika o zmianach w wartościach pól klasy
+///</summary>
 public partial class ButtonLoop : INotifyPropertyChanged
 {
     private string? _loopColor;
@@ -12,6 +16,10 @@ public partial class ButtonLoop : INotifyPropertyChanged
     private string? _loopMouseColor;
     public event PropertyChangedEventHandler? PropertyChanged;
 
+    ///<summary>
+    /// Konstruktor inicjujący obiekt ButtonLoop
+    /// Ustawia domyślne wartości kolorów i ikony dla przycisku, oraz subskrybuje zdarzenie OnLoop klasy MainWindow, aby wywołać metodę btnLoop_Click po włączeniu opcji loop w odtwarzaczu muzyki
+    ///</summary>
     public ButtonLoop()
     {
         try
@@ -30,6 +38,10 @@ public partial class ButtonLoop : INotifyPropertyChanged
         }
     }
 
+    ///<summary>
+    /// Właściwość określająca aktualną ikonę dla przycisku loop
+    ///</summary>
+    ///<value>Aktualna ikona przycisku loop</value>
     public string? LoopIcon
     {
         get => _loopIcon;
@@ -40,6 +52,10 @@ public partial class ButtonLoop : INotifyPropertyChanged
         }
     }
 
+    ///<summary>
+    /// Właściwość określająca aktualny kolor przycisku loop
+    ///</summary>
+    ///<value>Aktualny kolor przycisku loop</value>
     public string? LoopColor
     {
         get => _loopColor;
@@ -50,6 +66,10 @@ public partial class ButtonLoop : INotifyPropertyChanged
         }
     }
 
+    ///<summary>
+    /// Właściwość określająca aktualny kolor przycisku loop po najechaniu na niego kursorem
+    ///</summary>
+    ///<value>Aktualny kolor przycisku loop po najechaniu na niego kursorem</value>
     public string? LoopMouseColor
     {
         get => _loopMouseColor;
@@ -60,7 +80,10 @@ public partial class ButtonLoop : INotifyPropertyChanged
         }
     }
 
-    /*Powtarzaj aktualnie włączony utwór*/
+    ///<summary>
+    /// Metoda obsługująca kliknięcie przycisku loop
+    /// Ustawia właściwości LoopIcon, LoopColor i LoopMouseColor w zależności od wartości zmiennej IsLoopOn klasy TracksProperties
+    ///</summary>
     private void btnLoop_Click(object sender, EventArgs e)
     {
         try

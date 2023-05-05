@@ -5,22 +5,23 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d"
              d:DesignHeight="570" d:DesignWidth="1000">
-    
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition />
             <RowDefinition Height="60" />
         </Grid.RowDefinitions>
-        
+
         <!-- Główna biblioteka (Data Grid) -->
-        <DataGrid x:Name="lv" BorderThickness="0" Background="Transparent" Foreground="#45a7bc"
+        <DataGrid x:Name="Lv" BorderThickness="0" Background="Transparent" Foreground="#45a7bc"
                   SelectionChanged="Lv_OnSelectionChanged" KeyDown="KeyDownEvent" FontSize="16" AlternationCount="2"
-                  CanUserResizeColumns="True" HeadersVisibility="Column" IsReadOnly="True" CanUserReorderColumns="false">
+                  CanUserResizeColumns="True" HeadersVisibility="Column" IsReadOnly="True"
+                  CanUserReorderColumns="false">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Id" Binding="{Binding Id}" Width="60" CanUserSort="False" >
+                <DataGridTextColumn Header="Id" Binding="{Binding Id}" Width="60" CanUserSort="False">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="TextBlock">
-                            <Setter Property="TextBlock.TextWrapping" Value="Wrap" />
+                            <Setter Property="TextWrapping" Value="Wrap" />
                             <Setter Property="HorizontalAlignment" Value="Center" />
                         </Style>
                     </DataGridTextColumn.ElementStyle>
@@ -28,7 +29,7 @@
                 <DataGridTextColumn Header="Title" Binding="{Binding Title}" Width="2*" CanUserSort="False">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="TextBlock">
-                            <Setter Property="TextBlock.TextWrapping" Value="Wrap" />
+                            <Setter Property="TextWrapping" Value="Wrap" />
                             <Setter Property="HorizontalAlignment" Value="Center" />
                         </Style>
                     </DataGridTextColumn.ElementStyle>
@@ -36,7 +37,7 @@
                 <DataGridTextColumn Header="Author" Binding="{Binding Author}" Width="1*" CanUserSort="False">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="TextBlock">
-                            <Setter Property="TextBlock.TextWrapping" Value="Wrap" />
+                            <Setter Property="TextWrapping" Value="Wrap" />
                             <Setter Property="HorizontalAlignment" Value="Center" />
                         </Style>
                     </DataGridTextColumn.ElementStyle>
@@ -44,7 +45,7 @@
                 <DataGridTextColumn Header="Album" Binding="{Binding Album}" Width="1*" CanUserSort="False">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="TextBlock">
-                            <Setter Property="TextBlock.TextWrapping" Value="Wrap" />
+                            <Setter Property="TextWrapping" Value="Wrap" />
                             <Setter Property="HorizontalAlignment" Value="Center" />
                         </Style>
                     </DataGridTextColumn.ElementStyle>
@@ -52,7 +53,7 @@
                 <DataGridTextColumn Header="Duration" Binding="{Binding Duration}" Width="100" CanUserSort="False">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="TextBlock">
-                            <Setter Property="TextBlock.TextWrapping" Value="Wrap" />
+                            <Setter Property="TextWrapping" Value="Wrap" />
                             <Setter Property="HorizontalAlignment" Value="Center" />
                         </Style>
                     </DataGridTextColumn.ElementStyle>
@@ -60,25 +61,25 @@
             </DataGrid.Columns>
             <DataGrid.ColumnHeaderStyle>
                 <Style TargetType="DataGridColumnHeader">
-                    <EventSetter Event="Click" Handler="GridViewColumnHeaderClickedHandler"/>
+                    <EventSetter Event="Click" Handler="GridViewColumnHeaderClickedHandler" />
                     <Setter Property="Background" Value="#292929" />
                     <Setter Property="Foreground" Value="#45a7bc" />
-                    <Setter Property="BorderBrush" Value="Black"/>
-                    <Setter Property="BorderThickness" Value="0.5"/>
+                    <Setter Property="BorderBrush" Value="Black" />
+                    <Setter Property="BorderThickness" Value="0.5" />
                     <Setter Property="HorizontalContentAlignment" Value="Center" />
                     <Style.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter Property="Foreground" Value="#2FC7E9" />
-                            <Setter Property="Background" Value="#304d5b"/>
+                            <Setter Property="Background" Value="#304d5b" />
                         </Trigger>
                     </Style.Triggers>
                 </Style>
             </DataGrid.ColumnHeaderStyle>
             <DataGrid.Resources>
                 <Style TargetType="{x:Type ScrollBar}">
-                    <Setter Property="Background" Value="Transparent"/>
-                    <Setter Property="Foreground" Value="#2FC7E9"/>
-                    <Setter Property="Width" Value="10"/>
+                    <Setter Property="Background" Value="Transparent" />
+                    <Setter Property="Foreground" Value="#2FC7E9" />
+                    <Setter Property="Width" Value="10" />
                     <Setter Property="Template">
                         <Setter.Value>
                             <ControlTemplate TargetType="{x:Type ScrollBar}">
@@ -88,10 +89,12 @@
                                             <Thumb>
                                                 <Thumb.Template>
                                                     <ControlTemplate TargetType="{x:Type Thumb}">
-                                                        <Rectangle x:Name="rectangle" Fill="#45a7bc" RadiusX="10" RadiusY="10"/>
+                                                        <Rectangle x:Name="rectangle" Fill="#45a7bc" RadiusX="10"
+                                                                   RadiusY="10" />
                                                         <ControlTemplate.Triggers>
                                                             <Trigger Property="IsMouseOver" Value="True">
-                                                                <Setter TargetName="rectangle" Property="Fill" Value="#2FC7E9"/>
+                                                                <Setter TargetName="rectangle" Property="Fill"
+                                                                        Value="#2FC7E9" />
                                                             </Trigger>
                                                         </ControlTemplate.Triggers>
                                                     </ControlTemplate>
@@ -107,7 +110,7 @@
             </DataGrid.Resources>
             <DataGrid.RowStyle>
                 <Style TargetType="DataGridRow">
-                    <EventSetter Event="MouseDoubleClick" Handler="OnMouseDoubleClick"/>
+                    <EventSetter Event="MouseDoubleClick" Handler="OnMouseDoubleClick" />
                     <Setter Property="Background" Value="Transparent" />
                     <Setter Property="Padding" Value="0" />
                     <Setter Property="Margin" Value="0" />
@@ -125,7 +128,7 @@
             </DataGrid.RowStyle>
             <DataGrid.CellStyle>
                 <Style TargetType="DataGridCell">
-                    <EventSetter Event="MouseDoubleClick" Handler="OnMouseDoubleClick"/>
+                    <EventSetter Event="MouseDoubleClick" Handler="OnMouseDoubleClick" />
                     <Setter Property="Background" Value="Transparent" />
                     <Setter Property="Padding" Value="0" />
                     <Setter Property="Margin" Value="0" />
@@ -137,7 +140,7 @@
                         <Trigger Property="IsSelected" Value="True">
                             <Setter Property="Background" Value="#2FC7E9" />
                             <Setter Property="Foreground" Value="#292929" />
-                            <Setter Property="BorderThickness" Value="0"/>
+                            <Setter Property="BorderThickness" Value="0" />
                         </Trigger>
                     </Style.Triggers>
                 </Style>
@@ -146,16 +149,20 @@
 
         <!-- Menu na dole układu -->
         <Menu VerticalAlignment="Center" Background="Transparent" Foreground="#45a7bc" Grid.Row="1">
-            <MenuItem Name="Add_Btn" PreviewMouseLeftButtonUp="Add_Btn_Click" Header="Add" FontSize="16" Padding="20,5,20,5" BorderThickness="0">
+            <MenuItem PreviewMouseLeftButtonUp="Add_Btn_Click" Header="Add" FontSize="16" Padding="20,5,20,5"
+                      BorderThickness="0">
                 <MenuItem.ToolTip>
-                    <ToolTip Background="#333333" BorderBrush="#45a7bc" BorderThickness="1" Foreground="#45a7bc" FontSize="14">
+                    <ToolTip Background="#333333" BorderBrush="#45a7bc" BorderThickness="1" Foreground="#45a7bc"
+                             FontSize="14">
                         Add tracks to playlist
                     </ToolTip>
                 </MenuItem.ToolTip>
             </MenuItem>
-            <MenuItem Name="Delete_Btn" PreviewMouseLeftButtonUp="Delete_Btn_Click" Header="Delete" FontSize="16" Padding="20,5,20,5" BorderThickness="0">
+            <MenuItem PreviewMouseLeftButtonUp="Delete_Btn_Click" Header="Delete" FontSize="16" Padding="20,5,20,5"
+                      BorderThickness="0">
                 <MenuItem.ToolTip>
-                    <ToolTip Background="#333333" BorderBrush="#45a7bc" BorderThickness="1" Foreground="#45a7bc" FontSize="14">
+                    <ToolTip Background="#333333" BorderBrush="#45a7bc" BorderThickness="1" Foreground="#45a7bc"
+                             FontSize="14">
                         Delete selected tracks playlist
                     </ToolTip>
                 </MenuItem.ToolTip>

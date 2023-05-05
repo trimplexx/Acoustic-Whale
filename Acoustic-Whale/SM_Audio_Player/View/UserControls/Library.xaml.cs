@@ -28,8 +28,9 @@ public partial class Library
     * Utworzone zostało aby aktualizować poszczególne dane innych klas. 
     */
     public delegate void LibraryEventHandler(object sender, EventArgs e);
+
     public delegate void OnDeleteTrackEventHandler(object sender, EventArgs e);
-    
+
 
     /*
     * Akcja odpowiadająca za resetowanie danych w momencie, gdy odświeżona lista będzie zawierać mniej elementów
@@ -37,6 +38,7 @@ public partial class Library
     * w trakcie używania aplikacji mogła by ona wyrzucić wyjątek)
     */
     public delegate void ResetEverythingEventHandler(object sender, EventArgs e);
+
     public delegate void RefreshSelectedItemEventHandler(object sender, EventArgs e);
 
 
@@ -44,7 +46,7 @@ public partial class Library
     private string? _prevColumnSorted;
 
     private int _sortingtype;
-    private List<object> originalHeaders;
+    private readonly List<object> _originalHeaders;
 
     public Library()
     {
@@ -64,7 +66,7 @@ public partial class Library
             RefreshTrackListViewAndId();
             SortTracksList(true, "IdByAdd");
             RefreshTrackListViewAndId();
-            originalHeaders = lv.Columns.Select(c => c.Header).ToList();
+            _originalHeaders = Lv.Columns.Select(c => c.Header).ToList();
         }
         catch (Exception ex)
         {
@@ -76,7 +78,7 @@ public partial class Library
     public static event LibraryEventHandler? DoubleClickEvent;
 
     public static event ResetEverythingEventHandler? ResetEverything;
-    
+
     public static event OnDeleteTrackEventHandler? OnDeleteTrack;
     public static event RefreshSelectedItemEventHandler? ResetSelected;
 
@@ -88,9 +90,9 @@ public partial class Library
     {
         try
         {
-            var selectedIndex = lv.SelectedIndex;
+            var selectedIndex = Lv.SelectedIndex;
             RefreshTrackListViewAndId();
-            lv.SelectedIndex = selectedIndex;
+            Lv.SelectedIndex = selectedIndex;
         }
         catch (Exception ex)
         {
@@ -104,7 +106,7 @@ public partial class Library
     {
         try
         {
-            lv.Items.Clear();
+            Lv.Items.Clear();
             TracksProperties.TracksList?.Clear();
             if (File.Exists(JsonPath))
             {
@@ -121,12 +123,12 @@ public partial class Library
                     else
                     {
                         TracksProperties.TracksList.ElementAt(i).Id = i + 1;
-                        lv.Items.Add(TracksProperties.TracksList.ElementAt(i));
+                        Lv.Items.Add(TracksProperties.TracksList.ElementAt(i));
                     }
 
                 var newJsonData = JsonConvert.SerializeObject(TracksProperties.TracksList);
                 File.WriteAllText(JsonPath, newJsonData);
-                lv.SelectedIndex = -1;
+                Lv.SelectedIndex = -1;
             }
         }
         catch (Exception ex)
@@ -158,9 +160,8 @@ public partial class Library
             throw;
         }
     }
-    
-    
-    
+
+
     // Metoda odpowiadająca za kliknięcie nagłówka, po którym następuje sortowanie elementów w liście oraz na listview
     private void GridViewColumnHeaderClickedHandler(object sender, RoutedEventArgs e)
     {
@@ -172,11 +173,8 @@ public partial class Library
             if (binding != null)
             {
                 var bindingPath = binding.Path.Path;
-                
-                for (int i = 0; i < lv.Columns.Count; i++)
-                {
-                    lv.Columns[i].Header = originalHeaders[i];
-                }
+
+                for (var i = 0; i < Lv.Columns.Count; i++) Lv.Columns[i].Header = _originalHeaders[i];
 
                 // Jeśli ta sama kolumna została kliknięta ponownie, zmień kierunek sortowania
                 if (_prevColumnSorted == bindingPath && bindingPath != "Id")
@@ -184,15 +182,15 @@ public partial class Library
                     if (_sortingtype == 0)
                     {
                         SortTracksList(true, bindingPath);
-                        string downArrow = char.ConvertFromUtf32(0x25BC);
+                        var downArrow = char.ConvertFromUtf32(0x25BC);
                         headerClicked.Column.Header = bindingPath + "  " + downArrow;
                         _sortingtype = 1;
                     }
                     else if (_sortingtype == 1)
                     {
                         SortTracksList(false, bindingPath);
-                        string upArrow = char.ConvertFromUtf32(0x25B2);
-                        headerClicked.Column.Header = bindingPath + "  " +upArrow;
+                        var upArrow = char.ConvertFromUtf32(0x25B2);
+                        headerClicked.Column.Header = bindingPath + "  " + upArrow;
                         _sortingtype = 2;
                     }
                     else if (_sortingtype == 2)
@@ -209,8 +207,8 @@ public partial class Library
                 else if (_prevColumnSorted != bindingPath && bindingPath != "Id")
                 {
                     SortTracksList(true, bindingPath);
-                    string downArrow = char.ConvertFromUtf32(0x25BC);
-                    headerClicked.Column.Header = bindingPath + "  " +downArrow;
+                    var downArrow = char.ConvertFromUtf32(0x25BC);
+                    headerClicked.Column.Header = bindingPath + "  " + downArrow;
                     _sortingtype = 1;
                     _prevColumnSorted = bindingPath;
                 }
@@ -221,14 +219,13 @@ public partial class Library
             if (TracksProperties.TracksList != null && TracksProperties.SelectedTrack != null)
                 foreach (var track in TracksProperties.TracksList)
                     if (TracksProperties.SelectedTrack.Title == track.Title)
-                        lv.SelectedIndex = track.Id - 1;
+                        Lv.SelectedIndex = track.Id - 1;
         }
     }
 
     // Metoda odpowiadająca za dodawanie utworów do biblioteki utworów w programie wraz ze wszystkimi metadanymi
     private void Add_Btn_Click(object sender, EventArgs e)
     {
-
         try
         {
             // Utworzenie okna dialogowego umożliwiającego wybór plików muzycznych
@@ -237,11 +234,9 @@ public partial class Library
             openFileDialog.Filter =
                 "Music files (*.mp3)|*.mp3|Waveform Audio File Format (.wav)|.wav|Windows Media Audio Professional (.wma)|.wma|MPEG-4 Audio (.mp4)|.mp4|" +
                 "Free Lossless Audio Codec (.flac)|.flac|All files (*.*)|*.*";
-            var addedToTheList = false;
 
             // Wyświetlenie okna dialogowego i dodanie wybranych plików do biblioteki
             if (openFileDialog.ShowDialog() == true)
-            {
                 foreach (var filePath in openFileDialog.FileNames)
                 {
                     var title = Path.GetFileNameWithoutExtension(filePath);
@@ -252,7 +247,7 @@ public partial class Library
                         TracksProperties.TracksList.Any(track => track.Path == newPath))
                     {
                         var duplicateTrack = Path.GetFileNameWithoutExtension(newPath);
-                        System.Windows.Forms.DialogResult result = MessageBoxYesNo.Show(MessageBoxYesNo.addTxt + duplicateTrack);
+                        var result = MessageBoxYesNo.Show(MessageBoxYesNo.AddTxt + duplicateTrack);
                         if (result == DialogResult.No) continue;
                     }
 
@@ -308,7 +303,6 @@ public partial class Library
                         var newTrack = new Tracks(newId, newTitle, newAuthor, newAlbum, newPath, formattedTime,
                             albumCoverPath, newId);
                         TracksProperties.TracksList.Add(newTrack);
-                        addedToTheList = true;
                     }
 
                     // Aktualizacja pliku JSON zawierającego dane o utworach
@@ -316,11 +310,10 @@ public partial class Library
                     File.WriteAllText(JsonPath, newJsonData);
                     RefreshTrackListViewAndId();
                 }
-            }
 
-            if (lv.SelectedIndex != -1)
+            if (Lv.SelectedIndex != -1)
             {
-                var elementId = lv.SelectedIndex;
+                var elementId = Lv.SelectedIndex;
                 TracksProperties.SelectedTrack = TracksProperties.TracksList?.ElementAt(elementId);
             }
         }
@@ -337,16 +330,16 @@ public partial class Library
         try
         {
             // Sprawdzenie, czy coś jest zaznaczone na liście utworów
-            if (lv.SelectedItems.Count > 0)
+            if (Lv.SelectedItems.Count > 0)
             {
                 // Wyświetlenie okna dialogowe z potwierdzeniem usunięcia wybranych utworów
-                System.Windows.Forms.DialogResult result = MessageBoxYesNo.Show(MessageBoxYesNo.delTxt + lv.SelectedItems.Count);
+                var result = MessageBoxYesNo.Show(MessageBoxYesNo.DelTxt + Lv.SelectedItems.Count);
 
                 // Jeśli użytkownik potwierdzi, usuń wybrane utwory
                 if (result == DialogResult.Yes)
                 {
                     var selectedIndices = new List<int>();
-                    foreach (var item in lv.SelectedItems) selectedIndices.Add(lv.Items.IndexOf(item));
+                    foreach (var item in Lv.SelectedItems) selectedIndices.Add(Lv.Items.IndexOf(item));
 
                     // Posortowanie indeksów w porządku malejącym, aby uniknąć problemów z usuwaniem wielu elementów
                     selectedIndices.Sort((a, b) => b.CompareTo(a));
@@ -358,7 +351,7 @@ public partial class Library
                     var newJsonData = JsonConvert.SerializeObject(TracksProperties.TracksList);
                     File.WriteAllText(JsonPath, newJsonData);
 
-                    if (TracksProperties.AudioFileReader?.FileName == TracksProperties.SelectedTrack?.Path && 
+                    if (TracksProperties.AudioFileReader?.FileName == TracksProperties.SelectedTrack?.Path &&
                         TracksProperties.WaveOut?.PlaybackState == PlaybackState.Playing)
                     {
                         TracksProperties.WaveOut.Stop();
@@ -372,23 +365,25 @@ public partial class Library
                         TracksProperties.SecWaveOut = null;
                         TracksProperties.AudioFileReader = null;
                     }
-                    
+
                     // Resetowanie wybranego utwór i odświeżanie ListView oraz ID utworów
                     RefreshTrackListViewAndId();
 
                     // Zaznaczenie utworu na indeksie kolejnego elementu poniżej ostatnio zaznaczonego elementu
-                    if (lv.Items.Count > 0)
+                    if (Lv.Items.Count > 0)
                     {
                         var selectedIndex = Math.Max(selectedIndices.Min() - 1, 0);
-                        lv.SelectedIndex = selectedIndex;
+                        Lv.SelectedIndex = selectedIndex;
                     }
+
                     OnDeleteTrack?.Invoke(this, EventArgs.Empty);
                 }
             }
+
             // Zaktualizowanie wybranego utworu, jeśli jakiś utwór jest wciąż zaznaczony po operacji usuwania
-            if (lv.SelectedIndex != -1)
+            if (Lv.SelectedIndex != -1)
             {
-                var elementId = lv.SelectedIndex;
+                var elementId = Lv.SelectedIndex;
                 TracksProperties.SelectedTrack = TracksProperties.TracksList?.ElementAt(elementId);
             }
         }
@@ -406,11 +401,11 @@ public partial class Library
         try
         {
             // Jeśli jakiś utwór jest zaznaczony, zaktualizuj wybrany utwór w TracksProperties
-            if (lv.SelectedIndex != -1)
+            if (Lv.SelectedIndex != -1)
             {
-                var elementId = lv.SelectedIndex;
+                var elementId = Lv.SelectedIndex;
                 TracksProperties.SelectedTrack = TracksProperties.TracksList?.ElementAt(elementId);
-                if(TracksProperties.AudioFileReader == null)
+                if (TracksProperties.AudioFileReader == null)
                     ResetSelected?.Invoke(this, EventArgs.Empty);
             }
         }
@@ -429,7 +424,7 @@ public partial class Library
         {
             // Jeśli wybrany utwór nie jest pusty, ustaw zaznaczenie ListView na indeks odpowiadający ID wybranego utworu
             if (TracksProperties.SelectedTrack != null)
-                lv.SelectedIndex = TracksProperties.SelectedTrack.Id - 1;
+                Lv.SelectedIndex = TracksProperties.SelectedTrack.Id - 1;
         }
         catch (Exception ex)
         {
@@ -452,10 +447,10 @@ public partial class Library
             */
             if (TracksProperties.TracksList != null)
             {
-                DataGrid? dg = sender as DataGrid;
+                var dg = sender as DataGrid;
                 if (dg != null && dg.SelectedItems.Count == 1)
                 {
-                    DataGridRow? dgr = dg.ItemContainerGenerator.ContainerFromItem(dg.SelectedItem) as DataGridRow;
+                    var dgr = dg.ItemContainerGenerator.ContainerFromItem(dg.SelectedItem) as DataGridRow;
                     if (dgr != null)
                     {
                         // Zmień styl wiersza na taki sam jak dla właściwości IsSelected
@@ -463,7 +458,7 @@ public partial class Library
                         dgr.Foreground = Brushes.White;
                     }
                 }
-                
+
                 if (TracksProperties.SecWaveOut != null &&
                     TracksProperties.SecWaveOut.PlaybackState == PlaybackState.Playing)
                 {
@@ -492,9 +487,9 @@ public partial class Library
                 }
                 else
                 {
-                    var selectedIndex = lv.SelectedIndex;
+                    var selectedIndex = Lv.SelectedIndex;
                     RefreshTrackListViewAndId();
-                    lv.SelectedIndex = selectedIndex;
+                    Lv.SelectedIndex = selectedIndex;
                     TracksProperties.SelectedTrack = TracksProperties.TracksList.ElementAt(selectedIndex);
                     var btnPlay = new ButtonPlay();
                     btnPlay.PlayNewTrack();
@@ -509,20 +504,12 @@ public partial class Library
         }
     }
 
-    private void KeyDownEvent(object sender, KeyEventArgs e)
+    private new void KeyDownEvent(object sender, KeyEventArgs e)
     {
-        if (e.Key == Key.Delete)
-        {
-            Delete_Btn_Click(sender,e);
-        }
+        if (e.Key == Key.Delete) Delete_Btn_Click(sender, e);
 
         if (Keyboard.IsKeyDown(Key.LeftCtrl))
-        {
             if (e.Key == Key.A)
-            {
-                lv.SelectAll();
-            }
-        }
+                Lv.SelectAll();
     }
 }
-

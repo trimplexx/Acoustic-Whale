@@ -7,40 +7,40 @@
              d:DesignHeight="570" d:DesignWidth="1000">
     <UserControl.Resources>
         <Style TargetType="CheckBox">
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="Foreground" Value="#45a7bc"/>
-            <Setter Property="FontSize" Value="12"/>
-            <Setter Property="Margin" Value="10"/>
-            <Setter Property="BorderBrush" Value="#45a7bc"/>
-            <Setter Property="BorderThickness" Value="1.5"/>
-            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Foreground" Value="#45a7bc" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="Margin" Value="10" />
+            <Setter Property="BorderBrush" Value="#45a7bc" />
+            <Setter Property="BorderThickness" Value="1.5" />
+            <Setter Property="HorizontalAlignment" Value="Left" />
         </Style>
         <Style TargetType="TextBlock">
-            <Setter Property="Margin" Value="5"/>
-            <Setter Property="Foreground" Value="#45a7bc"/>
-            <Setter Property="FontSize" Value="14"/>
-            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="Margin" Value="5" />
+            <Setter Property="Foreground" Value="#45a7bc" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="HorizontalAlignment" Value="Center" />
 
         </Style>
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="50"/>
-            <RowDefinition/>
-            <RowDefinition Height="50"/>
+            <RowDefinition Height="50" />
+            <RowDefinition />
+            <RowDefinition Height="50" />
         </Grid.RowDefinitions>
 
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="50*"/>
-            <ColumnDefinition Width="25*"/>
-            <ColumnDefinition Width="25*"/>
+            <ColumnDefinition Width="50*" />
+            <ColumnDefinition Width="25*" />
+            <ColumnDefinition Width="25*" />
         </Grid.ColumnDefinitions>
 
         <TextBlock FontSize="22" HorizontalAlignment="Center">Equalizer</TextBlock>
-        <TextBlock Grid.Column="1" FontSize="22"  HorizontalAlignment="Center">Effects</TextBlock>
-        <TextBlock Grid.Column="2" FontSize="22" HorizontalAlignment="Center">Options</TextBlock>
+        <TextBlock Grid.Row="0" Grid.Column="1" FontSize="22" HorizontalAlignment="Center">Effects</TextBlock>
+        <TextBlock Grid.Row="0" Grid.Column="2" FontSize="22" HorizontalAlignment="Center">Options</TextBlock>
 
-        <Grid Grid.Row="1">
+        <Grid Grid.Row="1" Grid.Column="0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
                 <ColumnDefinition />
@@ -51,113 +51,147 @@
                 <ColumnDefinition />
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
-            <Slider Style="{DynamicResource SliderStyle2}" x:Name="sld1" Grid.Column="0" Orientation="Vertical" 
-                    HorizontalAlignment="Center" Margin="0,30,0,30" PreviewMouseLeftButtonUp="OnSliderValueChange" ValueChanged="DynamicEqualizerValueChaning"
-                    Minimum="-15" Maximum="15" Value="0" IsMoveToPointEnabled="True" IsSelectionRangeEnabled="True" SelectionStart="-15" SelectionEnd="{Binding ElementName=sld1,Path=Value}"/>
-            <Slider Style="{DynamicResource SliderStyle2}" x:Name="sld2" Grid.Column="1" Orientation="Vertical" 
-                    HorizontalAlignment="Center" Margin="0,30,0,30" PreviewMouseLeftButtonUp="OnSliderValueChange" ValueChanged="DynamicEqualizerValueChaning"
-                    Minimum="-15" Maximum="15" Value="0" IsMoveToPointEnabled="True" IsSelectionRangeEnabled="True" SelectionStart="-15" SelectionEnd="{Binding ElementName=sld2,Path=Value}"/>
-            <Slider Style="{DynamicResource SliderStyle2}" x:Name="sld3" Grid.Column="2" Orientation="Vertical" 
-                    HorizontalAlignment="Center" Margin="0,30,0,30" PreviewMouseLeftButtonUp="OnSliderValueChange" ValueChanged="DynamicEqualizerValueChaning"
-                    Minimum="-15" Maximum="15" Value="0" IsMoveToPointEnabled="True" IsSelectionRangeEnabled="True" SelectionStart="-15" SelectionEnd="{Binding ElementName=sld3,Path=Value}"/>
-            <Slider Style="{DynamicResource SliderStyle2}" x:Name="sld4" Grid.Column="3" Orientation="Vertical" 
-                    HorizontalAlignment="Center" Margin="0,30,0,30" PreviewMouseLeftButtonUp="OnSliderValueChange" ValueChanged="DynamicEqualizerValueChaning"
-                    Minimum="-15" Maximum="15" Value="0" IsMoveToPointEnabled="True" IsSelectionRangeEnabled="True" SelectionStart="-15" SelectionEnd="{Binding ElementName=sld4,Path=Value}"/>
-            <Slider Style="{DynamicResource SliderStyle2}" x:Name="sld5" Grid.Column="4" Orientation="Vertical" 
-                    HorizontalAlignment="Center" Margin="0,30,0,30" PreviewMouseLeftButtonUp="OnSliderValueChange" ValueChanged="DynamicEqualizerValueChaning"
-                    Minimum="-15" Maximum="15" Value="0" IsMoveToPointEnabled="True" IsSelectionRangeEnabled="True" SelectionStart="-15" SelectionEnd="{Binding ElementName=sld5,Path=Value}"/>
-            <Slider Style="{DynamicResource SliderStyle2}" x:Name="sld6" Grid.Column="5" Orientation="Vertical" 
-                    HorizontalAlignment="Center" Margin="0,30,0,30" PreviewMouseLeftButtonUp="OnSliderValueChange" ValueChanged="DynamicEqualizerValueChaning"
-                    Minimum="-15" Maximum="15" Value="0" IsMoveToPointEnabled="True" IsSelectionRangeEnabled="True" SelectionStart="-15" SelectionEnd="{Binding ElementName=sld6,Path=Value}"/>
-            <Slider Style="{DynamicResource SliderStyle2}" x:Name="sld7" Grid.Column="6" Orientation="Vertical" 
-                    HorizontalAlignment="Center" Margin="0,30,0,30" PreviewMouseLeftButtonUp="OnSliderValueChange" ValueChanged="DynamicEqualizerValueChaning"
-                    Minimum="-15" Maximum="15" Value="0" IsMoveToPointEnabled="True" IsSelectionRangeEnabled="True" SelectionStart="-15" SelectionEnd="{Binding ElementName=sld7,Path=Value}"/>
-            <Slider Style="{DynamicResource SliderStyle2}" x:Name="sld8" Grid.Column="7" Orientation="Vertical" 
-                    HorizontalAlignment="Center" Margin="0,30,0,30" PreviewMouseLeftButtonUp="OnSliderValueChange" ValueChanged="DynamicEqualizerValueChaning"
-                    Minimum="-15" Maximum="15" Value="0" IsMoveToPointEnabled="True" IsSelectionRangeEnabled="True" SelectionStart="-15" SelectionEnd="{Binding ElementName=sld8,Path=Value}"/>
+            <Slider Style="{DynamicResource SliderStyle2}" x:Name="Sld1" Grid.Column="0" Orientation="Vertical"
+                    HorizontalAlignment="Center" Margin="0,30,0,30" PreviewMouseLeftButtonUp="OnSliderValueChange"
+                    ValueChanged="DynamicEqualizerValueChaning"
+                    Minimum="-15" Maximum="15" Value="0" IsMoveToPointEnabled="True" IsSelectionRangeEnabled="True"
+                    SelectionStart="-15" SelectionEnd="{Binding ElementName=Sld1,Path=Value}" />
+            <Slider Style="{DynamicResource SliderStyle2}" x:Name="Sld2" Grid.Column="1" Orientation="Vertical"
+                    HorizontalAlignment="Center" Margin="0,30,0,30" PreviewMouseLeftButtonUp="OnSliderValueChange"
+                    ValueChanged="DynamicEqualizerValueChaning"
+                    Minimum="-15" Maximum="15" Value="0" IsMoveToPointEnabled="True" IsSelectionRangeEnabled="True"
+                    SelectionStart="-15" SelectionEnd="{Binding ElementName=Sld2,Path=Value}" />
+            <Slider Style="{DynamicResource SliderStyle2}" x:Name="Sld3" Grid.Column="2" Orientation="Vertical"
+                    HorizontalAlignment="Center" Margin="0,30,0,30" PreviewMouseLeftButtonUp="OnSliderValueChange"
+                    ValueChanged="DynamicEqualizerValueChaning"
+                    Minimum="-15" Maximum="15" Value="0" IsMoveToPointEnabled="True" IsSelectionRangeEnabled="True"
+                    SelectionStart="-15" SelectionEnd="{Binding ElementName=Sld3,Path=Value}" />
+            <Slider Style="{DynamicResource SliderStyle2}" x:Name="Sld4" Grid.Column="3" Orientation="Vertical"
+                    HorizontalAlignment="Center" Margin="0,30,0,30" PreviewMouseLeftButtonUp="OnSliderValueChange"
+                    ValueChanged="DynamicEqualizerValueChaning"
+                    Minimum="-15" Maximum="15" Value="0" IsMoveToPointEnabled="True" IsSelectionRangeEnabled="True"
+                    SelectionStart="-15" SelectionEnd="{Binding ElementName=Sld4,Path=Value}" />
+            <Slider Style="{DynamicResource SliderStyle2}" x:Name="Sld5" Grid.Column="4" Orientation="Vertical"
+                    HorizontalAlignment="Center" Margin="0,30,0,30" PreviewMouseLeftButtonUp="OnSliderValueChange"
+                    ValueChanged="DynamicEqualizerValueChaning"
+                    Minimum="-15" Maximum="15" Value="0" IsMoveToPointEnabled="True" IsSelectionRangeEnabled="True"
+                    SelectionStart="-15" SelectionEnd="{Binding ElementName=Sld5,Path=Value}" />
+            <Slider Style="{DynamicResource SliderStyle2}" x:Name="Sld6" Grid.Column="5" Orientation="Vertical"
+                    HorizontalAlignment="Center" Margin="0,30,0,30" PreviewMouseLeftButtonUp="OnSliderValueChange"
+                    ValueChanged="DynamicEqualizerValueChaning"
+                    Minimum="-15" Maximum="15" Value="0" IsMoveToPointEnabled="True" IsSelectionRangeEnabled="True"
+                    SelectionStart="-15" SelectionEnd="{Binding ElementName=Sld6,Path=Value}" />
+            <Slider Style="{DynamicResource SliderStyle2}" x:Name="Sld7" Grid.Column="6" Orientation="Vertical"
+                    HorizontalAlignment="Center" Margin="0,30,0,30" PreviewMouseLeftButtonUp="OnSliderValueChange"
+                    ValueChanged="DynamicEqualizerValueChaning"
+                    Minimum="-15" Maximum="15" Value="0" IsMoveToPointEnabled="True" IsSelectionRangeEnabled="True"
+                    SelectionStart="-15" SelectionEnd="{Binding ElementName=Sld7,Path=Value}" />
+            <Slider Style="{DynamicResource SliderStyle2}" x:Name="Sld8" Grid.Column="7" Orientation="Vertical"
+                    HorizontalAlignment="Center" Margin="0,30,0,30" PreviewMouseLeftButtonUp="OnSliderValueChange"
+                    ValueChanged="DynamicEqualizerValueChaning"
+                    Minimum="-15" Maximum="15" Value="0" IsMoveToPointEnabled="True" IsSelectionRangeEnabled="True"
+                    SelectionStart="-15" SelectionEnd="{Binding ElementName=Sld8,Path=Value}" />
 
-            <TextBlock Text="100" FontSize="14" VerticalAlignment="Bottom" Margin="0,5,0,15"/>
-            <TextBlock Grid.Column="1" Text="200" VerticalAlignment="Bottom" Margin="0,5,0,15"/>
-            <TextBlock Grid.Column="2" Text="400" VerticalAlignment="Bottom" Margin="0,5,0,15"/>
-            <TextBlock Grid.Column="3" Text="800" VerticalAlignment="Bottom" Margin="0,5,0,15"/>
-            <TextBlock Grid.Column="4" Text="1.2k" VerticalAlignment="Bottom" Margin="0,5,0,15"/>
-            <TextBlock Grid.Column="5" Text="2.4k" VerticalAlignment="Bottom" Margin="0,5,0,15"/>
-            <TextBlock Grid.Column="6" Text="4.0k" VerticalAlignment="Bottom" Margin="0,5,0,15"/>
-            <TextBlock Grid.Column="7" Text="6.0k" VerticalAlignment="Bottom" Margin="0,5,0,15"/>
-            <TextBlock Name="Slider_Value1" Text="0" VerticalAlignment="Top" Margin="0,15,0,5"/>
-            <TextBlock Name="Slider_Value2" Grid.Column="1" Text="0" VerticalAlignment="Top" Margin="0,15,0,5"/>
-            <TextBlock Name="Slider_Value3" Grid.Column="2" Text="0" VerticalAlignment="Top" Margin="0,15,0,5"/>
-            <TextBlock Name="Slider_Value4" Grid.Column="3" Text="0" VerticalAlignment="Top" Margin="0,15,0,5"/>
-            <TextBlock Name="Slider_Value5" Grid.Column="4" Text="0" VerticalAlignment="Top" Margin="0,15,0,5"/>
-            <TextBlock Name="Slider_Value6" Grid.Column="5" Text="0" VerticalAlignment="Top" Margin="0,15,0,5"/>
-            <TextBlock Name="Slider_Value7" Grid.Column="6" Text="0" VerticalAlignment="Top" Margin="0,15,0,5"/>
-            <TextBlock Name="Slider_Value8" Grid.Column="7" Text="0" VerticalAlignment="Top" Margin="0,15,0,5"/>
+            <TextBlock Grid.Column="0" Text="100" FontSize="14" VerticalAlignment="Bottom" Margin="0,5,0,15" />
+            <TextBlock Grid.Column="1" Text="200" VerticalAlignment="Bottom" Margin="0,5,0,15" />
+            <TextBlock Grid.Column="2" Text="400" VerticalAlignment="Bottom" Margin="0,5,0,15" />
+            <TextBlock Grid.Column="3" Text="800" VerticalAlignment="Bottom" Margin="0,5,0,15" />
+            <TextBlock Grid.Column="4" Text="1.2k" VerticalAlignment="Bottom" Margin="0,5,0,15" />
+            <TextBlock Grid.Column="5" Text="2.4k" VerticalAlignment="Bottom" Margin="0,5,0,15" />
+            <TextBlock Grid.Column="6" Text="4.0k" VerticalAlignment="Bottom" Margin="0,5,0,15" />
+            <TextBlock Grid.Column="7" Text="6.0k" VerticalAlignment="Bottom" Margin="0,5,0,15" />
+            <TextBlock Grid.Column="0" Name="SliderValue1" Text="0" VerticalAlignment="Top" Margin="0,15,0,5" />
+            <TextBlock Name="SliderValue2" Grid.Column="1" Text="0" VerticalAlignment="Top" Margin="0,15,0,5" />
+            <TextBlock Name="SliderValue3" Grid.Column="2" Text="0" VerticalAlignment="Top" Margin="0,15,0,5" />
+            <TextBlock Name="SliderValue4" Grid.Column="3" Text="0" VerticalAlignment="Top" Margin="0,15,0,5" />
+            <TextBlock Name="SliderValue5" Grid.Column="4" Text="0" VerticalAlignment="Top" Margin="0,15,0,5" />
+            <TextBlock Name="SliderValue6" Grid.Column="5" Text="0" VerticalAlignment="Top" Margin="0,15,0,5" />
+            <TextBlock Name="SliderValue7" Grid.Column="6" Text="0" VerticalAlignment="Top" Margin="0,15,0,5" />
+            <TextBlock Name="SliderValue8" Grid.Column="7" Text="0" VerticalAlignment="Top" Margin="0,15,0,5" />
         </Grid>
 
-        <Border Grid.RowSpan="3" BorderThickness="0,0,3,0" BorderBrush="#45a7bc" Margin="0,5,0,5" />
-        <Border Grid.RowSpan="3" Grid.Column="1" BorderThickness="0,0,3,0" BorderBrush="#45a7bc" Margin="0,5,0,5" />
+        <Border Grid.Row="0" Grid.RowSpan="3" Grid.Column="0" BorderThickness="0,0,3,0" BorderBrush="#45a7bc"
+                Margin="0,5,0,5" />
+        <Border Grid.Row="0" Grid.RowSpan="3" Grid.Column="1" BorderThickness="0,0,3,0" BorderBrush="#45a7bc"
+                Margin="0,5,0,5" />
 
         <StackPanel Grid.Row="1" Grid.Column="1" Margin="10">
-            <CheckBox Template="{DynamicResource CheckBoxTemplate1}" Name="Delay_Box" PreviewMouseLeftButtonUp="OnOffDelay">
+            <CheckBox Template="{DynamicResource CheckBoxTemplate1}" Name="DelayBox"
+                      PreviewMouseLeftButtonUp="OnOffDelay">
                 <CheckBox.LayoutTransform>
                     <ScaleTransform ScaleX="1.5" ScaleY="1.5" />
                 </CheckBox.LayoutTransform>
                 Delay
             </CheckBox>
-            <CheckBox Template="{DynamicResource CheckBoxTemplate1}" Name="Chorus_Box" PreviewMouseLeftButtonUp="OnOffChorus">
+            <CheckBox Template="{DynamicResource CheckBoxTemplate1}" Name="ChorusBox"
+                      PreviewMouseLeftButtonUp="OnOffChorus">
                 <CheckBox.LayoutTransform>
                     <ScaleTransform ScaleX="1.5" ScaleY="1.5" />
                 </CheckBox.LayoutTransform>
                 Chorus
             </CheckBox>
-            <CheckBox Template="{DynamicResource CheckBoxTemplate1}" Name="Distortion_Box" PreviewMouseLeftButtonUp="OnOffDistortion">
+            <CheckBox Template="{DynamicResource CheckBoxTemplate1}" Name="DistortionBox"
+                      PreviewMouseLeftButtonUp="OnOffDistortion">
                 <CheckBox.LayoutTransform>
                     <ScaleTransform ScaleX="1.5" ScaleY="1.5" />
                 </CheckBox.LayoutTransform>
                 Distortion
             </CheckBox>
-            <CheckBox Template="{DynamicResource CheckBoxTemplate1}" Name="Nightcore_Box" PreviewMouseLeftButtonUp="OnOffNightcore">
+            <CheckBox Template="{DynamicResource CheckBoxTemplate1}" Name="NightcoreBox"
+                      PreviewMouseLeftButtonUp="OnOffNightcore">
                 <CheckBox.LayoutTransform>
                     <ScaleTransform ScaleX="1.5" ScaleY="1.5" />
                 </CheckBox.LayoutTransform>
                 Nightcore
             </CheckBox>
-            <StackPanel x:Name = "SliderFirstPanel" Visibility="Hidden">
-                <Slider Style="{DynamicResource SliderStyle1}" Margin="5" x:Name="SliderFirst" IsMoveToPointEnabled="True" IsSelectionRangeEnabled="True" PreviewMouseLeftButtonUp="ValueChangeSlider_PreviewMouseLeftButtonUp" 
-                        ValueChanged="DynamicSliderEffectValueChaning"/>
-                <Grid>
-                    <TextBlock Name="SliderFirstText" Grid.Column="5" Text="slider1" VerticalAlignment="Top" Margin="0,-3,0,0"/>
-                    <TextBlock Name="SliderFirstValueText" Grid.Column="5" Text="0" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,-3,15,0"/>
-                </Grid>
-            </StackPanel>
-            <StackPanel x:Name = "SliderSecPanel" Visibility="Hidden">
-                <Slider Style="{DynamicResource SliderStyle1}" Margin="5" x:Name="SliderSec" IsMoveToPointEnabled="True" IsSelectionRangeEnabled="True" PreviewMouseLeftButtonUp="ValueChangeSlider_PreviewMouseLeftButtonUp"
+            <StackPanel x:Name="SliderFirstPanel" Visibility="Hidden">
+                <Slider Style="{DynamicResource SliderStyle1}" Margin="5" x:Name="SliderFirst"
+                        IsMoveToPointEnabled="True" IsSelectionRangeEnabled="True"
+                        PreviewMouseLeftButtonUp="ValueChangeSlider_PreviewMouseLeftButtonUp"
                         ValueChanged="DynamicSliderEffectValueChaning" />
                 <Grid>
-                    <TextBlock Name="SliderSecValueText" Grid.Column="5" Text="0" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,-3,15,0"/>
-                    <TextBlock Name="SliderSecText" Grid.Column="5" Text="slider2 " VerticalAlignment="Top" Margin="0,-3,0,0"/>
+                    <TextBlock Name="SliderFirstText" Grid.Column="5" Text="slider1" VerticalAlignment="Top"
+                               Margin="0,-3,0,0" />
+                    <TextBlock Name="SliderFirstValueText" Grid.Column="5" Text="0" VerticalAlignment="Center"
+                               HorizontalAlignment="Right" Margin="0,-3,15,0" />
+                </Grid>
+            </StackPanel>
+            <StackPanel x:Name="SliderSecPanel" Visibility="Hidden">
+                <Slider Style="{DynamicResource SliderStyle1}" Margin="5" x:Name="SliderSec"
+                        IsMoveToPointEnabled="True" IsSelectionRangeEnabled="True"
+                        PreviewMouseLeftButtonUp="ValueChangeSlider_PreviewMouseLeftButtonUp"
+                        ValueChanged="DynamicSliderEffectValueChaning" />
+                <Grid>
+                    <TextBlock Name="SliderSecValueText" Grid.Column="5" Text="0" VerticalAlignment="Center"
+                               HorizontalAlignment="Right" Margin="0,-3,15,0" />
+                    <TextBlock Name="SliderSecText" Grid.Column="5" Text="slider2 " VerticalAlignment="Top"
+                               Margin="0,-3,0,0" />
                 </Grid>
             </StackPanel>
         </StackPanel>
 
         <StackPanel Grid.Row="1" Grid.Column="2" Margin="10">
-            <CheckBox Template="{DynamicResource CheckBoxTemplate1}" Name="Fade_box" PreviewMouseLeftButtonUp="Fade_CheckBoxClick" >
+            <CheckBox Template="{DynamicResource CheckBoxTemplate1}" Name="FadeBox"
+                      PreviewMouseLeftButtonUp="Fade_CheckBoxClick">
                 <CheckBox.LayoutTransform>
                     <ScaleTransform ScaleX="1.5" ScaleY="1.5" />
                 </CheckBox.LayoutTransform>
                 <CheckBox.ToolTip>
-                    <ToolTip Background="#333333" BorderBrush="#45a7bc" BorderThickness="1" Foreground="#45a7bc" FontSize="14">
+                    <ToolTip Background="#333333" BorderBrush="#45a7bc" BorderThickness="1" Foreground="#45a7bc"
+                             FontSize="14">
                         Smooth transition between tracks (Only for 7+ seconds track)
                     </ToolTip>
                 </CheckBox.ToolTip>
                 Fade In/Out
             </CheckBox>
-            <CheckBox Template="{DynamicResource CheckBoxTemplate1}" Name="StereoToMono_Box" PreviewMouseLeftButtonUp="OnOffStereoToMono">
+            <CheckBox Template="{DynamicResource CheckBoxTemplate1}" Name="StereoToMonoBox"
+                      PreviewMouseLeftButtonUp="OnOffStereoToMono">
                 <CheckBox.LayoutTransform>
                     <ScaleTransform ScaleX="1.5" ScaleY="1.5" />
                 </CheckBox.LayoutTransform>
                 <CheckBox.ToolTip>
-                    <ToolTip Background="#333333" BorderBrush="#45a7bc" BorderThickness="1" Foreground="#45a7bc" FontSize="14">
+                    <ToolTip Background="#333333" BorderBrush="#45a7bc" BorderThickness="1" Foreground="#45a7bc"
+                             FontSize="14">
                         Converting stereo to mono audio
                     </ToolTip>
                 </CheckBox.ToolTip>
@@ -166,20 +200,25 @@
 
         </StackPanel>
 
-        <StackPanel Grid.Row="2" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
+        <StackPanel Grid.Row="2" Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center"
+                    HorizontalAlignment="Center">
             <!-- zmieniane na przycisk (desi chciał) -->
-            <Button Style="{DynamicResource ButtonStyle1}" Name="Equalizer_Btn" PreviewMouseDown="OnOffEqualizer" 
-                    Content="Equalizer On" FontSize="16" Padding="5" Background="Transparent" Foreground="#45a7bc" BorderThickness="0" Margin="5,0,5,5">
+            <Button Style="{DynamicResource ButtonStyle1}" Name="EqualizerBtn" PreviewMouseDown="OnOffEqualizer"
+                    Content="Equalizer On" FontSize="16" Padding="5" Background="Transparent" Foreground="#45a7bc"
+                    BorderThickness="0" Margin="5,0,5,5">
                 <Button.ToolTip>
-                    <ToolTip Background="#333333" BorderBrush="#45a7bc" BorderThickness="1" Foreground="#45a7bc" FontSize="14">
+                    <ToolTip Background="#333333" BorderBrush="#45a7bc" BorderThickness="1" Foreground="#45a7bc"
+                             FontSize="14">
                         Turn off/on equalizer
                     </ToolTip>
                 </Button.ToolTip>
             </Button>
-            <Button Style="{DynamicResource ButtonStyle1}" Name="Reset_Btn" PreviewMouseDown="Reset_Btn_Click" 
-                    Content="Reset" FontSize="16" Padding="5" Background="Transparent" Foreground="#45a7bc" BorderThickness="0" Margin="5,0,5,5">
+            <Button Style="{DynamicResource ButtonStyle1}" PreviewMouseDown="Reset_Btn_Click"
+                    Content="Reset" FontSize="16" Padding="5" Background="Transparent" Foreground="#45a7bc"
+                    BorderThickness="0" Margin="5,0,5,5">
                 <Button.ToolTip>
-                    <ToolTip Background="#333333" BorderBrush="#45a7bc" BorderThickness="1" Foreground="#45a7bc" FontSize="14">
+                    <ToolTip Background="#333333" BorderBrush="#45a7bc" BorderThickness="1" Foreground="#45a7bc"
+                             FontSize="14">
                         Set all equalizer values to 0
                     </ToolTip>
                 </Button.ToolTip>

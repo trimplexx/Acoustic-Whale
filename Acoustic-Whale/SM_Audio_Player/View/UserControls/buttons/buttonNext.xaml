@@ -6,7 +6,7 @@
              mc:Ignorable="d"
              d:DesignHeight="40" d:DesignWidth="40">
 
-    <Button Width="40" Height="40" x:Name="btnNext" PreviewMouseLeftButtonUp="btnNext_Click">
+    <Button Width="40" Height="40" PreviewMouseLeftButtonUp="btnNext_Click">
         <Button.Template>
             <ControlTemplate TargetType="Button">
                 <Viewbox>

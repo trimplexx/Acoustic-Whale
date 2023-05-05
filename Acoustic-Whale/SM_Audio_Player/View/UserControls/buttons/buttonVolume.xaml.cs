@@ -2,7 +2,6 @@
 using System.ComponentModel;
 using System.IO;
 using System.Windows;
-using System.Windows.Input;
 using Newtonsoft.Json;
 using SM_Audio_Player.Music;
 
@@ -26,8 +25,8 @@ public partial class ButtonVolume : INotifyPropertyChanged
             else
                 TracksProperties.Volume = 50;
 
-            sldVolume.Value = TracksProperties.Volume;
-            VolumeIcon = ValueIconChange(sldVolume.Value);
+            SldVolume.Value = TracksProperties.Volume;
+            VolumeIcon = ValueIconChange(SldVolume.Value);
             ButtonNext.NextButtonClicked += OnTrackSwitch;
             ButtonPrevious.PreviousButtonClicked += OnTrackSwitch;
             ButtonPlay.TrackEnd += OnTrackSwitch;
@@ -99,14 +98,14 @@ public partial class ButtonVolume : INotifyPropertyChanged
         {
             if (_isMuted && _savedVolumeValue != 0)
             {
-                sldVolume.Value = _savedVolumeValue;
+                SldVolume.Value = _savedVolumeValue;
                 ValueIconChange(TracksProperties.Volume);
                 _isMuted = false;
             }
             else
             {
-                _savedVolumeValue = sldVolume.Value;
-                sldVolume.Value = 0;
+                _savedVolumeValue = SldVolume.Value;
+                SldVolume.Value = 0;
                 VolumeIcon = Icons.GetVolumeIconZero();
                 _isMuted = true;
             }

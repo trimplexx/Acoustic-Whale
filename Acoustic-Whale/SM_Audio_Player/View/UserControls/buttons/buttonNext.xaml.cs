@@ -6,27 +6,32 @@ using SM_Audio_Player.Music;
 
 namespace SM_Audio_Player.View.UserControls.buttons;
 
+///<summary>
+/// Klasa reprezentująca przycisk do przejścia do następnego utworu.
+/// </summary>
 public partial class ButtonNext
 {
-    /*
-     * Zdarzenie odnoszące się do kliknięcia w ButtonNext, dzięki któremu w innych miejscach kodu wyniknie reakcja.
-     * Utworzone zostało aby aktualizować poszczególne dane innych klas. 
-     */
+
+    /// <summary>
+    /// Delegat odpowiadający za reakcję na kliknięcie w przycisk, który jest wykorzystywany do aktualizowania danych
+    /// w innych klasach.
+    /// </summary>
     public delegate void NextButtonClickedEventHandler(object sender, EventArgs e);
-
-    /*
-     * Eventy służące odświeżaniu listy, aby wyrzucić piosenkę przed jej odtworzeniem, gdy jego ścieżka uległaby zmianie
-     * w trakcie odtwarzania. 
-     */
+    
+    /// <summary>
+    /// Delegat odpowiadający za odświeżanie listy odtwarzanych piosenek, w przypadku gdy ich ścieżki ulegną zmianie.
+    /// </summary>
     public delegate void RefreshListEventHandler(object sender, EventArgs e);
-
-    /*
-     * Akcja odpowiadająca za resetowanie danych w momencie, gdy odświeżona lista będzie zawierać mniej elementów
-     * niż ta wartość, która została zapisana przed jej odświeżeniem (Przykładowo, gdy ktoś zmieni ścieżkę do pliku
-     * w trakcie używania aplikacji mogła by ona wyrzucić wyjątek)
-     */
+    
+    /// <summary>
+    /// Delegat odpowiadający za resetowanie danych w przypadku, gdy odświeżona lista będzie zawierać mniej elementów niż
+    /// lista przed odświeżeniem (np. gdy zmieni się ścieżka do pliku).
+    /// </summary>
     public delegate void ResetEverythingEventHandler(object sender, EventArgs e);
-
+    
+    /// <summary>
+    /// Delegat odpowiadający za obsługę zdarzenia braku wybranego utworu.
+    /// </summary>
     public delegate void SelectedTrackNullEventHandler(object sender, EventArgs e);
 
     private readonly ButtonPlay _btnPlay = new();
@@ -35,23 +40,29 @@ public partial class ButtonNext
     public ButtonNext()
     {
         InitializeComponent();
+        // Dodanie metody 'btnNext_Click' jako zdarzenia reakcji na 'NextTrack' klasy 'MainWindow'.
         MainWindow.NextTrack += btnNext_Click;
     }
 
+    // Zdarzenie odpowiadające za reakcję na kliknięcie w przycisk ButtonNext.
     public static event NextButtonClickedEventHandler? NextButtonClicked;
 
+    // Zdarzenie odpowiadające za odświeżanie listy odtwarzanych piosenek.
     public static event RefreshListEventHandler? RefreshList;
 
+    // Zdarzenie odpowiadające za resetowanie danych w przypadku, gdy odświeżona lista będzie zawierać mniej elementów niż lista przed odświeżeniem.
     public static event ResetEverythingEventHandler? ResetEverything;
 
+    // Zdarzenie odpowiadające za obsługę zdarzenia braku wybranego utworu.
     public static event SelectedTrackNullEventHandler? NextSelectedNull;
 
-    /*Włącz następny utwór*/
+    ///<summary>
+    /// Metoda wywoływana po kliknięciu w przycisk ButtonNext, odpowiada za przejście do kolejnego utworu na liście.
+    ///</summary>
     private void btnNext_Click(object sender, EventArgs e)
     {
         try
         {
-
             // Sprawdź czy jest dostępny jakikolwiek numer na liście
             if (TracksProperties.TracksList != null && TracksProperties.TracksList.Count > 0)
             {
@@ -60,6 +71,7 @@ public partial class ButtonNext
                     _btnPlay.btnPlay_Click(sender, e);
                     NextSelectedNull?.Invoke(this, EventArgs.Empty);
                 }
+
                 if (TracksProperties.SecWaveOut != null &&
                     TracksProperties.SecWaveOut.PlaybackState == PlaybackState.Playing)
                 {
