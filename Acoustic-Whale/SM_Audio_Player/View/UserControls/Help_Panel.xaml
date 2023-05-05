@@ -57,6 +57,9 @@
                 <TextBlock Text="LeftCtrl + Left" FontSize="13"/>
                 <TextBlock Text="LeftCtrl + LeftShift + Right" FontSize="13"/>
                 <TextBlock Text="LeftCtrl + LeftShift + Left" FontSize="13"/>
+                <TextBlock Text="LeftCtrl + F1" FontSize="13"/>
+                <TextBlock Text="LeftCtrl + F2" FontSize="13"/>
+                <TextBlock Text="LeftCtrl + F3" FontSize="13"/>
 
             </StackPanel>
             <StackPanel Grid.Row="1" Grid.Column="1" Margin="5">
@@ -70,6 +73,10 @@
                 <TextBlock Text="Play previous track" FontSize="13"/>
                 <TextBlock Text="Forward scrolling of the music being played" FontSize="13"/>
                 <TextBlock Text="Rewind the music being played" FontSize="13"/>
+                <TextBlock Text="Mute the song" FontSize="13"/>
+                <TextBlock Text="Volume down the song" FontSize="13"/>
+                <TextBlock Text="Volume up the song" FontSize="13"/>
+
             </StackPanel>
         </Grid>
 
