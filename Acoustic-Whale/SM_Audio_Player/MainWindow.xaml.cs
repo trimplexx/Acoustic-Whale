@@ -24,6 +24,14 @@ public partial class MainWindow
     public static event ForwardSongEvent? ForwardSong;
     public delegate void RewindSongEvent(object sender, EventArgs e);
     public static event RewindSongEvent? RewindSong;
+    public delegate void MuteSongEvent(object sender, EventArgs e);
+    public static event MuteSongEvent? MuteSong;
+    public delegate void VolumeChangedEventUp(object sender, EventArgs e);
+    public static event VolumeChangedEventUp? VolumeChangeUp;
+    
+    public delegate void VolumeChangedEventDown(object sender, EventArgs e);
+    public static event VolumeChangedEventDown? VolumeChangeDown;
+    
     public MainWindow()
     {
         InitializeComponent();
@@ -141,6 +149,28 @@ public partial class MainWindow
                 }
                    
             }
+            
+            if (Keyboard.IsKeyDown(Key.F1))
+            {
+                MuteSong?.Invoke(this, EventArgs.Empty);
+                if (TracksProperties.AudioFileReader != null)
+                    TracksProperties.AudioFileReader.Volume = 0;
+                if(TracksProperties.SecAudioFileReader != null)
+                    TracksProperties.SecAudioFileReader.Volume = 0;
+            }
+            
+            if (Keyboard.IsKeyDown(Key.F2))
+            {
+                VolumeChangeDown?.Invoke(this, EventArgs.Empty);
+            }
+            
+            if (Keyboard.IsKeyDown(Key.F3))
+            {
+                VolumeChangeUp?.Invoke(this, EventArgs.Empty);
+            }
+
+            
+           
         }
     }
 

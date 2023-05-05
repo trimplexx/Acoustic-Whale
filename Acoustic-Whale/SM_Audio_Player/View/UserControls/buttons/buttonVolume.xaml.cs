@@ -34,6 +34,9 @@ public partial class ButtonVolume : INotifyPropertyChanged
             Library.DoubleClickEvent += OnTrackSwitch;
             Equalizer.FadeInEvent += OnTrackSwitch;
             ButtonPlay.ButtonPlayEvent += OnTrackSwitch;
+            MainWindow.MuteSong += btnVolume_Click;
+            MainWindow.VolumeChangeUp += VolumeUp;
+            MainWindow.VolumeChangeDown += VolumeDown;
         }
         catch (Exception ex)
         {
@@ -93,7 +96,7 @@ public partial class ButtonVolume : INotifyPropertyChanged
     }
 
     /*Wycisz/Zmień poziom głośności*/
-    private void btnVolume_Click(object sender, RoutedEventArgs e)
+    private void btnVolume_Click(object sender, EventArgs e)
     {
         try
         {
@@ -143,6 +146,57 @@ public partial class ButtonVolume : INotifyPropertyChanged
         {
             MessageBox.Show($"Volume change error: {ex.Message}");
             throw;
+        }
+    }
+    private void VolumeUp(object sender, EventArgs e)
+    {
+        if (Keyboard.IsKeyDown(Key.F3))
+        {
+            if (TracksProperties.AudioFileReader != null)
+            {
+                var currentVolume = TracksProperties.Volume;
+                var newVolume = Math.Max(0, currentVolume + 5); // Zmniejsz głośność o 5%, ale nie mniej niż 0
+                TracksProperties.Volume = newVolume;
+                sldVolume.Value = newVolume; // Ustaw wartość slidera na nową wartość głośności
+
+                var sliderValue = newVolume / 100.0; // Skalowanie wartości na zakres od 0 do 1
+
+                if (TracksProperties.AudioFileReader != null)
+                    TracksProperties.AudioFileReader.Volume = (float)sliderValue; // Aktualizujemy głośność pliku audio
+
+                if (TracksProperties.SecAudioFileReader != null)
+                    TracksProperties.SecAudioFileReader.Volume = (float)sliderValue;
+
+                // Zapis do pliku JSON w celu ponownego odpalenia aplikacji z zapisaną wartością głośności
+                var output = JsonConvert.SerializeObject(TracksProperties.Volume, Formatting.Indented);
+                File.WriteAllText(JsonPath, output);
+            }
+        }
+    }
+    
+    private void VolumeDown(object sender, EventArgs e)
+    {
+        if (Keyboard.IsKeyDown(Key.F2))
+        {
+            if (TracksProperties.AudioFileReader != null)
+            {
+                var currentVolume = TracksProperties.Volume;
+                var newVolume = Math.Max(0, currentVolume - 5); // Zmniejsz głośność o 5%, ale nie mniej niż 0
+                TracksProperties.Volume = newVolume;
+                sldVolume.Value = newVolume; // Ustaw wartość slidera na nową wartość głośności
+
+                var sliderValue = newVolume / 100.0; // Skalowanie wartości na zakres od 0 do 1
+
+                if (TracksProperties.AudioFileReader != null)
+                    TracksProperties.AudioFileReader.Volume = (float)sliderValue; // Aktualizujemy głośność pliku audio
+
+                if (TracksProperties.SecAudioFileReader != null)
+                    TracksProperties.SecAudioFileReader.Volume = (float)sliderValue;
+
+                // Zapis do pliku JSON w celu ponownego odpalenia aplikacji z zapisaną wartością głośności
+                var output = JsonConvert.SerializeObject(TracksProperties.Volume, Formatting.Indented);
+                File.WriteAllText(JsonPath, output);
+            }
         }
     }
 
