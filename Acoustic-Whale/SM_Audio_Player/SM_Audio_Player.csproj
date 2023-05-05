@@ -9,7 +9,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <None Remove="assets\AcousticWhale.png"/>
+        <None Remove="assets\AcousticWhale.png" />
     </ItemGroup>
 
     <ItemGroup>
@@ -22,18 +22,18 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Content Include="assets\Acoustic-whale.ico"/>
+        <Content Include="assets\Acoustic-whale.ico" />
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="NAudio" Version="2.1.0"/>
-        <PackageReference Include="Newtonsoft.Json" Version="13.0.3"/>
-        <PackageReference Include="SoundTouch.Net" Version="2.3.2"/>
-        <PackageReference Include="TagLibSharp" Version="2.3.0"/>
+        <PackageReference Include="NAudio" Version="2.1.0" />
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+        <PackageReference Include="SoundTouch.Net" Version="2.3.2" />
+        <PackageReference Include="TagLibSharp" Version="2.3.0" />
     </ItemGroup>
 
     <ItemGroup>
-        <Resource Include="assets\default.png"/>
+        <Resource Include="assets\default.png" />
     </ItemGroup>
 
 </Project>

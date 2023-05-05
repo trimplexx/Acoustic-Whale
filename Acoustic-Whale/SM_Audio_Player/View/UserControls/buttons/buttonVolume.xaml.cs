@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.IO;
 using System.Windows;
+using System.Windows.Input;
 using Newtonsoft.Json;
 using SM_Audio_Player.Music;
 
@@ -156,12 +157,11 @@ public partial class ButtonVolume : INotifyPropertyChanged
                 var currentVolume = TracksProperties.Volume;
                 var newVolume = Math.Max(0, currentVolume + 5); // Zmniejsz głośność o 5%, ale nie mniej niż 0
                 TracksProperties.Volume = newVolume;
-                sldVolume.Value = newVolume; // Ustaw wartość slidera na nową wartość głośności
+                SldVolume.Value = newVolume; // Ustaw wartość slidera na nową wartość głośności
 
                 var sliderValue = newVolume / 100.0; // Skalowanie wartości na zakres od 0 do 1
 
-                if (TracksProperties.AudioFileReader != null)
-                    TracksProperties.AudioFileReader.Volume = (float)sliderValue; // Aktualizujemy głośność pliku audio
+                TracksProperties.AudioFileReader.Volume = (float)sliderValue; // Aktualizujemy głośność pliku audio
 
                 if (TracksProperties.SecAudioFileReader != null)
                     TracksProperties.SecAudioFileReader.Volume = (float)sliderValue;
@@ -182,12 +182,11 @@ public partial class ButtonVolume : INotifyPropertyChanged
                 var currentVolume = TracksProperties.Volume;
                 var newVolume = Math.Max(0, currentVolume - 5); // Zmniejsz głośność o 5%, ale nie mniej niż 0
                 TracksProperties.Volume = newVolume;
-                sldVolume.Value = newVolume; // Ustaw wartość slidera na nową wartość głośności
+                SldVolume.Value = newVolume; // Ustaw wartość slidera na nową wartość głośności
 
                 var sliderValue = newVolume / 100.0; // Skalowanie wartości na zakres od 0 do 1
 
-                if (TracksProperties.AudioFileReader != null)
-                    TracksProperties.AudioFileReader.Volume = (float)sliderValue; // Aktualizujemy głośność pliku audio
+                TracksProperties.AudioFileReader.Volume = (float)sliderValue; // Aktualizujemy głośność pliku audio
 
                 if (TracksProperties.SecAudioFileReader != null)
                     TracksProperties.SecAudioFileReader.Volume = (float)sliderValue;
