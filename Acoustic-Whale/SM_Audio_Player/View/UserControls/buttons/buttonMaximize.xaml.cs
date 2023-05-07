@@ -50,7 +50,7 @@ public partial class ButtonMaximize : INotifyPropertyChanged
         try
         {
             // Znajdowanie elementu "world" na głównym oknie aplikacji
-            var world = (Grid)Application.Current.MainWindow.FindName("world");
+            var world = (Grid)Application.Current.MainWindow.FindName("World");
             if (Application.Current.MainWindow != null &&
                 Application.Current.MainWindow.WindowState == WindowState.Normal)
             {
