@@ -19,7 +19,14 @@
     </WindowChrome.WindowChrome>
 
     <!-- Główne okno -->
-    <Grid x:Name="World" PreviewMouseDown="FlagReset" Background="#333333">
+    <Grid x:Name="World" PreviewMouseDown="FlagReset">
+        <Grid.Background>
+            <VisualBrush Stretch="UniformToFill">
+                <VisualBrush.Visual>
+                    <assets:BACKGROUND/>
+                </VisualBrush.Visual>
+            </VisualBrush>
+        </Grid.Background>
         <Grid.RowDefinitions>
             <RowDefinition Height="30" />
             <RowDefinition Height="30*" />

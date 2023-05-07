@@ -78,6 +78,7 @@ public partial class Library
     public static event ResetEverythingEventHandler? ResetEverything;
 
     public static event OnDeleteTrackEventHandler? OnDeleteTrack;
+
     public static event RefreshSelectedItemEventHandler? ResetSelected;
     
     /// <summary>
@@ -348,6 +349,7 @@ public partial class Library
                 // Jeśli użytkownik potwierdzi, usuń wybrane utwory
                 if (result == DialogResult.Yes)
                 {
+                    ResetSelected?.Invoke(this, EventArgs.Empty);
                     var selectedIndices = new List<int>();
                     foreach (var item in Lv.SelectedItems) selectedIndices.Add(Lv.Items.IndexOf(item));
 
@@ -382,19 +384,16 @@ public partial class Library
                     // Zaznaczenie utworu na indeksie kolejnego elementu poniżej ostatnio zaznaczonego elementu
                     if (Lv.Items.Count > 0)
                     {
-                        var selectedIndex = Math.Max(selectedIndices.Min() - 1, 0);
-                        Lv.SelectedIndex = selectedIndex;
+                        foreach(Tracks x in TracksProperties.TracksList)
+                        {
+                            if(x.Path == TracksProperties.AudioFileReader?.FileName)
+                            {
+                                Lv.SelectedIndex = x.Id -1; break;
+                            }
+                        }
                     }
-
                     OnDeleteTrack?.Invoke(this, EventArgs.Empty);
                 }
-            }
-
-            // Zaktualizowanie wybranego utworu, jeśli jakiś utwór jest wciąż zaznaczony po operacji usuwania
-            if (Lv.SelectedIndex != -1)
-            {
-                var elementId = Lv.SelectedIndex;
-                TracksProperties.SelectedTrack = TracksProperties.TracksList?.ElementAt(elementId);
             }
         }
         catch (Exception ex)
@@ -411,7 +410,7 @@ public partial class Library
         try
         {
             // Jeśli jakiś utwór jest zaznaczony, zaktualizuj wybrany utwór w TracksProperties
-            if (Lv.SelectedIndex != -1)
+            if (Lv.SelectedIndex != -1 && TracksProperties.WaveOut == null && TracksProperties.SecWaveOut == null)
             {
                 var elementId = Lv.SelectedIndex;
                 TracksProperties.SelectedTrack = TracksProperties.TracksList?.ElementAt(elementId);

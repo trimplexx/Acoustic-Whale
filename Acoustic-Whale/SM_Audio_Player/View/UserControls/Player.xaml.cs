@@ -185,6 +185,8 @@ public partial class Player : INotifyPropertyChanged
             throw;
         }
     }
+
+
     
     /// <summary>
     /// Metoda pobierająca czas z pierwszej (bazowej) ścieżki dźwiękowej w celu aktualizowania pozycji slidera
