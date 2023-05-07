@@ -28,7 +28,7 @@
     <li><a href="https://github.com/BubbleWaffle">BubbleWaffle</a></li>
     <li><a href="https://github.com/Maffias">Maffias</a></li>
     <li><a href="https://github.com/cptn3m012">cptn3m012</a></li>
-<ul>
+</ul>
  
 <h2>Used Technologies and Libraries</h2>
 <ul>
