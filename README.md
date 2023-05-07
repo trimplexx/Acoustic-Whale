@@ -29,3 +29,12 @@
     <li><a href="https://github.com/Maffias">Maffias</a></li>
     <li><a href="https://github.com/cptn3m012">cptn3m012</a></li>
   <ul>
+
+  <h2>Used Technologies and Libraries</h2>
+<ul>
+  <li><a href="https://learn.microsoft.com/pl-pl/dotnet/desktop/wpf/?view=netdesktop-7.0">Windows Presentation Foundation (WPF) </a></li>
+  <li>Audio Libraries: <a href="https://github.com/naudio/NAudio">NAudio</a>, <a href="https://github.com/owoudenberg/soundtouch.net">SoundTouch</a></li>
+  <li><a href="https://github.com/mono/taglib-sharp">TagLibSharp</a></li>
+  <li> <a href="https://github.com/JamesNK/Newtonsoft.Json">Newtonsoft.Json</a></li>
+</ul>
+
