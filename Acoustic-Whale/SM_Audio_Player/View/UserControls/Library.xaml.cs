@@ -21,30 +21,28 @@ using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
 
 namespace SM_Audio_Player.View.UserControls;
 
+/// <summary>
+/// Klasa reprezentująca bilioteke utworów aplikacji oraz akcje z nią związane.
+/// Takie jak dodawanie, usuwanie czy sortowanie utworów.
+/// </summary>
 public partial class Library
 {
-    /*
-    * Zdarzenie odnoszące się do double clicka w wybrany utwór, dzięki któremu w innych miejscach kodu wyniknie reakcja.
-    * Utworzone zostało aby aktualizować poszczególne dane innych klas. 
-    */
+    /// <summary>
+    /// Zdarzenie odnoszące się do double clicka w wybrany utwór, dzięki któremu w innych miejscach kodu wyniknie reakcja.
+    /// Utworzone zostało aby aktualizować poszczególne dane innych klas. 
+    /// </summary>
     public delegate void LibraryEventHandler(object sender, EventArgs e);
-
     public delegate void OnDeleteTrackEventHandler(object sender, EventArgs e);
-
-
-    /*
-    * Akcja odpowiadająca za resetowanie danych w momencie, gdy odświeżona lista będzie zawierać mniej elementów
-    * niż ta wartość, która została zapisana przed jej odświeżeniem (Przykładowo, gdy ktoś zmieni ścieżkę do pliku
-    * w trakcie używania aplikacji mogła by ona wyrzucić wyjątek)
-    */
+    
+    /// <summary>
+    /// Akcja odpowiadająca za resetowanie danych w momencie, gdy odświeżona lista będzie zawierać mniej elementów
+    /// niż ta wartość, która została zapisana przed jej odświeżeniem (Przykładowo, gdy ktoś zmieni ścieżkę do plik
+    /// w trakcie używania aplikacji mogła by ona wyrzucić wyjątek)
+    /// </summary>
     public delegate void ResetEverythingEventHandler(object sender, EventArgs e);
-
     public delegate void RefreshSelectedItemEventHandler(object sender, EventArgs e);
-
-
     public const string JsonPath = @"MusicTrackList.json";
     private string? _prevColumnSorted;
-
     private int _sortingtype;
     private readonly List<object> _originalHeaders;
 
@@ -81,11 +79,11 @@ public partial class Library
 
     public static event OnDeleteTrackEventHandler? OnDeleteTrack;
     public static event RefreshSelectedItemEventHandler? ResetSelected;
-
-    /*
-     * Istotne odświeżanie listy gdyby scieżka do pliku się zmieniła w trakcie odtwarzania, track z złą ściażka z pliku
-     * JSON jest wyrzucany przed otworzeniem.
-     */
+    
+    /// <summary>
+    /// Istotne odświeżanie listy gdyby scieżka do pliku się zmieniła w trakcie odtwarzania, track z złą ściażka z pliku
+    /// JSON jest wyrzucany przed otworzeniem.
+    /// </summary>
     private void RefreshTrackList(object sender, EventArgs e)
     {
         try
@@ -100,8 +98,10 @@ public partial class Library
             throw;
         }
     }
-
-    // Metoda służąca odświeżaniu listView z pliku JSON, do ktorego zapisana zostaje lista piosenek
+    
+    /// <summary>
+    /// Metoda służąca odświeżaniu listView z pliku JSON, do ktorego zapisana zostaje lista piosenek
+    /// </summary>
     private void RefreshTrackListViewAndId()
     {
         try
@@ -137,8 +137,10 @@ public partial class Library
             throw;
         }
     }
-
-    // Metoda sortująca trackList.
+    
+    /// <summary>
+    /// Metoda odpowiadająca za sortowanie listy z utworami.
+    /// </summary>
     public void SortTracksList(bool ascending, string property)
     {
         try
@@ -160,9 +162,11 @@ public partial class Library
             throw;
         }
     }
-
-
-    // Metoda odpowiadająca za kliknięcie nagłówka, po którym następuje sortowanie elementów w liście oraz na listview
+    
+    /// <summary>
+    /// Metoda odpowiadająca za kliknięcie nagłówka, po którym następuje sortowanie elementów
+    /// w liście oraz na listview
+    /// </summary>
     private void GridViewColumnHeaderClickedHandler(object sender, RoutedEventArgs e)
     {
         var headerClicked = e.OriginalSource as DataGridColumnHeader;
@@ -222,8 +226,11 @@ public partial class Library
                         Lv.SelectedIndex = track.Id - 1;
         }
     }
-
-    // Metoda odpowiadająca za dodawanie utworów do biblioteki utworów w programie wraz ze wszystkimi metadanymi
+    
+    /// <summary>
+    /// Obsługa zdarzenia kliknięcia na przycisk dodawania utworu.
+    /// Dodaje utwór bądź utwory do bilbioteki utworów wraz ze wszystkimi metadanymi.
+    /// </summary>
     private void Add_Btn_Click(object sender, EventArgs e)
     {
         try
@@ -323,8 +330,11 @@ public partial class Library
             throw;
         }
     }
-
-    // Metoda odpowiadająca za usuwanie piosenek z biblioteki utworów
+    
+    /// <summary>
+    /// Obsługa zdarzenia kliknięcia na przycisk usuwania utworu.
+    /// Usuwa utwór bądź utwory z bilbioteki utworów.
+    /// </summary>
     private void Delete_Btn_Click(object sender, RoutedEventArgs e)
     {
         try
@@ -416,8 +426,10 @@ public partial class Library
             throw;
         }
     }
-
-    // Metoda wywoływana po zmianie aktualnie odtwarzanego utworu
+    
+    /// <summary>
+    /// Metoda wywoływana po zmianie aktualnie odtwarzanego utworu
+    /// </summary>
     private void OnTrackSwitch(object sender, EventArgs e)
     {
         try
@@ -434,6 +446,12 @@ public partial class Library
         }
     }
 
+    /// <summary>
+    /// Metoda obsługująca zdarzenie podwójnego kliknięcia na wiersz utworu w liście utworów. Aktualizuje listę utworów,
+    /// porównuje wartość przed i po odświeżeniu listy w celu sprawdzenia, czy ścieżka do któregoś z utworów nie uległa zmianie.
+    /// Jeśli tak, czyści wszelkie dane związane z utworem i wyświetla komunikat o błędzie. W przeciwnym razie odświeża widok
+    /// listy utworów i odtwarza nowo wybrany utwór.
+    /// </summary>
     private void OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
     {
         try
@@ -504,6 +522,11 @@ public partial class Library
         }
     }
 
+    /// <summary>
+    /// Metoda obsługująca zdarzenie naciśnięcia klawisza na klawiaturze. Jeśli naciśnięto klawisz Delete, wywołuje metodę
+    /// Delete_Btn_Click w celu usunięcia zaznaczonych utworów z listy. Jeśli klawisz CTRL + A został naciśnięty, zaznacza
+    /// wszystkie utwory na liście.
+    /// </summary>
     private new void KeyDownEvent(object sender, KeyEventArgs e)
     {
         if (e.Key == Key.Delete) Delete_Btn_Click(sender, e);

@@ -8,24 +8,23 @@ namespace SM_Audio_Player.View.UserControls.buttons;
 
 public partial class ButtonPrevious
 {
-    /*
-    * Zdarzenie odnoszące się do kliknięcia w ButtonPrevious, dzięki któremu w innych miejscach kodu wyniknie reakcja.
-    * Utworzone zostało aby aktualizować poszczególne dane innych klas. 
-    */
+    /// <summary>
+    /// Delegat odnoszący się do kliknięcia w ButtonPrevious, dzięki któremu w innych miejscach kodu wyniknie reakcja.
+    /// Utworzone zostało aby aktualizować poszczególne dane innych klas. 
+    /// </summary>
     public delegate void PreviousButtonClickedEventHandler(object sender, EventArgs e);
-
-    /*
-     * Eventy służące odświeżaniu listy, aby wyrzucić piosenkę przed jej odtworzeniem, gdy jego ścieżka uległaby zmianie
-     * w trakcie odtwarzania. 
-     */
+    
+    /// <summary>
+    /// Eventy służące odświeżaniu listy, aby wyrzucić piosenkę przed jej odtworzeniem, gdy jego ścieżka uległaby zmianie
+    /// w trakcie odtwarzania. 
+    /// </summary>
     public delegate void RefreshListEventHandler(object sender, EventArgs e);
-
-
-    /*
-     * Akcja odpowiadająca za resetowanie danych w momencie, gdy odświeżona lista będzie zawierać mniej elementów
-     * niż ta wartość, która została zapisana przed jej odświeżeniem (Przykładowo, gdy ktoś zmieni ścieżkę do pliku
-     * w trakcie używania aplikacji mogła by ona wyrzucić wyjątek)
-     */
+    
+    /// <summary>
+    /// Delegat odpowiadający za resetowanie danych w momencie, gdy odświeżona lista będzie zawierać mniej elementów
+    /// niż ta wartość, która została zapisana przed jej odświeżeniem (Przykładowo, gdy ktoś zmieni ścieżkę do pliku
+    /// w trakcie używania aplikacji mogła by ona wyrzucić wyjątek)
+    /// </summary>
     public delegate void ResetEverythingEventHandler(object sender, EventArgs e);
 
     private readonly ButtonPlay _btnPlay = new();
@@ -43,6 +42,9 @@ public partial class ButtonPrevious
     public static event ResetEverythingEventHandler? ResetEverything;
 
     /*Włącz pooprzedni utwór*/
+    /// <summary>
+    /// Metoda wywołwana po kliknięciu w przycisk ButtonPrevious, odpowiada za przejście do poprzedniego utworu.
+    /// </summary>
     private void btnPrevious_Click(object sender, EventArgs e)
     {
         try

@@ -5,6 +5,9 @@ using SM_Audio_Player.Music;
 
 namespace SM_Audio_Player;
 
+///<summary>
+/// Klasa reprezentująca główne okno.
+/// </summary>
 public partial class MainWindow
 {
     public delegate void PlayMusicBySpaceEvent(object sender, EventArgs e);
@@ -39,7 +42,13 @@ public partial class MainWindow
         Focus();
     }
 
-    /*Reakcja okna na użycie LMB na pasek menu*/
+    /// <summary>
+    /// Metoda Window_MouseDown obsługuje zdarzenie kliknięcia na pasek menu okna MainWindow.
+    /// Metoda umożliwia poruszanie oknem za pomocą przeciągania myszą oraz przywrócenie okna z trybu
+    /// pełnoekranowego do normalnego rozmiaru. Metoda pobiera pozycję kursora oraz ustawia nową pozycję okna,
+    /// uwzględniając jego rozmiar i granice ekranu. Metoda obsługuje również wyjątki, wyświetlając
+    /// komunikat z błędem i rzucając wyjątek dalej.
+    /// </summary>
     private void Window_MouseDown(object sender, MouseEventArgs e)
     {
         try
@@ -87,18 +96,35 @@ public partial class MainWindow
         }
     }
 
+    /// <summary>
+    /// Metoda Equalizer_Btn_Click obsługuje zdarzenie kliknięcia na przycisk "Equalizer_Btn" w oknie MainWindow.
+    /// Metoda ukrywa panel biblioteki piosenek (właściwość Visibility ustawiana na Hidden) oraz wyświetla
+    /// panel equalizera (właściwość Visibility ustawiana na Visible).
+    /// </summary>
     private void Equalizer_Btn_Click(object sender, RoutedEventArgs e)
     {
         Lib.Visibility = Visibility.Hidden;
         Eq.Visibility = Visibility.Visible;
     }
 
+    /// <summary>
+    /// Metoda Playlist_Btn_Click obsługuje zdarzenie kliknięcia na przycisk "Playlist_Btn" w oknie MainWindow.
+    /// Metoda ukrywa panel equalizera (właściwość Visibility ustawiana na Hidden) oraz wyświetla panel
+    /// biblioteki piosenek (właściwość Visibility ustawiana na Visible).
+    /// </summary>
     private void Playlist_Btn_Click(object sender, RoutedEventArgs e)
     {
         Eq.Visibility = Visibility.Hidden;
         Lib.Visibility = Visibility.Visible;
     }
 
+    /// <summary>
+    /// Metoda obsługuje zdarzenie naciśnięcia klawisza na klawiaturze w oknie MainWindow.
+    /// Metoda wywołuje odpowiednie zdarzenia przy naciśnięciu kombinacji klawiszy Ctrl + Left/Right
+    /// lub Ctrl + Shift + Left. Dla kombinacji Ctrl + Left uruchamia zdarzenie PrevTrack,
+    /// dla kombinacji Ctrl + Right uruchamia zdarzenie NextTrack, a dla kombinacji Ctrl + Shift + Left
+    /// uruchamia zdarzenie RewindSong i ustawia głośność na 0 dla odtwarzanych plików audio.
+    /// </summary>
     private void KeyDown_event(object sender, KeyEventArgs e)
     {
         if (Keyboard.IsKeyDown(Key.LeftCtrl))
@@ -173,6 +199,14 @@ public partial class MainWindow
         }
     }
 
+    /// <summary>
+    /// Metoda obsługująca naciśnięcie klawisza na klawiaturze w oknie MainWindow.
+    /// Metoda reaguje na naciśnięcie kombinacji klawiszy Ctrl + Left/Right lub Ctrl + Shift + Left i wywołuje
+    /// odpowiednie zdarzenia. Dla kombinacji Ctrl + Left uruchamia zdarzenie PrevTrack, dla kombinacji Ctrl + Right
+    /// uruchamia zdarzenie NextTrack, a dla kombinacji Ctrl + Shift + Left uruchamia zdarzenie RewindSong i ustawia
+    /// głośność na 0 dla odtwarzanych plików audio. Metoda korzysta z klasy Keyboard do sprawdzenia,
+    /// czy klawisz Ctrl jest wciśnięty, oraz z klasy KeyEventArgs do sprawdzenia, który klawisz został naciśnięty.
+    /// </summary>
     private void KeyUp_event(object sender, KeyEventArgs e)
     {
         if (Keyboard.IsKeyUp(Key.LeftCtrl))
@@ -217,11 +251,21 @@ public partial class MainWindow
         
     }
 
+    /// <summary>
+    /// Metoda obsługująca zdarzenie kliknięcia myszą na oknie MainWindow.
+    /// Metoda ustawia flagę TracksProperties.SpaceFlag na wartość true, co oznacza, że przycisk spacji
+    /// może zostać ponownie użyty do pauzowania/wznawiania odtwarzania piosenki. 
+    /// </summary>
     private void FlagReset(object sender, MouseButtonEventArgs e)
     {
         TracksProperties.SpaceFlag = true;
     }
 
+    /// <summary>
+    /// Metoda Help_Btn_Click obsługuje zdarzenie kliknięcia na przycisk "Help_Btn" w oknie MainWindow.
+    /// Metoda zmienia widoczność panelu pomocy Help, jeśli jest on widoczny, to ustawia jego widoczność na Hidden,
+    /// a jeśli jest ukryty, to ustawia jego widoczność na Visible.
+    /// </summary>
     private void Help_Btn_Click(object sender, RoutedEventArgs e)
     {
         if(Help.Visibility == Visibility.Visible)
@@ -234,6 +278,13 @@ public partial class MainWindow
         }
     }
 
+    /// <summary>
+    /// Metoda EscFromHelp obsługuje zdarzenie naciśnięcia klawisza na klawiaturze w oknie MainWindow,
+    /// gdy panel pomocy Help jest widoczny. Metoda sprawdza, czy naciśnięty klawisz to klawisz Escape,
+    /// jeśli tak, to ustawia widoczność panelu pomocy na Hidden.Metoda korzysta z klasy KeyEventArgs do sprawdzenia,
+    /// który klawisz został naciśnięty, oraz z właściwości Visibility klasy FrameworkElement, aby
+    /// zmienić widoczność panelu pomocy.
+    /// </summary>
     private void EscFromHelp(object sender, KeyEventArgs e)
     {
         if (e.Key == Key.Escape)

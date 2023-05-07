@@ -8,6 +8,9 @@ using SM_Audio_Player.Music;
 
 namespace SM_Audio_Player.View.UserControls.buttons;
 
+/// <summary>
+/// Klasa reprezentująca przycisk służący do modulacji głośnocią.
+/// </summary>
 public partial class ButtonVolume : INotifyPropertyChanged
 {
     public const string JsonPath = @"MusicVolumeJSON.json";
@@ -15,19 +18,24 @@ public partial class ButtonVolume : INotifyPropertyChanged
     private double _savedVolumeValue;
     private string? _volumeIcon;
 
+    /// <summary>
+    /// Konstruktor klasy ButtonVolume, inicjalizujący elementy interfejsu i przypisujący metody obsługi zdarzeń.
+    /// </summary>
     public ButtonVolume()
     {
         try
         {
             DataContext = this;
             InitializeComponent();
+            // Odczyt wartości głośności z pliku JSON, lub ustawienie domyślnej wartości 50, jeśli plik nie istnieje.
             if (File.Exists(JsonPath))
                 TracksProperties.Volume = ReadVolumeFromJsonFile();
             else
                 TracksProperties.Volume = 50;
 
-            SldVolume.Value = TracksProperties.Volume;
-            VolumeIcon = ValueIconChange(SldVolume.Value);
+            SldVolume.Value = TracksProperties.Volume;  // Ustawienie wartości slidera na wczytaną wartość głośności
+            VolumeIcon = ValueIconChange(SldVolume.Value); // Ustawienie ikony głośnika na odpowiednią
+            // Przypisanie metod obsługi zdarzeń 
             ButtonNext.NextButtonClicked += OnTrackSwitch;
             ButtonPrevious.PreviousButtonClicked += OnTrackSwitch;
             ButtonPlay.TrackEnd += OnTrackSwitch;
@@ -45,6 +53,9 @@ public partial class ButtonVolume : INotifyPropertyChanged
         }
     }
 
+    /// <summary>
+    /// Właściwość reprezentująca ikonę głośnika.
+    /// </summary>
     public string? VolumeIcon
     {
         get => _volumeIcon;
@@ -56,8 +67,10 @@ public partial class ButtonVolume : INotifyPropertyChanged
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;
-
-    /*Metoda sprawdzająca aktualną wartość slidera i na jej podstawie ustawiająca ikonkę*/
+    
+    /// <summary>
+    /// Metoda sprawdzająca aktualną wartość slidera i na jej podstawie ustawiająca ikonkę.
+    /// </summary>
     private string? ValueIconChange(double volumeValue)
     {
         try
@@ -94,18 +107,25 @@ public partial class ButtonVolume : INotifyPropertyChanged
             throw;
         }
     }
-
-    /*Wycisz/Zmień poziom głośności*/
+    
+    /// <summary>
+    /// Obsługa zdarzenia kliknięcia na przycisk głośności.
+    /// Wycisza oraz odcisza utwór do poprzedniej głośności.
+    /// </summary>
     private void btnVolume_Click(object sender, EventArgs e)
     {
         try
         {
+            // Jeśli dźwięk jest wyciszony i wartość głośności została zapisana wcześniej,
+            // to przywróć poprzednią wartość głośności, zmień ikonę głośnika i ustaw zmienną _isMuted na false.
             if (_isMuted && _savedVolumeValue != 0)
             {
                 SldVolume.Value = _savedVolumeValue;
                 ValueIconChange(TracksProperties.Volume);
                 _isMuted = false;
             }
+            // W przeciwnym przypadku zapisz obecną wartość głośności, ustaw wartość głośności na zero,
+            // zmień ikonę głośnika na wyciszone i ustaw zmienną _isMuted na true.
             else
             {
                 _savedVolumeValue = SldVolume.Value;
@@ -120,7 +140,10 @@ public partial class ButtonVolume : INotifyPropertyChanged
             throw;
         }
     }
-
+    
+    /// <summary>
+    /// Metoda obsługująca zmianę wartości slidera głośności.
+    /// </summary>  
     private void sliderVolume_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
     {
         try
@@ -148,6 +171,10 @@ public partial class ButtonVolume : INotifyPropertyChanged
             throw;
         }
     }
+    
+    /// <summary>
+    /// Metoda obsługująca zwiększenie głośności o 5% po wciśnięciu klawisza F3.
+    /// </summary>
     private void VolumeUp(object sender, EventArgs e)
     {
         if (Keyboard.IsKeyDown(Key.F3))
@@ -173,6 +200,9 @@ public partial class ButtonVolume : INotifyPropertyChanged
         }
     }
     
+    /// <summary>
+    /// Metoda obsługująca zmniejszanie głośności o 5% po wciśnięciu klawisza F2.
+    /// </summary>
     private void VolumeDown(object sender, EventArgs e)
     {
         if (Keyboard.IsKeyDown(Key.F2))
@@ -198,6 +228,9 @@ public partial class ButtonVolume : INotifyPropertyChanged
         }
     }
 
+    /// <summary>
+    /// Metoda służąca do odczytywania wartości głośności z pliku JSON.
+    /// </summary>
     public double ReadVolumeFromJsonFile()
     {
         try
@@ -215,8 +248,11 @@ public partial class ButtonVolume : INotifyPropertyChanged
             return 0;
         }
     }
-
-    // Aktualizacja głośności po zmienionym tracku
+    
+    /// <summary>
+    /// Metoda obsługująca zmianę utworu na liście odtwarzania, aktualizująca wartość głośności
+    /// i ustawiająca odpowiednią ikonę.
+    /// </summary>
     private void OnTrackSwitch(object sender, EventArgs e)
     {
         try

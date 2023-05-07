@@ -11,18 +11,21 @@ using SM_Audio_Player.View.UserControls.buttons;
 
 namespace SM_Audio_Player.View.UserControls;
 
+/// <summary>
+/// Klasa reprezentująca Equalizer programu.
+/// </summary>
 public partial class Equalizer
 {
     public delegate void FadeInEventHandler(object sender, EventArgs e);
 
     public delegate void FadeOffOnEventHandler(object sender, EventArgs e);
-
-    /*
-     * Podstawowe efekty ISampleProvider, które kolejno będą się na siebie nakładać, aby uzyskać możliwy efekt equalizera
-     * oraz Fade in/out w tym samym czasie. Dodatkowo aplikacja zakłada rozbudowanie o kolejny możliwy efekt dźwiękowy
-     * dostępny w tym samym czasie na utworze, dlatego dwa bazowe efekty będą dodatkowo rozbudowane o kolejny z nich
-     * w dalszej części kodu.
-     */
+    
+    /// <summary>
+    /// Podstawowe efekty ISampleProvider, które kolejno będą się na siebie nakładać, aby uzyskać możliwy efekt equalizera
+    /// oraz Fade in/out w tym samym czasie. Dodatkowo aplikacja zakłada rozbudowanie o kolejny możliwy efekt dźwiękowy
+    /// dostępny w tym samym czasie na utworze, dlatego dwa bazowe efekty będą dodatkowo rozbudowane o kolejny z nich
+    /// w dalszej części kodu.
+    /// </summary>
     private EqualizerSampleProvider? _firstWaveEqualizer;
     private FadeInOutSampleProvider? _firstWaveFade;
     private EqualizerSampleProvider? _secWaveEqualizer;
@@ -31,7 +34,9 @@ public partial class Equalizer
     private StereoToMonoSampleProvider? _secStereoToMono;
     private bool _equalizerOn = true;
 
-    // Effects
+    /// <summary>
+    /// Efekty equalizera.
+    /// </summary>
     private DelayEffect? _firstDelayEffect;
     private DelayEffect? _secDelayEffect;
     private ChorusEffect? _firstChorusEffect;
@@ -40,8 +45,7 @@ public partial class Equalizer
     private DistortionEffect? _secDistortionEffect;
     private VarispeedSampleProvider? _firstNightcoreEffect;
     private VarispeedSampleProvider? _secNightcoreEffect;
-
-
+    
     public Equalizer()
     {
         InitializeComponent();
@@ -63,11 +67,11 @@ public partial class Equalizer
     public static event FadeOffOnEventHandler? FadeOffOn;
 
     #region ChangingTracksEvents
-
-    /*
-     * Event odpowiadający za wybranie danej piosenki, która wiemy że będzie aktualie wymagana do odtworzenia, a nie będzie
-     * możliwe, że użytkownik będzie chciał żeby była zatrzymana.
-     */
+    
+    /// <summary>
+    /// Event odpowiadający za wybranie danej piosenki, która wiemy że będzie aktualie wymagana do odtworzenia, a nie będzie
+    /// możliwe, że użytkownik będzie chciał żeby była zatrzymana.
+    /// </summary>
     private void ButtonDoubleClickEvent(object sender, EventArgs e)
     {
         try
@@ -111,11 +115,11 @@ public partial class Equalizer
             throw;
         }
     }
-
-    /*
-     * Event odpowiadający za zagranie następnego tracka, który został odtworzony samoczynnie, bądź przez przycisk
-     * 'Next', aby sprawdzać czy dana piosenka nie powinna sie przypadkiem zatrzymać. 
-     */
+    
+    /// <summary>
+    /// Event odpowiadający za zagranie następnego tracka, który został odtworzony samoczynnie, bądź przez przycisk
+    /// 'Next', aby sprawdzać czy dana piosenka nie powinna sie przypadkiem zatrzymać. 
+    /// </summary>
     private void NextPrevEvent(object sender, EventArgs e)
     {
         try
@@ -185,10 +189,10 @@ public partial class Equalizer
     #endregion
 
     #region EqualizerLogic
-
-    /*
-     * Metoda odpowiada za aktualizacje wartości equalizerów służąca do wywołania w innych miejscach kodu.
-     */
+    
+    /// <summary>
+    /// Metoda odpowiada za aktualizacje wartości equalizerów służąca do wywołania w innych miejscach kodu.
+    /// </summary>
     private void ChangeEqualizerValues()
     {
         try
@@ -214,10 +218,11 @@ public partial class Equalizer
             throw;
         }
     }
-
-    /*
-     * Przycisk resetujący wartości sliderów oraz wartości equalizera.
-     */
+    
+    /// <summary>
+    /// Obsługa zdarzenia kliknięcia na przycisk resetu przy equlizaerze.
+    /// Resetujące wartości sliderów oraz wartości equalizera.
+    /// </summary>
     private void Reset_Btn_Click(object sender, RoutedEventArgs e)
     {
         Sld1.Value = 0;
@@ -230,10 +235,10 @@ public partial class Equalizer
         Sld8.Value = 0;
         ChangeEqualizerValues();
     }
-
-    /*
-     * Event odpowiadający za dynamiczne przypisywanie wartości do pól nad sliderami.
-     */
+    
+    /// <summary>
+    /// Event odpowiadający za dynamiczne przypisywanie wartości do pól nad sliderami.
+    /// </summary>
     private void DynamicEqualizerValueChaning(object sender, RoutedPropertyChangedEventArgs<double> e)
     {
         try
@@ -253,18 +258,18 @@ public partial class Equalizer
             throw;
         }
     }
-
-    /*
- * Zmiana wartości equalizera w momencie puszczenia klawiszu myszki na sliderze.
- */
+    
+    /// <summary>
+    /// Zmiana wartości equalizera w momencie puszczenia klawiszu myszki na sliderze.
+    /// </summary>
     private void OnSliderValueChange(object sender, MouseButtonEventArgs mouseButtonEventArgs)
     {
         ChangeEqualizerValues();
     }
-
-    /*
-     * Włączenie bądź wyłączenie equalizera za pomocą check boxa.
-     */
+    
+    /// <summary>
+    /// Włączenie bądź wyłączenie equalizera za pomocą check boxa.
+    /// </summary>
     private void OnOffEqualizer(object sender, RoutedEventArgs e)
     {
         if (_equalizerOn)
@@ -284,11 +289,11 @@ public partial class Equalizer
     #endregion
 
     #region FadeInOutLogic
-
-    /*
-     * Uniwersalna metoda użyta następnie w evencie zmiany muzyki pozwalająca na inicjalizacje drugiej ścieżki dźwiękowej
-     * do równoczesnego odtworzenia aby uzyskać efekt Fade in/out
-     */
+    
+    /// <summary>
+    /// Uniwersalna metoda użyta następnie w evencie zmiany muzyki pozwalająca na inicjalizacje drugiej ścieżki dźwiękowej
+    /// do równoczesnego odtworzenia aby uzyskać efekt Fade in/out
+    /// </summary>
     private void InitializeSecWave()
     {
         try
@@ -372,11 +377,11 @@ public partial class Equalizer
             throw;
         }
     }
-
-    /*
-    * Uniwersalna metoda użyta następnie w evencie zmiany muzyki pozwalająca na inicjalizacje następnej ścieżki dźwiękowej
-    * do równoczesnego odtworzenia aby uzyskać efekt Fade in/out
-    */
+    
+    /// <summary>
+    /// Uniwersalna metoda użyta następnie w evencie zmiany muzyki pozwalająca na inicjalizacje następnej ścieżki dźwiękowe
+    /// do równoczesnego odtworzenia aby uzyskać efekt Fade in/out.
+    /// </summary>
     private void InitializeFirstWave()
     {
         try
@@ -458,12 +463,12 @@ public partial class Equalizer
             throw;
         }
     }
-
-    /*
-     * Metoda wywoływana z klasy Player, która odpowiada za płynną zamiane pierwszej ścieżki dźwiękowej na drugą, uzyskując
-     * w ten sposób efekt Fade in/out przy pomocy użycia FadeInOutSampleProvider. Event obejmuje wszelkie możliwe opcje
-     * zmiany piosenki na następną włącznie z nałożonymi funkcjonalnościami schuffle bądź loop.
-     */
+    
+    /// <summary>
+    /// Metoda wywoływana z klasy Player, która odpowiada za płynną zamiane pierwszej ścieżki dźwiękowej na drugą, uzyskując
+    /// w ten sposób efekt Fade in/out przy pomocy użycia FadeInOutSampleProvider. Event obejmuje wszelkie możliwe opcje
+    /// zmiany piosenki na następną włącznie z nałożonymi funkcjonalnościami schuffle bądź loop.
+    /// </summary>
     private void FirstToSecChange(object sender, EventArgs e)
     {
         try
@@ -596,13 +601,13 @@ public partial class Equalizer
             throw;
         }
     }
-
-
-    /*
-     * Podobnie jak w powyższym przypadku metoda wywoływana z klasy Player, odpowiada za płynną zamiane drugiej ścieżki
-     * dźwiękowej na pierwszą, uzyskując w ten sposób efekt Fade in/out przy pomocy użycia FadeInOutSampleProvider.
-     * Event obejmuje wszelkie możliwe opcje zmiany piosenki na następną włącznie z nałożonymi funkcjonalnościami schuffle bądź loop.
-     */
+    
+    /// <summary>
+    /// Podobnie jak w powyższym przypadku metoda wywoływana z klasy Player, odpowiada za płynną zamiane drugiej ścieżki
+    /// dźwiękowej na pierwszą, uzyskując w ten sposób efekt Fade in/out przy pomocy użycia FadeInOutSampleProvider.
+    /// Event obejmuje wszelkie możliwe opcje zmiany piosenki na następną włącznie z nałożonymi funkcjonalnościami
+    /// schuffle bądź loop.
+    /// </summary>
     private void SecToFirstChange(object sender, EventArgs e)
     {
         try
@@ -735,10 +740,11 @@ public partial class Equalizer
             throw;
         }
     }
-
-    /*
-     * Event odpowiadający za włączenie i wyłączanie funkcji fade in/out.
-     */
+    
+    /// <summary>
+    /// Obsługa zdarzenia kliknięcia na checkbox  Fade In/Out.
+    /// Event odpowiadający za włączenie i wyłączanie tej funkcji.
+    /// </summary>
     private void Fade_CheckBoxClick(object sender, RoutedEventArgs e)
     {
         try
@@ -829,10 +835,11 @@ public partial class Equalizer
     #endregion
 
     #region OtherEffects
-
-    /*
-    * Sprawdzanie czy efekt nightcore nie został nałożony, aby aktualizować następną piosenkę o dodatkowy efekt.
-    */
+    
+    /// <summary>
+    /// Metoda odpowiadająca za sprawdzanie czy efekt nightcore nie został nałożony,
+    /// aby aktualizować następną piosenkę o dodatkowy efekt.
+    /// </summary>
     private void InitNightcoreEffect()
     {
         if (NightcoreBox.IsChecked == true)
@@ -845,10 +852,11 @@ public partial class Equalizer
                 TracksProperties.WaveOut?.Init(_firstNightcoreEffect);
             }
     }
-
-    /*
-    * Sprawdzanie czy efekt Delay nie został nałożony, aby aktualizować następną piosenkę o dodatkowy efekt.
-    */
+    
+    /// <summary>
+    /// Metoda odpowiadająca za sprawdzanie czy efekt Delay nie został nałożony,
+    /// aby aktualizować następną piosenkę o dodatkowy efekt.
+    /// </summary>
     private void InitDelayEffect()
     {
         if (DelayBox.IsChecked == true)
@@ -859,10 +867,11 @@ public partial class Equalizer
                 TracksProperties.WaveOut?.Init(_firstDelayEffect);
             }
     }
-
-    /*
-    * Sprawdzanie czy efekt Chorus nie został nałożony, aby aktualizować następną piosenkę o dodatkowy efekt.
-    */
+    
+    /// <summary>
+    /// Metoda odpowiadająca za sprawdzanie czy efekt Chorus nie został nałożony,
+    /// aby aktualizować następną piosenkę o dodatkowy efekt.
+    /// </summary>
     private void InitChorusEffect()
     {
         if (ChorusBox.IsChecked == true)
@@ -873,10 +882,11 @@ public partial class Equalizer
                 TracksProperties.WaveOut?.Init(_firstChorusEffect);
             }
     }
-
-    /*
-    * Sprawdzanie czy efekt Chorus nie został nałożony, aby aktualizować następną piosenkę o dodatkowy efekt.
-    */
+    
+    /// <summary>
+    /// Metoda odpowiadająca za sprawdzanie czy efekt Distortion nie został nałożony,
+    /// aby aktualizować następną piosenkę o dodatkowy efekt.
+    /// </summary>
     private void InitDistortionEffect()
     {
         if (DistortionBox.IsChecked == true)
@@ -888,10 +898,11 @@ public partial class Equalizer
                 TracksProperties.WaveOut?.Init(_firstDistortionEffect);
             }
     }
-
-    /*
-    * Sprawdzanie czy efekt Chorus nie został nałożony, aby aktualizować następną piosenkę o dodatkowy efekt.
-    */
+    
+    /// <summary>
+    /// Metoda odpowiadająca za sprawdzanie czy efekt InitStereoToMono nie został nałożony,
+    /// aby aktualizować następną piosenkę o dodatkowy efekt.
+    /// </summary>
     private void InitStereoToMonoEffect()
     {
         if (StereoToMonoBox.IsChecked == true)
@@ -903,10 +914,10 @@ public partial class Equalizer
                     TracksProperties.WaveOut?.Init(_firstStereoToMono);
                 }
     }
-
-    /*
-     * Metoda odpowiadająca za event załączenia efektu Delay, poprzez naciśnięcie checkBoxa.
-     */
+    
+    /// <summary>
+    /// Metoda odpowiadająca za event załączenia efektu Delay, poprzez naciśnięcie checkBoxa.
+    /// </summary>
     private void OnOffDelay(object sender, RoutedEventArgs e)
     {
         /*
@@ -978,10 +989,11 @@ public partial class Equalizer
             SliderFirstPanel.Visibility = Visibility.Hidden;
         }
     }
-
-    /*
-    * Metoda odpowiadająca za event załączenia efektu Chorus, poprzez naciśnięcie checkBoxa.
-    */
+    
+    /// <summary>
+    /// Obsługa zdarzenia kliknięcia na checkBox efektu Chorus
+    /// Odpowiadająca za event załączenia oraz wyłączenia efektu.
+    /// </summary>
     private void OnOffChorus(object sender, RoutedEventArgs e)
     {
         /*
@@ -1052,11 +1064,14 @@ public partial class Equalizer
             ImplementBaseWave();
         }
     }
-
-    // Włączenie bądź wyłączenie zniekształcenia za pomocą check boxa.
+    
+    /// <summary>
+    /// Obsługa zdarzenia kliknięcia na checkBox efektu Distortion
+    /// Odpowiadająca za event załączenia oraz wyłączenia efektu.
+    /// </summary>
     private void OnOffDistortion(object sender, RoutedEventArgs e)
     {
-/*
+        /*
          * Wyłączenie innych check boxów, ponieważ z założenia możemy nałożyć dodatkowo do opcji equalizera oraz
          * Fade in/out jeden z efektów na siebie.
          */
@@ -1128,10 +1143,11 @@ public partial class Equalizer
             ImplementBaseWave();
         }
     }
-
-    /*
-    * Metoda odpowiadająca za event załączenia efektu Nightcore, poprzez naciśnięcie checkBoxa.
-    */
+    
+    /// <summary>
+    /// Obsługa zdarzenia kliknięcia na checkBox efektu NightCore.
+    /// Odpowiadająca za event załączenia oraz wyłączenia efektu.
+    /// </summary>
     private void OnOffNightcore(object sender, RoutedEventArgs e)
     {
         /*
@@ -1206,6 +1222,10 @@ public partial class Equalizer
         }
     }
 
+    /// <summary>
+    /// Obsługa zdarzenia kliknięcia na checkBox opcji StereoToMono.
+    /// Odpowiadająca za event załączenia oraz wyłączenia tej opcji.
+    /// </summary>
     private void OnOffStereoToMono(object sender, RoutedEventArgs e)
     {
         var isPlaying = false;
@@ -1269,11 +1289,11 @@ public partial class Equalizer
 
         if (isPlaying) TracksProperties.WaveOut?.Play();
     }
-
-    /*
-     * Metoda odpowiadająca za powrócenie bazowej ścieżki odtwarzania się dźwięku, w momencie wyłączenia, któregość
-     * z checkBoxów. Metoda dodatkowo sprawdza czy muzyka była grana oraz jeżeli tak, to wznawia jej odtwarzanie.
-     */
+    
+    /// <summary>
+    /// Metoda odpowiadająca za powrócenie bazowej ścieżki odtwarzania się dźwięku, w momencie wyłączenia, któregość
+    /// z checkBoxów. Metoda dodatkowo sprawdza czy muzyka była grana oraz jeżeli tak, to wznawia jej odtwarzanie.
+    /// </summary>
     private void ImplementBaseWave()
     {
         if (TracksProperties.SecWaveOut?.PlaybackState == PlaybackState.Playing)
@@ -1306,6 +1326,9 @@ public partial class Equalizer
 
     #endregion
 
+    /// <summary>
+    /// Metoda obsługująca zdarzenie puszczenia lewego przycisku myszy na suwaku wartości, aktualizująca parametry efektów dźwiękowych.
+    /// </summary>
     private void ValueChangeSlider_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
     {
         if (DelayBox.IsChecked == true)
@@ -1353,6 +1376,9 @@ public partial class Equalizer
         }
     }
 
+    /// <summary>
+    /// Metoda obsługująca zdarzenie zmiany wartości suwaków, aktualizująca tekstowe etykiety z wartościami suwaków.
+    /// </summary>
     private void DynamicSliderEffectValueChaning(object sender, RoutedPropertyChangedEventArgs<double> e)
     {
         SliderFirstValueText.Text = Math.Round(SliderFirst.Value, 1).ToString(CultureInfo.InvariantCulture);

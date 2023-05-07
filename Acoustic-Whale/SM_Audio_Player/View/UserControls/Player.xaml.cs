@@ -10,6 +10,10 @@ using SM_Audio_Player.View.UserControls.buttons;
 
 namespace SM_Audio_Player.View.UserControls;
 
+/// <summary>
+/// Klasa reprezentująca funkcjonalność Playera.
+/// Obsługuje funkcje takie jak odtwarzanie/pauzowanie przewijanie itd.
+/// </summary>
 public partial class Player : INotifyPropertyChanged
 {
     public delegate void FirstToSecEventHandler(object sender, EventArgs e);
@@ -61,6 +65,10 @@ public partial class Player : INotifyPropertyChanged
         }
     }
 
+    /// <summary>
+    /// Właściwość AlbumImg przechowuje ścieżkę do pliku z obrazem okładki albumu. Gdy wartość właściwości zostanie zmieniona,
+    /// wywołuje zdarzenie PropertyChanged, aby powiadomić o zmianie wszystkich zainteresowanych obiektów.
+    /// </summary>
     public string? AlbumImg
     {
         get => _albumImg;
@@ -73,6 +81,12 @@ public partial class Player : INotifyPropertyChanged
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
+    /// <summary>
+    /// Metoda ResetValues resetuje wartości niektórych kontrolek w widoku głównym programu. Zatrzymuje także timer liczący
+    /// czas odtwarzania utworu. Ustawia wartości suwaka czasu odtwarzania na 0, a także ustawia wartości tekstowe kontrolek
+    /// tytułu, autora, albumu i czasu odtwarzania na wartości domyślne. Dodatkowo, ustawia wartość właściwości AlbumImg
+    /// na null, aby usunąć obraz okładki albumu.
+    /// </summary>
     private void ResetValues(object sender, EventArgs e)
     {
         TracksProperties.Timer.Stop();
@@ -84,14 +98,14 @@ public partial class Player : INotifyPropertyChanged
         TbCurrTime.Text = "0:00";
         AlbumImg = null;
     }
-
-    /*
-     * Event wykonywany w momencie zmiany piosenki, czy zaznaczenia opcji Fade in/out w celu zmiany poszczególnych
-     * wartości w widoku oraz zmiennej _result określającej pożądaną długość piosenki. _result jest wartością od której
-     * odejmujemy 7 sekund w momencie włączenia efektu fade in/out w celu skrócenia piosenki aby nastąpiło przełączenie
-     * na kolejną w klasie Equalizer z efektem stopniowego pogłaśniania, gdy dana piosenka będzie się wyciszać na ostatnie
-     * 7 sekund.
-     */
+    
+    /// <summary>
+    /// Event wykonywany w momencie zmiany piosenki, czy zaznaczenia opcji Fade in/out w celu zmiany poszczególnych
+    /// wartości w widoku oraz zmiennej _result określającej pożądaną długość piosenki. _result jest wartością od której
+    /// odejmujemy 7 sekund w momencie włączenia efektu fade in/out w celu skrócenia piosenki aby nastąpiło przełączenie
+    /// na kolejną w klasie Equalizer z efektem stopniowego pogłaśniania, gdy dana piosenka będzie się wyciszać na ostatnie
+    /// 7 sekund.
+    /// </summary>
     [Obsolete("Obsolete")]
     private void OnTrackSwitch(object sender, EventArgs e)
     {
@@ -171,11 +185,11 @@ public partial class Player : INotifyPropertyChanged
             throw;
         }
     }
-
-    /*
-     * Metoda pobierająca czas z pierwszej (bazowej) ścieżki dźwiękowej w celu aktualizowania pozycji slidera w metodzie
-     * Timer_tick
-     */
+    
+    /// <summary>
+    /// Metoda pobierająca czas z pierwszej (bazowej) ścieżki dźwiękowej w celu aktualizowania pozycji slidera
+    /// w metodzieTimer_tick
+    /// </summary>
     private void TakeFirstWave()
     {
         var totalSeconds = _result.TotalSeconds;
@@ -190,10 +204,11 @@ public partial class Player : INotifyPropertyChanged
             if (currentPosition > totalSeconds) FirstToSec?.Invoke(this, EventArgs.Empty);
         }
     }
-
-    /*
-    * Metoda pobierająca czas z drugiej ścieżki dźwiękowej w celu aktualizowania pozycji slidera w metodzie Timer_tick
-    */
+    
+    /// <summary>
+    /// Metoda pobierająca czas z drugiej ścieżki dźwiękowej w celu aktualizowania pozycji slidera w
+    /// metodzie Timer_tick
+    /// </summary>
     private void TakeSecWave()
     {
         var totalSeconds = _result.TotalSeconds;
@@ -209,11 +224,11 @@ public partial class Player : INotifyPropertyChanged
             if (currentPositionSec > totalSeconds) SecToFirst?.Invoke(this, EventArgs.Empty);
         }
     }
-
-    /*
-     * Metoda wywoływana na tick zegara w celu odświeżenia slidera o wartości sekundowe oraz licznika pokazującego
-     * bieżący czas utworu
-     */
+    
+    /// <summary>
+    /// Metoda wywoływana na tick zegara w celu odświeżenia slidera o wartości sekundowe oraz licznika pokazującego
+    /// bieżący czas utworu
+    /// </summary>
     private void Timer_Tick(object? sender, EventArgs e)
     {
         try
@@ -279,11 +294,11 @@ public partial class Player : INotifyPropertyChanged
             throw;
         }
     }
-
-    /*
-     * W momencie kliknięcia w dół przycisku myszki timer zostaje zatrzymany w celu zmiany wartości suwaka,
-     * aby ten automatycznie nie uciekał spod myszki
-     */
+    
+    /// <summary>
+    /// W momencie kliknięcia w dół przycisku myszki timer zostaje zatrzymany w celu zmiany wartości suwaka,
+    /// aby ten automatycznie nie uciekał spod myszki
+    /// </summary>
     private void TimeSlider_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
     {
         try
@@ -296,12 +311,12 @@ public partial class Player : INotifyPropertyChanged
             throw;
         }
     }
-
-    /*
-     * Event odpowiadający za sterowanie pozycją slidera, w którym wykorzystane zostały tak samo powyższe warunki
-     * wykorzystane w evencie Timer_Tick, z tym że ciało warunków zmienione zostało odpowiednią funkcją zmieniającą
-     * położenie slidera.
-    */
+    
+    /// <summary>
+    /// Event odpowiadający za sterowanie pozycją slidera, w którym wykorzystane zostały tak samo powyższe warunki
+    /// wykorzystane w evencie Timer_Tick, z tym że ciało warunków zmienione zostało odpowiednią funkcją zmieniającą
+    /// położenie slidera.
+    /// </summary>
     private void TimeSlider_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
     {
         try
@@ -355,6 +370,13 @@ public partial class Player : INotifyPropertyChanged
         }
     }
 
+    /// <summary>
+    /// Metoda obsługująca zdarzenie Ctrl+Shift+strzałka w prawo lub w lewo (Ctrl+Shift+Right lub Ctrl+Shift+Left)
+    /// na suwaku czasu odtwarzania utworu. Zmienia pozycję odtwarzania utworu w zależności od kierunku strzałki,
+    /// przesuwając ją o 0.1 sekundy. Metoda wykorzystuje informacje o długości utworu oraz aktualnej pozycji suwaka,
+    /// aby obliczyć nową pozycję odtwarzania utworu. Następnie metoda sprawdza, czy aktualnie odtwarzany utwór
+    /// jest taki sam jak wybrany przez użytkownika i przesuwa pozycję odtwarzania odpowiedniego pliku audio.
+    /// </summary>
     private void TimeSlider_CtrlShiftRight(object sender, EventArgs e)
     {
         try
