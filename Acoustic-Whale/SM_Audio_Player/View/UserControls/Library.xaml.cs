@@ -349,7 +349,6 @@ public partial class Library
                 // Jeśli użytkownik potwierdzi, usuń wybrane utwory
                 if (result == DialogResult.Yes)
                 {
-                    ResetSelected?.Invoke(this, EventArgs.Empty);
                     var selectedIndices = new List<int>();
                     foreach (var item in Lv.SelectedItems) selectedIndices.Add(Lv.Items.IndexOf(item));
 
@@ -363,14 +362,7 @@ public partial class Library
                     var newJsonData = JsonConvert.SerializeObject(TracksProperties.TracksList);
                     File.WriteAllText(JsonPath, newJsonData);
 
-                    if (TracksProperties.AudioFileReader?.FileName == TracksProperties.SelectedTrack?.Path &&
-                        TracksProperties.WaveOut?.PlaybackState == PlaybackState.Playing)
-                    {
-                        TracksProperties.WaveOut.Stop();
-                        TracksProperties.WaveOut = null;
-                        TracksProperties.AudioFileReader = null;
-                    }
-                    else if (TracksProperties.SecWaveOut?.PlaybackState == PlaybackState.Playing
+                    if (TracksProperties.SecWaveOut?.PlaybackState == PlaybackState.Playing
                              && TracksProperties.SecAudioFileReader?.FileName == TracksProperties.SelectedTrack?.Path)
                     {
                         TracksProperties.SecWaveOut.Stop();
