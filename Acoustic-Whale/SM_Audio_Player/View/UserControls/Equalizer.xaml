@@ -147,19 +147,19 @@
             <StackPanel x:Name="SliderFirstPanel" Visibility="Hidden">
                 <Slider Style="{DynamicResource SliderStyle1}" Margin="5" x:Name="SliderFirst"
                         IsMoveToPointEnabled="True" IsSelectionRangeEnabled="True"
-                        PreviewMouseLeftButtonUp="ValueChangeSlider_PreviewMouseLeftButtonUp"
+                        PreviewMouseLeftButtonUp="ValueChangeSlider_PreviewMouseLeftButtonUp" SelectionEnd="{Binding ElementName=SliderFirst, Path=Value}"
                         ValueChanged="DynamicSliderEffectValueChaning" />
                 <Grid>
                     <TextBlock Name="SliderFirstText" Grid.Column="5" Text="slider1" VerticalAlignment="Top"
                                Margin="0,-3,0,0" />
-                    <TextBlock Name="SliderFirstValueText" Grid.Column="5" Text="0" VerticalAlignment="Center"
+                    <TextBlock Name="SliderFirstValueText" Grid.Column="5" Text="0" VerticalAlignment="Center" 
                                HorizontalAlignment="Right" Margin="0,-3,15,0" />
                 </Grid>
             </StackPanel>
             <StackPanel x:Name="SliderSecPanel" Visibility="Hidden">
                 <Slider Style="{DynamicResource SliderStyle1}" Margin="5" x:Name="SliderSec"
                         IsMoveToPointEnabled="True" IsSelectionRangeEnabled="True"
-                        PreviewMouseLeftButtonUp="ValueChangeSlider_PreviewMouseLeftButtonUp"
+                        PreviewMouseLeftButtonUp="ValueChangeSlider_PreviewMouseLeftButtonUp" SelectionEnd="{Binding ElementName=SliderSec, Path=Value}"
                         ValueChanged="DynamicSliderEffectValueChaning" />
                 <Grid>
                     <TextBlock Name="SliderSecValueText" Grid.Column="5" Text="0" VerticalAlignment="Center"
