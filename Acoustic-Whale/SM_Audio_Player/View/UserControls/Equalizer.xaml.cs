@@ -933,13 +933,13 @@ public partial class Equalizer
             SliderSecPanel.Visibility = Visibility.Visible;
             SliderFirstPanel.Visibility = Visibility.Visible;
 
-            SliderFirst.Value = 300;
-            SliderFirst.Maximum = 1400;
+            SliderFirst.Value = 200;
+            SliderFirst.Maximum = 800;
             SliderFirst.Minimum = 100;
             SliderFirstText.Text = "Delay [ms]";
 
             SliderSec.Value = 0.5f;
-            SliderSec.Maximum = 0.8f;
+            SliderSec.Maximum = 1f;
             SliderSec.Minimum = 0f;
             SliderSecText.Text = "Decay";
 
@@ -1009,13 +1009,13 @@ public partial class Equalizer
             SliderSecPanel.Visibility = Visibility.Visible;
             SliderFirstPanel.Visibility = Visibility.Visible;
 
-            SliderFirst.Value = 160;
-            SliderFirst.Maximum = 1200;
-            SliderFirst.Minimum = 10;
+            SliderFirst.Value = 200;
+            SliderFirst.Maximum = 800;
+            SliderFirst.Minimum = 100;
             SliderFirstText.Text = "Delay [ms]";
 
             SliderSec.Value = 0.5f;
-            SliderSec.Maximum = 0.8f;
+            SliderSec.Maximum = 1f;
             SliderSec.Minimum = 0f;
             SliderSecText.Text = "Depth";
 
@@ -1084,13 +1084,13 @@ public partial class Equalizer
             SliderSecPanel.Visibility = Visibility.Visible;
             SliderFirstPanel.Visibility = Visibility.Visible;
 
-            SliderFirst.Value = 1.5f;
-            SliderFirst.Maximum = 8f;
+            SliderFirst.Value = 2f;
+            SliderFirst.Maximum = 6f;
             SliderFirst.Minimum = 1f;
             SliderFirstText.Text = "Gain";
 
-            SliderSec.Value = 7f;
-            SliderSec.Maximum = 35f;
+            SliderSec.Value = 5f;
+            SliderSec.Maximum = 40f;
             SliderSec.Minimum = 1f;
             SliderSecText.Text = "Mix";
 
@@ -1164,7 +1164,7 @@ public partial class Equalizer
             SliderFirstPanel.Visibility = Visibility.Visible;
 
             SliderFirst.Value = 1.4f;
-            SliderFirst.Maximum = 2.2f;
+            SliderFirst.Maximum = 2f;
             SliderFirst.Minimum = 1.0f;
             SliderFirstText.Text = "Speed";
 
