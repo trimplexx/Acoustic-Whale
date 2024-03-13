@@ -39,3 +39,11 @@
   <li> <a href="https://github.com/JamesNK/Newtonsoft.Json">Newtonsoft.Json</a></li>
 </ul>
 
+Main view:
+![image](https://github.com/trimplexx/Acoustic-Whale/assets/101646747/32085401-8f44-425d-b826-462ae46ef418)
+
+Settings:
+![image](https://github.com/trimplexx/Acoustic-Whale/assets/101646747/66683a03-2d07-484d-87e6-f0054eb33d7c)
+
+
+
